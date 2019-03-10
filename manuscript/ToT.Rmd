@@ -1,0 +1,205 @@
+---
+title: "The Trendiness of Trends"
+author: | 
+  | Andreas Kryger Jensen with an invitation to Claus Ekstrøm
+  | Biostatistics, Institute of Public Health, University of Copenhagen
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+fontsize: 11pt  
+header-includes:
+  - \usepackage{bm}
+  - \usepackage[labelfont=bf]{caption}
+  - \DeclareMathOperator*{\argsup}{arg\,sup}  
+  - \DeclareMathOperator*{\E}{E}
+  - \DeclareMathOperator*{\Cov}{Cov}
+  - \DeclareMathOperator*{\Var}{Var}
+  - \DeclareMathOperator{\Multinomial}{Multinomial}
+  - \usepackage[amsthm,thmmarks]{ntheorem}
+  - \newtheorem{definition}{Definition}
+output:
+  pdf_document: 
+    number_sections: yes
+    toc: false
+bibliography: bibliography.bib    
+---
+
+
+\begin{abstract}
+A statement often seen in the news concerning some public health outcome is that ,,the trend has changed''. Such statements are often based on survey data, and the change in the trend is claimed to have occurred at the time of the latest data collection. These kinds of statistical assessments are very important as they may influence public health decisions on a national level.
+
+Standard change-point models are not applicable since there are no observations beyond the time of the stipulated change-point. Instead we propose a statistical model using methods from Functional Data Analysis under the assumption that reality evolves in continuous time. Under this assumption we define what constitutes a trend and a change in a trend, and we introduce a probabilistic Trend Direction Index. This index has the simple and intuitive interpretation of the probability that an underlying trend has changed direction at any given time conditional on observed data and can be used for both estimation and forecasting.
+
+We show how the Trend Direction Index can be estimated from data in a Bayesian framework and give an application to development of the proportion of smokers in Denmark during the last 20 years. We also show how our model can be extended to include a time-varying latent class variable enabling data-driven adaptations to underlying non-stationarity.
+\end{abstract}
+
+\begin{center}
+\textbf{Keywords:} Functional Data Analysis, Gaussian Processes, Trends, Bayesian Statistics 
+\end{center}
+
+# Introduction
+This manuscript is concerned with the fundamental problem of estimating an underlying trend based on random variables observed repeatedly over time. In addition to this problem we also wish to assess points in time where it is possible that such a trend is changing. Our motivation is a recent example from the news in Denmark where it was stated that the trend in the proportion of smokers in Denmark has changed at the end of the year 2018. This statement was based on survey data collected yearly since 1998 and reported by the Danish Health Authority. It is not immediately obvious what constitutes a trend and more so what a change in a trend is. To elucidate these questions and provide a clear specification we start from the ground by defining the problem. 
+
+We assume that reality evolves in continuous time $t \in \mathcal{T} \subset \mathbb{R}$ and that there exists a latent, random function $f = \left\{f(t) : t \in \mathcal{T}\right\}$ that governs the underlying evolution of some observable characteristic. We are able to observe a noisy version of this latent characteristic by sampling $f$ at discrete time points according to the additive model $Y_i = f(t_i) + \varepsilon_i$ where $Y_i$ is the $i$'th observation at time $t_i \in \mathcal{T}$ and $\varepsilon_i$ is a random variable with $\E[\varepsilon_i \mid t_i] = 0$. Given observations of the form $(Y_i, t_i)_{i=1}^n$ we are interested in estimating the dynamical properties of $f$.
+
+The trend of $f$ is defined as its instantaneous slope given by the function $df(t) = \left(\frac{\mathrm{d}f(s)}{\mathrm{d}s}\right)(t)$, and we say that $f$ exhibits a positive trend at $t$ if $df(t) > 0$ and a negative trend at $t$ if $df(t) < 0$. We then define a change in trend as a point in time where $df$ changes sign, i.e., a positive trend becomes a negative trend meaning that $f$ goes from being increasing to becoming decreasing or vice versa. As $f$ is a random function there is no exact points in time where $df$ changes sign. This is instead a gradual and continuous concept and the assessment must be defined in terms of the probability that a change in trend is occurring. This stand in contrast with traditional change-point models (see e.g., @picard1985testing).
+
+To quantify the probability that a trend is changing we introduce the following probabilistic Trend Direction Index
+\begin{align}
+  \mathrm{TDI}(t, \delta) = P(df(t + \delta ) > 0 \mid \mathcal{F}_t)\label{eq:TCIdef}
+\end{align}
+where $\mathcal{F}_t$ is the $\sigma$-algebra of all available information observed up until time $t$. The value of $\mathrm{TDI}(t, \delta)$ is equal to the probability that $f$ is increasing at time $t + \delta$ given all we know about the data generating process up until time $t$. A similar definition could be given for a negative trend but that is equal to $1 - \mathrm{TDI}(t, \delta)$ and therefore redundant. The sign of $\delta$ determines whether we wish to estimate the past ($\delta \leq 0$) or forecast into the future ($\delta > 0$). Most of the examples seen in the news concerning public health outcomes is concerned with $t$ being equal to the current calendar time and $\delta = 0$. This excludes using a standard change-point model as there are no observations beyond the stipulated change-point.
+
+The manuscript is structured as follows: In section \ref{sec:method} we present our statistical model based on a latent Gaussian Process formulation giving rise to an analytic expression for the Trend Direction Index conditional on observed data. We then extend this basic model to enable a data-driven adaptation to non-stationarity in the underlying dynamics. Section \ref{sec:estimation} is concerned with estimating the models parameters, and we give an application to the proportion of smokers in Denmark during the last 20 years in section \ref{sec:application}. We end with a discussion in section \ref{sec:discussion}.
+
+# Statistical models {#sec:method}
+The definitions in the previous section impose the existence of an infinite dimensional latent variable $f$ and its derivative $df$. We assume that $f$ is a latent Gaussian Process which is equivalent to imposing a functional prior distribution on the latent characteristic. Our knowledge about $f$ and $df$ will then be updated based on the observed data giving rise to a joint posterior distribution over $f$ and $df$.
+
+A random function $f$ is a Gaussian Process if and only if the vector $(f(t_1), \ldots, f(t_n))$ has a multivariate normal distribution for every set of evaluation points $(t_1, \ldots, t_n) \subset \mathcal{T}$ with $n < \infty$, and we write $f \sim \mathcal{GP}(\mu(\cdot), C(\cdot, \cdot))$ where $\mu\colon\, \mathcal{T} \mapsto \mathbb{R}$ is the mean function and $C\colon\, \mathcal{T} \times \mathcal{T} \mapsto \mathbb{R}$ is a symmetric, positive semi-definite covariance function [@cramer1967stationary]. We assume that the covariance function satisfies the criteria of @scheuerer2010regularity such that the sample paths of $f$ are almost surely differentiable.
+
+Given observed data of the form $(Y_i, t_i)_{i=1}^n$ we specify the data generating process by the following hierarchical model 
+\begin{align*}
+  f \mid m, \theta &\sim \mathcal{GP}(m, C_\theta(\cdot,\cdot))\\
+  Y_i \mid t_i, f(t_i), \Theta &\overset{iid}{\sim} N(f(t_i), \sigma^2)\nonumber, \quad \Theta = (m, \theta, \sigma^2)
+\end{align*}
+where $m$ is the overall mean of the latent function, $\theta$ is a vector of parameters governing its covariance, and $\sigma^2$ is the observation variance. An important property of Gaussian processes is that they together with their derivatives follow a joint, bivariate Gaussian Process as 
+\begin{align}
+  \begin{bmatrix}f(s)\\ df(t) \end{bmatrix} \mid m, \theta &\sim \mathcal{GP}\left(\begin{bmatrix}m\\ 0\end{bmatrix}, \begin{bmatrix}C_\theta(s, s^\prime) & \partial_2 C_\theta(s, t)\\ \partial_1 C_\theta(t, s) & \partial_1 \partial_2 C_\theta(t, t^\prime)\end{bmatrix}\right)\label{eq:latentJoint}
+\end{align}
+where $\partial_1$ and $\partial_2$ denote the partial derivatives with respect to the first and second arguments [@cramer1967stationary]. Let $\mathbf{Y} = (Y_1, \ldots, Y_n)$ be the vector of outcomes observed at times $\mathbf{t} = (t_1,\ldots,t_n)$ and $\mathbf{t}^\ast$ any finite dimensional vector of time points not necessarily equal to $\mathbf{t}$. The formulas in the two previous displays then implies that joint distribution of the observed data and $(f,df)$ is given by
+\begin{align*}
+  \begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ \mathbf{Y}\end{bmatrix} \mid \mathbf{t}, \Theta \sim N\left(\begin{bmatrix}m\\ 0\\ m\end{bmatrix}, \begin{bmatrix}C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) &  \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ C_\theta(\mathbf{t}, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast) & C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\end{bmatrix}\right)
+\end{align*}
+where $C_\theta(\mathbf{t}, \mathbf{t})$ denotes a matrix consisting of the values of the covariance function at $\left\{(s,t) \in \mathbf{t} \times \mathbf{t} \right\}$, and $I$ is an identity matrix of appropriate dimensions. Predictions of the latent function and its derivative are given by conditioning the joint distribution of $(f, df)$ on the observed data. By the properties of multivariate normal distributions we obtain from the previous display the following joint posterior distribution (\textbf{TODO:} Check that I haven't interchanged $\partial_1$ and $\partial_2$ somewhere in this mess.)
+\begin{align}
+\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast) \end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \Theta &\sim
+N\left(\begin{bmatrix}\mu_f(\mathbf{t}^\ast)\\ \mu_{df}(\mathbf{t}^\ast)\end{bmatrix}, \begin{bmatrix}\Sigma_{f,f}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \Sigma_{f,df}(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \Sigma_{df,f}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \Sigma_{df,df}(\mathbf{t}^\ast, \mathbf{t}^\ast)\end{bmatrix}\right)\label{eq:jointPost}\\
+  \mu_f(\mathbf{t}^\ast) &= m + C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}\left(\mathbf{Y} - m\right)\nonumber\\
+  \mu_{df}(\mathbf{t}^\ast) &= \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}\mathbf{Y}\nonumber\\
+  \Sigma_{f,f}(\mathbf{t}^\ast, \mathbf{t}^\ast) &= C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1} C_\theta(\mathbf{t}, \mathbf{t}^\ast)\nonumber\\
+  \Sigma_{df,df}(\mathbf{t}^\ast, \mathbf{t}^\ast) &= \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1} \partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\nonumber\\
+  \Sigma_{f,df}(\mathbf{t}^\ast, \mathbf{t}^\ast) &= \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}\partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\nonumber\\
+  \Sigma_{df,f}(\mathbf{t}^\ast, \mathbf{t}^\ast) &= \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\nonumber
+\end{align}
+This posterior distribution can then be evaluted at any vector of time points $\mathbf{t}^\ast$. The Trend Direction Index defined formally in Equation (\ref{eq:TCIdef}) can then be written as
+\begin{align}
+  \mathrm{TDI}(t, \delta \mid \Theta) &= P(df(t + \delta ) > 0 \mid \mathbf{Y}, \mathbf{t}, \Theta)\label{eq:TCIdef2}\\
+    &= \int_0^\infty N\left(u, \mu_{df}(t + \delta), \Sigma_{df,df}(t + \delta, t + \delta)\right)\mathrm{d}u\nonumber
+\end{align}
+where $\mathcal{F}_t = \left\{\mathbf{Y}, \mathbf{t}\right\}$ consists of the observed outcomes and their sampling times and $\mu_{df}$ and $\Sigma_{df,df}$ are given in Equation (\ref{eq:jointPost}). We note that the Trend Direction Index depends on the parameters of the model, $\Theta = (m, \theta, \sigma^2)$, which in practice must be estimated from data. When taking their uncertainties into account $\text{TDI}$ becomes a functional distribution over probabilities. 
+
+\begin{figure}[htb]
+\center\includegraphics{probabilisticExample}
+\caption{150 realizations from the posterior distribution of $f$ (top row), $df$ (middle row) with expected values in bold and the Trend Direction Index (bottom row) conditional on one, two and four noise free observations.}
+\label{fig:probabilisticExample}
+\end{figure}
+
+To illustrate our model construction we show a simulated example in Figure \ref{fig:probabilisticExample}. The first and second rows of the plot show 150 random realizations from the posterior distribution of $f$ and $df$ with the expected functions in bold lines, and the third row shows the Trend Direction Index. In this example we simulate using known model parameters and therefore the Trend Direction Index in Equation (\ref{eq:TCIdef2}) is a deterministic function. We have set the mean of the Gaussian Process to $m = 0$ and used the squared exponential (SE) covariance function. This is an often used covariance function in Gaussian Process regression [@rasmussen2003gaussian] and it has the following form
+\begin{align}
+  C_\theta(s,t) = \alpha^2 \exp\left(-\frac{(s-t)^2}{2\rho^2}\right), \quad \theta = (\alpha, \rho)\label{eq:seKernel}
+\end{align}
+The two parameters have the interpretation that $\alpha$ is the standard deviation of the latent function and $\rho$ is its length-scale. We have set $\alpha = 2$ and $\rho = 0.1$ and consider the noise free case with $\sigma^2 = 0$. The three cloumns of the plot show how the posterior of $f$ and $df$ and the Trend Direction Index are updated after one, two or four observed data points. It is seen how updating the Gaussian Process prior with observed data results in a continuous change in the posterior distribution of $f$ and its derivative $df$. The posterior knowledge about the sign of the derivative is correspondingly reflected in the Trend Direction Index. Going further and further away from the last observed data point it is seen that the posterior of $f$ becomes dominated by its prior distribution. In the same sense $df$ converges to a point-wise symmetric distribution around zero and therefore the Trend Direction Index stabilizes around $50\%$. This is clearly seen in the second column of the figure. 
+
+
+## Latent dynamics
+The generating model described hitherto depends on a parametric covariance function $C_\theta(\cdot, \cdot)$ governing the dynamics of the latent function. Usually in Gaussian Process Regression a stationary covariance function, such as the SE function in Equation (\ref{eq:seKernel}), is chosen out of convenience [@rasmussen2003gaussian]. Chosing a stationary covariance function, however, implies an important model assumption. It can be shown that for all stationary covariance functions $C_{\theta}(s,t) = C_\theta(|s-t|)$ is follows that $\partial_2 C_\theta(t,t) = 0$ and therefore $f(t) \!\perp\!\!\!\perp df(t)$ [@cramer1967stationary]. By construction the distribution of the derivative at time $t$ conditional on the value of the function at the same time is linear, and the latent dynamics is therefore governed by a time-varying linear first-order differential equation that can be written as
+\begin{align*}
+  df(t) \mid f(t), m, \theta = a(t) + b(t)f(t) + \epsilon(t)
+\end{align*}
+Using a model with a stationary covariance function implies that $b(t) = 0$, and the model must therefore enable non-stationarity in ordre to have non-trivial latent dynamics with $b(t) \ne 0$.
+
+It can be argued that a priori selecting a parametric non-stationary covariance function that fits data is a very difficult problem. We now present an extension to the previous model that fascilitates a data-driven adaptation to non-stationarity in $f$. We do this by introducing a latent time-varying categorical variable $G(t)$ taking values in the discrete set $\left\{1, \ldots, K\right\}$ at every time $t$. We then assume that $f$ conditionally on $G(t) = k$ is a Gaussian Process with a stationary covariance function indexed by a parameter $\theta_k$. This corresponds to the following functional latent class model
+\begin{align}
+  w(t) \mid \phi &\sim \mathcal{S}_{K-1}^\infty(\phi)\label{eq:latentClassModel}\\
+  G(t) \mid w(t), \phi &\sim \Multinomial(\mathbf{w}(t))\nonumber\\
+  f(t) \mid G(t) = k, \theta_k, w, \phi &\sim \mathcal{GP}(m, C_{\theta_k}(\cdot,\cdot))\nonumber
+\end{align}
+where $w$ is a $K$-dimensional probability function and $\mathcal{S}_{K-1}^\infty$ is a distribution on the interior of the functional $K-1$ dimensional simplex
+\begin{align*}
+  \left\{w_k(t), k = 1,\ldots, K, t \in \mathcal{T}, w_k(t) > 0, \sum_{k=1}^K w_k(t) = 1\right\}
+\end{align*}
+Marginalizing out the distribution of $G(t)$ in $f(t) \mid G(t) = k, \theta_k, w, \phi$ we may write the joint distribution of $f$ and $df$ as the following conditional Gaussian Process
+\begin{align*}
+  \begin{bmatrix}f(s)\\ df(t) \end{bmatrix} \mid m, \left\{w_k, \theta_k\right\}_{k=1}^K, \phi &\sim \mathcal{GP}\left(\begin{bmatrix}m\\ 0\end{bmatrix}, \begin{bmatrix}C_{11}(s, s^\prime) & C_{12}(s, t)\\ C_{21}(t, s) & C_{22}(t, t^\prime)\end{bmatrix}\right)
+\end{align*}
+where the covariance and cross-covariance functions are given by
+\begin{align}
+  C_{11}(s, s^\prime) &= \sum_{k=1}^K w_k(s)C_{\theta_k}(s,s^\prime)w_k(s^\prime)\label{eq:latentClassCov}\\
+  C_{12}(s, t) &= \sum_{k=1}^K w_k(s)C_{\theta_k}(s,t)dw_k(t) + \sum_{k=1}^K w_k(s) \partial_2 C_{\theta_k}(s,t)w_k(t)\nonumber\\
+  C_{21}(t, s) &= \sum_{k=1}^K dw_k(s)C_{\theta_k}(s,t)w_k(t) + \sum_{k=1}^K w_k(s) \partial_1 C_{\theta_k}(s,t)w_k(t)\nonumber\\
+  C_{22}(t, t^\prime) &= \sum_{k=1}^K dw_k(s)C_{\theta_k}(s,t)dw_k(t) + \sum_{k=1}^K w_k(s)\partial_1 C_{\theta_k}(s,t)dw_k(t)\nonumber\\
+                      &+  \sum_{k=1}^K dw_k(s)\partial_2 C_{\theta_k}(s,t)w_k(t) + \sum_{k=1}^K w_k(s)\partial_1\partial_2 C_{\theta_k}(s,t)w_k(t)\nonumber
+\end{align}
+The construction with a latent class implies that the covariance function of $f$, $C_11$, becomes a time-varying convex sum of stationary covariance functions with separate parameters. The expressions for the covariance function of $df$ and its cross-covariance with $f$ follows according to Equation (\ref{eq:latentJoint}) and the chain rule. From the expression of cross-covariance it can be seen that $C_{12}(t,t)$ is generally non-zero due to the existence of the terms in the first sum. The terms in the second sum will, however, still equal to zero on the diagonal when each class uses a stationary covariance function. The joint posterior distribution for this extended model is then given similarly to the expressions in Equation (\ref{eq:jointPost}) with the appropriate covariance substitutions.
+
+To model the functional class probabilities, $w(t)$, in Equation (\ref{eq:latentClassModel}) we suggest mapping $K-1$ linear basis expansions onto the simplex. The basis could for example be polynomial splines where we require that the degree is chosen such they are at least once continuously differentiable on $\mathcal{T}$. Let $\left\{B_p(t) : t \in \mathcal{T}, p = 1,\ldots,P\right\}$ be a set of basis functions on $\mathcal{T}$ with $P$ degrees of freedom and $(\phi_0^{(k)}, \ldots, \phi_P^{(k)})$ a vector of coefficients for each $k = 1, \ldots, K-1$ expansion. We then construct the $K-1$ functions as
+\begin{align}
+  \eta_k(t) = \phi_{0}^{(k)} + \sum_{p=1}^P \phi_{p}^{(k)} B_p(t), \quad k = 1,\ldots, K - 1\label{eq:splineExpansion}
+\end{align}
+which we map into the class probabilities by the inverse log-additive ratio transform
+\begin{align*}
+  w_k(t) = \frac{\exp(\eta_k(t))}{1 + \sum_{j=1}^{K-1} \exp(\eta_{j}(t))}, \quad k = 1,\ldots, K-1, \quad w_{K}(t) = \frac{1}{1 + \sum_{j=1}^{K-1} \exp(\eta_j(t))}
+\end{align*}
+Note that the derivatives of $w_k$ are required in the calculation of the covariance matrices in Equation (\ref{eq:latentClassCov}). These can be derived analytically using the chain rule and pre-computed derivatives of the basis functions.
+
+The parameters of this extension to the model are therefore $\Theta = \left(m, (\phi_0^{(k)}, \ldots, \phi_P^{(k)})_{k=1}^{K-1}, (\theta_k)_{k=1}^K, \sigma^2\right)$ and the Trend Direction Index in Equation (\ref{eq:TCIdef2}) is as before defined conditionally on these variables.
+
+
+
+# Estimation {#sec:estimation}
+Given observed data $(Y_i, t_i)_{i=1}^n$ there are different approach for estimating models with latent Gaussian Processes. We believe that when doing a probabilistic assessment of a latent variable, such as the Trend Direction Index, it is important to account for all the uncertainty in the model. This is best achieved by using a fully Bayesian estimation. This requires placing prior distributions on the model parameters $\Theta$. These will then be updated based on the observed data and the Trend Direction Index in Equation (\ref{eq:TCIdef2}) is then conditional on these posterior distributions. 
+
+In our application we use the squared exponential covariance function defined in Equation (\ref{eq:seKernel}) which means that our model without the latent class has the following parameters $\Theta = (m, \alpha, \rho, \sigma)$. We suggest using the following prior distributions
+\begin{align*}
+  m \sim N(\mu_m, 3), \quad \alpha \sim \text{Half-Normal}(0, 3), \quad \rho \sim \Gamma^{-1}(\rho_a, \rho_b), \quad \sigma \sim \text{Half-Normal}(0, 3)
+\end{align*}
+where $\text{Half-Normal}$ denotes the half-normal distribution due to the requirement of positivity of $\alpha$ and $\sigma$ and $\Gamma^{-1}$ is the inverse Gamma distribution (\textbf{TODO:} This is not scale-free. Fix). These provide weakly informative priors for the model parameters. We set the hyper-parameter $\mu_m$ in the prior for $m$ as the empirical average of the observed outcomes, $\mu_m = \frac{1}{n}\sum_{i=1}^n Y_i$. The hyper-parameters for the length-scale parameter $\rho$ deserve special attention. The sampling design of the data, i.e., the values of $t_1, \ldots, t_n$, restricts the possible values of estimable length-scales. Specifically, it is impossible to have a length-scale of the latent function smaller than smallest distance between any two sampling times. Similarly, it is impossible to have a length-scale that is greater than the range of the sampling times. To include this information in the prior distribution of $\rho$ while simultaneously not enforcing hard constraints we find the values of $\rho_a$ and $\rho_b$ such that $P(\rho_\text{min} \leq \rho \leq \rho_\text{max}) = 1 - \delta$ where $\rho_\text{min} = \min_{i,i^\prime} |t_i - t_i^\prime|$, $\rho_\text{max} = \max_{i,i^\prime} |t_i - t_i^\prime|$ and $\delta$ is a small probability, e.g., $5\%$ or $1\%$. The values of $\rho_a$ and $\rho_b$ can be found using numerical optimization.
+
+To estimate the extended model with a latent class we further need to impose prior distributions on the spline coefficients for the probability functions $w_k$. A well-known problem when using spline expansions is selecting the number of knots or equivalently the degrees of freedom of the basis. To mitigate this problem we suggest using a large number of knots and then regularize the splines through the prior distributions on their coefficients. It can be shown that if all spline coefficients are equal, then the resulting expansion is a constant functions. This motivates imposing a random walk prior on the coefficients of each $\eta_k$ in Equation (\ref{eq:splineExpansion}) in order to penalize local variability. For each $k = 1,\ldots, K$ spline expansion we therefore use the following prior distribution
+\begin{align*}
+  \phi_{0}^{(k)} \sim N(0, 1), \quad \phi_{1}^{(k)} \sim N(0, 1), \quad \{\phi_{p}^{(k)} \sim N(\phi_{p-1}^{(k)}, \tau^{(k)})\}_{p=2}^P, \quad \tau^{(k)} \sim N(0, 1)
+\end{align*}
+
+We have implemented both our model with and without a latent class in Stan [@carpenter2017stan]. Stan is a probabilistic programming language that enables full Bayesian statistical inference using Markov chain Monte Carlo sampling and can be used together with R through the \texttt{rstan} package [@rstan]. The Stan programs for our two models are available at the first author's Github page [@gptrendStan].
+
+
+
+
+# Application {#sec:application}
+A report published by The Danish Health Authority in January 2019 updated the estimated proportion of smokers in Denmark with new data from 2018 [@sst]. The data was based on an internet survey including 5017 participants. The report also included data on the proportion of smokers in Denmark during the last 20 years. The result was picked up by several news papers under headlines stating that the proportion of smokers in Denmark had significantly increased for the first time in two decades [@politiken]. The report published no statistical inference on this statement but wrote in a note that because the study population is so large, then more or less all differences become statistically significant at the $95\%$ level. This is an illustrative example of our proposed Trend Direction Index. If it really is so that the proportion of smokers have increased in 2018 we should expect that the Trend Direction Index in $2018$ conditional on data from the last 20 years would have a high value (or at least larger than $50\%$) when fitting our model to this data. 
+
+\begin{figure}[htb]
+\center\includegraphics{smoking1}
+\caption{hejhej}
+\label{fig:smoking1}
+\end{figure}
+
+We fitted the model without a latent class to the data using the Stan implementation with the squared exponential covariance function. We ran four chains for 25000 iterations each with half of the iterations used for warm-up. Convergence was assessed by the potential scale reduction factor ($\widehat{R}$) of @gelman1992inference. The results from the fitted model are seen in Figure \ref{fig:smoking1}.
+
+The upper left panel of Figure \ref{fig:smoking1} shows a plot of the raw data points along with the posterior mean of the latent function as the bold line. The dashed lines are lower and upper $95\%$ probability intervals for posterior distribution of $f$ and the dotted lines are lower and upper $95\%$ probability intervals for the posterior predictive distribution of the proportions. The upper right panel shows $3000$ random realizations from the posterior distribution of $f$ and again the posterior mean as the bold line. The lower left panel shows $3000$ random realizations from the posterior distribution of the derivative of the latent function with the posterior mean as a bold line, at the lower right panel shows $3000$ random realizations from the distribution of the Trend Direction Index along with the mean as the bold line.
+
+The figure shows some interesting things. First, around the year 2006 a increasing trend was also seen even though the average Trend Direction Index was only around $60\%$. This was followed by a long period of close to zero probability of a positive derivative. Secondly, the current reported increase in the proportion of smokers appears to have started already four years ago in 2014 when the average Trend Direction Index started to climb above $50\%$. This peaked around 2016 with a Trend Direction Index of $93\%$. Surprisingly, the Trend Direction Index immediately decreases and in 2018 at the latest survey results it is only $14\%$. This suggests with a high probability that there has been an increase in the proportion of smokers in Denmark but that began four years ago and currently there is no strong evidence for this increase to still occur. The value of the Trend Direction Index in $2018$ even suggests that it is decreasing again.
+
+\begin{figure}[htb]
+\center\includegraphics{smoking2-1}
+\caption{Median posterior class probability (left) and kernel density estimates of the posterior length-scales (right) for the non-stationary model fitted with two latent classes.}
+\label{fig:smoking2-1}
+\end{figure}
+
+We also fitted a model with $K = 2$ latent classes to the data. We used a cubic spline basis with $15$ degrees of freedom for the functional class probabilities. The left panel of Figure \ref{fig:smoking2-1} shows the posterior median of the probability that the latent class is equal to class $1$ at any given time. The right panel shows kernel density estimates of the posterior distributions of the length-scale parameter for each latent class. The plot suggests that some degree of non-stationarity is present in the latent dynamics. The latent function seems to develop at two length-scales, one with a posterior mode of $2.78$ and another with a posterior mode of $3.79$. The smaller length-scale has a higher influence during the first ten years with a bump around 2004 corresponding to the close to constant region seen in the upper left panel of Figure \ref{fig:smoking1}. Figure \ref{fig:smoking2-2} shows results similar to Figure \ref{fig:smoking1} but for the latent class model. The conclusions from this model fit are similar to the ones from before.
+
+
+\begin{figure}[htb]
+\center\includegraphics{smoking2-2}
+\caption{THIS IS NOT THE CORRECT FIGURE YET (men den er god nok til jazz...)}
+\label{fig:smoking2-2}
+\end{figure}
+
+
+
+
+# Discussion {#sec:discussion}
+Something something future work.
+
+
+#Bibliography
+
+
