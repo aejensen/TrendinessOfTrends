@@ -112,7 +112,7 @@ functions{
     result[1:nPred, 2] = sim[(nPred + 1):(2*nPred)];
     for(i in 1:nPred) {
       result[i, 3] = normal_rng(sim[i], sigma);
-      result[i, 4] = 1 - normal_cdf(0, mu_df[i], C22[i, i]);
+      result[i, 4] = 1 - normal_cdf(0, mu_df[i], sqrt(C22[i, i]));
     }
 
     return result;

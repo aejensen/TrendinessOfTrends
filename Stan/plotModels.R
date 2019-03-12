@@ -47,18 +47,21 @@ lines(xPred, apply(pred1[,,3], 2, quantile, prob = 0.975), lty = 3, lwd = 1)
 axis(1, seq(1998, 2018, 2))
 
 matplot(xPred, t(pred1[1:nPlot,,1]), type="l", lty=1, ylim=c(20,40), xaxt="n",
-        xlab="Year", ylab="f", col = add.alpha(1:6, 0.1))
+        xlab="Year", ylab="f", col = add.alpha(2:6, 0.1))
 lines(xPred, apply(pred1[,,1], 2, mean), lwd = 2)
 axis(1, seq(1998, 2018, 2))
 
 matplot(xPred, t(pred1[1:nPlot,,2]), type="l", lty=1, xlab="Year", xaxt="n",
-        ylab="df", col = add.alpha(1:6, 0.1), ylim=c(-4,4))
+        ylab="df", col = add.alpha(2:6, 0.1), ylim=c(-4,4))
 lines(xPred, apply(pred1[,,2], 2, mean), lwd = 2)
 axis(1, seq(1998, 2018, 2))
+abline(h = 0, lty = 2)
 
 matplot(xPred, t(pred1[1:nPlot,,4]), type="l", lty=1, xlab="Year", xaxt="n",
-        ylab="TDI", col = add.alpha(1:6, 0.1))
-lines(xPred, apply(pred1[,,4], 2, mean), lwd = 2)
+        ylab="TDI", col = add.alpha(2:6, 0.1))
+lines(xPred, apply(pred1[,,4], 2, median), lwd = 2)
+lines(xPred, apply(pred1[,,4], 2, quantile, prob = 0.25), lwd = 1, lty=2)
+lines(xPred, apply(pred1[,,4], 2, quantile, prob = 0.75), lwd = 1, lty=2)
 axis(1, seq(1998, 2018, 2))
 abline(h = 0.5, lty = 2)
 dev.off()

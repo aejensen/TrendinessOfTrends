@@ -21,16 +21,15 @@ functions{
     
     matrix[n, n] K;
     matrix[n, n] L;
+    matrix[n, nPred] K1_f;
+    matrix[nPred, nPred] K2_f;
+    matrix[n, nPred] K1_df;
+    matrix[nPred, nPred] K2_df;
     
     vector[n] L_div_y_f;
-    matrix[n, nPred] K1_f;
     matrix[n, nPred] L_div_K1_f;
-    matrix[nPred, nPred] K2_f;
-
     vector[n] L_div_y_df;
-    matrix[n, nPred] K1_df;
     matrix[n, nPred] L_div_K1_df;
-    matrix[nPred, nPred] K2_df;
 
     vector[nPred] mu_f;
     vector[nPred] mu_df;
@@ -114,7 +113,7 @@ functions{
     result[1:nPred, 2] = sim[(nPred + 1):(2*nPred)];
     for(i in 1:nPred) {
       result[i, 3] = normal_rng(sim[i], sigma);
-      result[i, 4] = 1 - normal_cdf(0, mu_df[i], C22[i, i]);
+      result[i, 4] = 1 - normal_cdf(0, mu_df[i], sqrt(C22[i, i]));
     }
 
     return result;
