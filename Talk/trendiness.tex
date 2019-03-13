@@ -21,8 +21,8 @@
 
 \title{The Trendiness of Trends}
 %\date{\today}
-\date{March 13th, 2019 (the best day of the year)}
-\author{Andreas Kryger Jensen\\ \scriptsize (joint with and energized by Prof. Ekstrøm on Business Class)}
+\date{March 13th, 2019}
+\author{Andreas Kryger Jensen\\ \scriptsize joint with Claus Ekstrøm}
 \institute{Biostatistics, Institute of Public Health\\ University of Copenhagen}
 
 
@@ -432,15 +432,20 @@ generated quantities {
 \end{frame}
 
 \begin{frame}{Stationarity and latent dynamics}
-A stationary covariance function $C_\theta(s,t) = C_\theta(|s-t|)$ is often used out of convenience. In the previous model we used the exponential squared covariance function. It can be shown that $\partial_2 C_\theta(t,t) = 0$ for all stationary covariance functions hence $f(t) \independent df(t)$.
+By construction
+\begin{align*}
+  df(t) \mid f(t), \Theta = \alpha(t) + \beta(t)f(t) + \epsilon(t)
+\end{align*}
 
 \pause
 
 \vspace{0.8cm}
 
-By construction $df(t) \mid f(t), \Theta = \alpha(t) + \beta(t)f(t) + \epsilon(t)$ and therefore $\beta(t) = 0$ imposing a strong assumption on the latent dynamics.
+A stationary covariance function $C_\theta(s,t) = C_\theta(|s-t|)$ is often used out of convenience, but then $\partial_2 C_\theta(t,t) = 0$ hence $f(t) \independent df(t)$.
 
 \vspace{0.8cm}
+
+\pause
 
 To obtain $\beta(t) \ne 0$ we must enable non-stationarity. This can be achived flexibly by adding a functional latent class to the model.
 \end{frame}

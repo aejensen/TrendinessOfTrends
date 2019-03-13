@@ -71,12 +71,13 @@ doPlotPrior <- function(tPred) {
 doPlot <- function(obsT, obsY) {
   set.seed(12345)
   par(mfrow=c(1,2), bty="n", bg=NA, col.lab="white", col.axis="white", mar =  c(5.1, 4.1, 4.1, 0))
-  matplot(tPred, getPost(obsT, obsY, tPred, alpha = 2, l = 0.1)$sim, type="l", lty=1, ylim = c(-7, 7),
+  matplot(tPred, getPost(obsT, obsY, tPred, alpha = 2, l = 0.1)$sim, type="l", lty=1, ylim = c(-8, 8),
           xlab = "t", ylab="f(t)", col = 1:6, xaxt="n", yaxt="n")
   lines(tPred, getPost(obsT, obsY, tPred, alpha = 2, l = 0.1)$mu, lwd = 4, col = "white")
   points(obsT, obsY, pch=19, cex=1.5, col = "white")
   axis(1, col = "white")
-  axis(2, col = "white")
+  axis(2, seq(-8, 8, 4), col = "white")
+  lines(rep(obsT[length(obsT)], 2), c(-8, 8), lty = 2, col = "white", lwd = 2)
   
   matplot(tPred, getPostD(obsT, obsY, tPred, alpha = 2, l = 0.1, k = 150)$sim, type="l", lty=1, ylim = c(-100, 100),
           xlab = "t", ylab="df(t)", col = 1:6, xaxt="n", yaxt="n")
@@ -84,17 +85,19 @@ doPlot <- function(obsT, obsY) {
   abline(h = 0, lty=2, col = "white")
   axis(1, col = "white")
   axis(2, col = "white")
+  lines(rep(obsT[length(obsT)], 2), c(-100, 100), lty = 2, col = "white", lwd = 2)
 }
 
 doPlot2 <- function(obsT, obsY) {
   set.seed(12345)
   par(mfrow=c(1,2), bty="n", bg=NA, col.lab="white", col.axis="white", mar =  c(5.1, 4.1, 4.1, 0))
-  matplot(tPred, getPost(obsT, obsY, tPred, alpha = 2, l = 0.1)$sim, type="l", lty=1, ylim = c(-7, 7),
+  matplot(tPred, getPost(obsT, obsY, tPred, alpha = 2, l = 0.1)$sim, type="l", lty=1, ylim = c(-8, 8),
           xlab = "t", ylab="f(t)", col = 1:6, xaxt="n", yaxt="n")
   lines(tPred, getPost(obsT, obsY, tPred, alpha = 2, l = 0.1)$mu, lwd = 4, col = "white")
   points(obsT, obsY, pch=19, cex=1.5, col = "white")
   axis(1, col = "white")
-  axis(2, col = "white")
+  axis(2, seq(-8, 8, 4), col = "white")
+  lines(rep(obsT[length(obsT)], 2), c(-8, 8), lty = 2, col = "white", lwd = 2)
   
   dfSim <- getPostD(obsT, obsY, tPred, alpha = 2, l = 0.1, k = 10^6)$sim 
   prob <- apply(dfSim > 0, 1, mean)
@@ -104,6 +107,7 @@ doPlot2 <- function(obsT, obsY) {
   #abline(h = 0, lty=2, col = "white")
   axis(1, col = "white")
   axis(2, col = "white")
+  lines(rep(obsT[length(obsT)], 2), c(0, 1), lty = 2, col = "white", lwd = 2)
 }
 
 pdf(file = "postAni%02d.pdf", width = 8, height = 6, onefile = FALSE)
