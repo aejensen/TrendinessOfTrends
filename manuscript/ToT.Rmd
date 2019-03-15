@@ -49,10 +49,12 @@ To quantify the probability that a trend is changing we introduce the following 
 where $\mathcal{F}_t$ is the $\sigma$-algebra of all available information observed up until time $t$. The value of $\mathrm{TDI}(t, \delta)$ is equal to the probability that $f$ is increasing at time $t + \delta$ given all we know about the data generating process up until time $t$. A similar definition could be given for a negative trend but that is equal to $1 - \mathrm{TDI}(t, \delta)$ and therefore redundant. The sign of $\delta$ determines whether we wish to estimate the past ($\delta \leq 0$) or forecast into the future ($\delta > 0$). Most of the examples seen in the news concerning public health outcomes is concerned with $t$ being equal to the current calendar time and $\delta = 0$. This excludes using a standard change-point model as there are no observations beyond the stipulated change-point.
 
 In addition to the local Trend Direction Index we also define a global index of Trend Instability. We say that a function $f$ is \textit{trend stable} on an interval $\mathcal{I} \subseteq \mathcal{T}$ if it remains either increasing or decreasing corresponding to that the trend maintains its sign. Conversely, a global measure of trend instability can be quatified by the expected number of times $f$ changes direction. This is the same as counting the number local maxima of $f$ or equivalently the number of zero crossings by $df$. We define the Expected Trend Instability on $\mathcal{I}$ by
-\begin{align*}
+\begin{align}
   \text{ETI}(\mathcal{I}) = \E\left[\#\left\{t \in \mathcal{I} : df(t) = 0\right\} \mid \mathcal{F}\right]
-\end{align*}
+\end{align}
 as the expected value of the size of the random point set of zero crossings by $df$ on $\mathcal{I}$ conditional on a suitable filtration. The value of $\text{ETI}$ is a finite real positive number, and the lower $\text{ETI}(\mathcal{I})$ is, the more trend stable $f$ is on $\mathcal{I}$ and vice versa.
+
+[\textbf{TODO:} Previous work]. @gottlieb2012stickiness define a stickiness coefficient for longitudinal data. Our $\text{ETI}$ has similarities to the tracking index of @foulkes1981index. Empirical dynamics for longitudinal data has been studied by @muller2010empirical.
 
 The manuscript is structured as follows: In section \ref{sec:method} we present our statistical model based on a latent Gaussian Process formulation giving rise to an analytic expression for the Trend Direction Index conditional on observed data. We then extend this basic model to enable a data-driven adaptation to non-stationarity in the underlying dynamics. Section \ref{sec:estimation} is concerned with estimating the models parameters, and we give an application to the proportion of smokers in Denmark during the last 20 years in section \ref{sec:application}. We end with a discussion in section \ref{sec:discussion}.
 
@@ -105,6 +107,15 @@ To illustrate our model construction we show a simulated example in Figure \ref{
   C_\theta(s,t) = \alpha^2 \exp\left(-\frac{(s-t)^2}{2\rho^2}\right), \quad \theta = (\alpha, \rho)\label{eq:seKernel}
 \end{align}
 The two parameters have the interpretation that $\alpha$ is the standard deviation of the latent function and $\rho$ is its length-scale. We have set $\alpha = 2$ and $\rho = 0.1$ and consider the noise free case with $\sigma^2 = 0$. The three columns of the plot show how the posterior of $f$ and $df$ and the Trend Direction Index are updated after one, two or four observed data points. It is seen how updating the Gaussian Process prior with observed data results in a continuous change in the posterior distribution of $f$ and its derivative $df$. The posterior knowledge about the sign of the derivative is correspondingly reflected in the Trend Direction Index. Going further and further away from the last observed data point it is seen that the posterior of $f$ becomes dominated by its prior distribution. In the same sense $df$ converges to a point-wise symmetric distribution around zero and therefore the Trend Direction Index stabilizes around $50\%$. This is clearly seen in the second column of the figure. 
+
+
+\begin{figure}[htb]
+\center\includegraphics{ETIexample}
+\caption{Realizations from the joint distribution of $(f,df)$ using the squared exponential covariance function under different values of the Expected Trend Instability (ETI). Sample paths that are trend stable are shown with blue lines, and unstable sample paths are gold colored.}
+\label{fig:ETIexample}
+\end{figure}
+
+
 
 
 ## Latent dynamics
@@ -170,7 +181,7 @@ We have implemented both our model with and without a latent class in Stan [@car
 # Application {#sec:application}
 A report published by The Danish Health Authority in January 2019 updated the estimated proportion of smokers in Denmark with new data from 2018 [@sst]. The data was based on an internet survey including 5017 participants. The report also included data on the proportion of smokers in Denmark during the last 20 years. The result was picked up by several news papers under headlines stating that the proportion of smokers in Denmark had significantly increased for the first time in two decades [@politiken]. The report published no statistical inference on this statement but wrote in a note that because the study population is so large, then more or less all differences become statistically significant at the $95\%$ level. This is an illustrative example of our proposed Trend Direction Index. If it really is so that the proportion of smokers have increased in 2018 we should expect that the Trend Direction Index in $2018$ conditional on data from the last 20 years would have a high value (or at least larger than $50\%$) when fitting our model to this data. 
 
-[\textbf{TODO}: Since the outcomes are proportions calculated from known sample size we know the marginal variance of the outcomes by the formula for the variance of a sample proportion. In the stationary case with a standardized covariance function such that $C_\theta(t, t) = \alpha^2$ we obtain according to Equation (\ref{eq:generatingProcess}) the following following equality constraint between the variance of the latent function and the residual variance
+[\textbf{TODO}: Since the outcomes are proportions calculated from known sample size we know the marginal variance of the outcomes by the formula for the variance of a sample proportion. In the stationary case with a standardized covariance function such that $C_\theta(t, t) = \alpha^2$ we obtain according to Equation (\ref{eq:generatingProcess}) the following equality constraint between the variance of the latent function and the residual variance
 \begin{align*}
   \Var[Y_i, \mid t_i, \Theta] = \alpha^2 + \sigma^2 = \frac{Y_i(1-Y_i)}{n_i}
 \end{align*}
