@@ -49,10 +49,10 @@ To quantify the probability that a trend is changing we introduce the following 
 where $\mathcal{F}_t$ is the $\sigma$-algebra of all available information observed up until time $t$. The value of $\mathrm{TDI}(t, \delta)$ is equal to the probability that $f$ is increasing at time $t + \delta$ given all we know about the data generating process up until time $t$. A similar definition could be given for a negative trend but that is equal to $1 - \mathrm{TDI}(t, \delta)$ and therefore redundant. The sign of $\delta$ determines whether we wish to estimate the past ($\delta \leq 0$) or forecast into the future ($\delta > 0$). Most of the examples seen in the news concerning public health outcomes is concerned with $t$ being equal to the current calendar time and $\delta = 0$. This excludes using a standard change-point model as there are no observations beyond the stipulated change-point.
 
 In addition to the local Trend Direction Index we also define a global index of Trend Instability. We say that a function $f$ is \textit{trend stable} on an interval $\mathcal{I} \subseteq \mathcal{T}$ if it remains either increasing or decreasing corresponding to that the trend maintains its sign. Conversely, a global measure of trend instability can be quatified by the expected number of times $f$ changes direction. This is the same as counting the number local maxima of $f$ or equivalently the number of zero crossings by $df$. We define the Expected Trend Instability on $\mathcal{I}$ by
-\begin{align}
-  \text{ETI}(\mathcal{I}) = \E\left[\#\left\{s : s \in \mathcal{I}, df(s) = 0\right\} \mid \mathcal{F}\right]\label{eq:ETIdef}
-\end{align}
-giving the expected value of the size of the random set of the zero crossings of $df$ on $\mathcal{I}$ conditional on a suitable filtration.
+\begin{align*}
+  \text{ETI}(\mathcal{I}) = \E\left[\#\left\{t \in \mathcal{I} : df(t) = 0\right\} \mid \mathcal{F}\right]
+\end{align*}
+as the expected value of the size of the random point set of zero crossings by $df$ on $\mathcal{I}$ conditional on a suitable filtration. The value of $\text{ETI}$ is a finite real positive number, and the lower $\text{ETI}(\mathcal{I})$ is, the more trend stable $f$ is on $\mathcal{I}$ and vice versa.
 
 The manuscript is structured as follows: In section \ref{sec:method} we present our statistical model based on a latent Gaussian Process formulation giving rise to an analytic expression for the Trend Direction Index conditional on observed data. We then extend this basic model to enable a data-driven adaptation to non-stationarity in the underlying dynamics. Section \ref{sec:estimation} is concerned with estimating the models parameters, and we give an application to the proportion of smokers in Denmark during the last 20 years in section \ref{sec:application}. We end with a discussion in section \ref{sec:discussion}.
 
@@ -62,10 +62,10 @@ The definitions in the previous section impose the existence of an infinite dime
 A random function $f$ is a Gaussian Process if and only if the vector $(f(t_1), \ldots, f(t_n))$ has a multivariate normal distribution for every set of evaluation points $(t_1, \ldots, t_n) \subset \mathcal{T}$ with $n < \infty$, and we write $f \sim \mathcal{GP}(\mu(\cdot), C(\cdot, \cdot))$ where $\mu\colon\, \mathcal{T} \mapsto \mathbb{R}$ is the mean function and $C\colon\, \mathcal{T} \times \mathcal{T} \mapsto \mathbb{R}$ is a symmetric, positive semi-definite covariance function [@cramer1967stationary]. We assume that the covariance function satisfies the criteria of @scheuerer2010regularity such that the sample paths of $f$ are almost surely differentiable.
 
 Given observed data of the form $(Y_i, t_i)_{i=1}^n$ we specify the data generating process by the following hierarchical model 
-\begin{align*}
-  f \mid m, \theta &\sim \mathcal{GP}(m, C_\theta(\cdot,\cdot))\\
-  Y_i \mid t_i, f(t_i), \Theta &\overset{iid}{\sim} N(f(t_i), \sigma^2)\nonumber, \quad \Theta = (m, \theta, \sigma^2)
-\end{align*}
+\begin{align}
+  f \mid m, \theta &\sim \mathcal{GP}(m, C_\theta(\cdot,\cdot))\label{eq:generatingProcess}\\
+  Y_i \mid t_i, f(t_i), \Theta &\overset{iid}{\sim} N(f(t_i), \sigma^2)\nonumber, \quad \Theta = (m, \theta, \sigma^2)\nonumber
+\end{align}
 where $m$ is the overall mean of the latent function, $\theta$ is a vector of parameters governing its covariance, and $\sigma^2$ is the observation variance. An important property of Gaussian processes is that they together with their derivatives follow a joint, bivariate Gaussian Process as 
 \begin{align}
   \begin{bmatrix}f(s)\\ df(t) \end{bmatrix} \mid m, \theta &\sim \mathcal{GP}\left(\begin{bmatrix}m\\ 0\end{bmatrix}, \begin{bmatrix}C_\theta(s, s^\prime) & \partial_2 C_\theta(s, t)\\ \partial_1 C_\theta(t, s) & \partial_1 \partial_2 C_\theta(t, t^\prime)\end{bmatrix}\right)\label{eq:latentJoint}
@@ -169,6 +169,12 @@ We have implemented both our model with and without a latent class in Stan [@car
 
 # Application {#sec:application}
 A report published by The Danish Health Authority in January 2019 updated the estimated proportion of smokers in Denmark with new data from 2018 [@sst]. The data was based on an internet survey including 5017 participants. The report also included data on the proportion of smokers in Denmark during the last 20 years. The result was picked up by several news papers under headlines stating that the proportion of smokers in Denmark had significantly increased for the first time in two decades [@politiken]. The report published no statistical inference on this statement but wrote in a note that because the study population is so large, then more or less all differences become statistically significant at the $95\%$ level. This is an illustrative example of our proposed Trend Direction Index. If it really is so that the proportion of smokers have increased in 2018 we should expect that the Trend Direction Index in $2018$ conditional on data from the last 20 years would have a high value (or at least larger than $50\%$) when fitting our model to this data. 
+
+[\textbf{TODO}: Since the outcomes are proportions calculated from known sample size we know the marginal variance of the outcomes by the formula for the variance of a sample proportion. In the stationary case with a standardized covariance function such that $C_\theta(t, t) = \alpha^2$ we obtain according to Equation (\ref{eq:generatingProcess}) the following following equality constraint between the variance of the latent function and the residual variance
+\begin{align*}
+  \Var[Y_i, \mid t_i, \Theta] = \alpha^2 + \sigma^2 = \frac{Y_i(1-Y_i)}{n_i}
+\end{align*}
+where $n_i$ is the number of responders at time $t_i$. How do we best enforce this constraint?]
 
 \begin{figure}[htb]
 \center\includegraphics{smoking1}
