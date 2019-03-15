@@ -42,11 +42,17 @@ We assume that reality evolves in continuous time $t \in \mathcal{T} \subset \ma
 
 The trend of $f$ is defined as its instantaneous slope given by the function $df(t) = \left(\frac{\mathrm{d}f(s)}{\mathrm{d}s}\right)(t)$, and we say that $f$ exhibits a positive trend at $t$ if $df(t) > 0$ and a negative trend at $t$ if $df(t) < 0$. We then define a change in trend as a point in time where $df$ changes sign, i.e., a positive trend becomes a negative trend meaning that $f$ goes from being increasing to becoming decreasing or vice versa. As $f$ is a random function there is no exact points in time where $df$ changes sign. This is instead a gradual and continuous concept and the assessment must be defined in terms of the probability that a change in trend is occurring. This stand in contrast with traditional change-point models (see e.g., @picard1985testing).
 
-To quantify the probability that a trend is changing we introduce the following probabilistic Trend Direction Index
+To quantify the probability that a trend is changing we introduce the following local probabilistic Trend Direction Index
 \begin{align}
   \mathrm{TDI}(t, \delta) = P(df(t + \delta ) > 0 \mid \mathcal{F}_t)\label{eq:TCIdef}
 \end{align}
 where $\mathcal{F}_t$ is the $\sigma$-algebra of all available information observed up until time $t$. The value of $\mathrm{TDI}(t, \delta)$ is equal to the probability that $f$ is increasing at time $t + \delta$ given all we know about the data generating process up until time $t$. A similar definition could be given for a negative trend but that is equal to $1 - \mathrm{TDI}(t, \delta)$ and therefore redundant. The sign of $\delta$ determines whether we wish to estimate the past ($\delta \leq 0$) or forecast into the future ($\delta > 0$). Most of the examples seen in the news concerning public health outcomes is concerned with $t$ being equal to the current calendar time and $\delta = 0$. This excludes using a standard change-point model as there are no observations beyond the stipulated change-point.
+
+In addition to the local Trend Direction Index we also define a global index of Trend Instability. We say that a function $f$ is \textit{trend stable} on an interval $\mathcal{I} \subseteq \mathcal{T}$ if it remains either increasing or decreasing corresponding to that the trend maintains its sign. Conversely, a global measure of trend instability can be quatified by the expected number of times $f$ changes direction. This is the same as counting the number local maxima of $f$ or equivalently the number of zero crossings by $df$. We define the Expected Trend Instability on $\mathcal{I}$ by
+\begin{align}
+  \text{ETI}(\mathcal{I}) = \E\left[\#\left\{s : s \in \mathcal{I}, df(s) = 0\right\} \mid \mathcal{F}\right]\label{eq:ETIdef}
+\end{align}
+giving the expected value of the size of the random set of the zero crossings of $df$ on $\mathcal{I}$ conditional on a suitable filtration.
 
 The manuscript is structured as follows: In section \ref{sec:method} we present our statistical model based on a latent Gaussian Process formulation giving rise to an analytic expression for the Trend Direction Index conditional on observed data. We then extend this basic model to enable a data-driven adaptation to non-stationarity in the underlying dynamics. Section \ref{sec:estimation} is concerned with estimating the models parameters, and we give an application to the proportion of smokers in Denmark during the last 20 years in section \ref{sec:application}. We end with a discussion in section \ref{sec:discussion}.
 
