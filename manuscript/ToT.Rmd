@@ -52,7 +52,7 @@ where $\mathcal{F}_t$ is the $\sigma$-algebra of all available information obser
 
 In addition to the Trend Direction Index we also define a global index of Trend Instability. We say that a function $f$ is \textit{trend stable} on an interval $\mathcal{I} \subseteq \mathcal{T}$ if it remains either increasing or decreasing so that its trend maintains its sign. We quantify the trend instability by the expected number of times $f$ changes direction on the interval, which is equivalent to either counting the expected number local maxima of $f$ or the number of zero crossings by $df$. We define the Expected Trend Instability as
 \begin{align}
-  \text{ETI}(\mathcal{I}) = \E\left[\#\left\{t \in \mathcal{I} : df(t) = 0\right\} \mid \mathcal{F}\right]
+  \text{ETI}(\mathcal{I}) = \E\left[\#\left\{t \in \mathcal{I} : df(t) = 0\right\} \mid \mathcal{F}\right]\label{eq:ETIdef}
 \end{align}
 which is the expected value of the size of the random point set of zero crossings by $df$ on $\mathcal{I}$ conditional on a suitable filtration. The value of $\text{ETI}$ is a finite real positive number, and the lower $\text{ETI}(\mathcal{I})$ is, the more trend stable $f$ is on $\mathcal{I}$ and vice versa.
 
@@ -103,13 +103,13 @@ This posterior distribution can then be evaluated at any vector of time points $
 The Trend Direction Index defined generally in Equation (\ref{eq:TCIdef}) can then be written as
 \begin{align}
   \mathrm{TDI}(t, \delta \mid \Theta) &= P(df(t + \delta ) > 0 \mid \mathbf{Y}, \mathbf{t}, \Theta)\label{eq:TCIdef2}\\
-  &= \int_0^\infty N\left(u, \mu_{df}(t + \delta), \Sigma_{df,df}(t + \delta, t + \delta)^{1/2}\right)\mathrm{d}u\nonumber
+  &= \int_0^\infty N\left(u, \mu_{df}(t + \delta), \Sigma_{df}(t + \delta, t + \delta)^{1/2}\right)\mathrm{d}u\nonumber
 \end{align}
-where $\mathcal{F}_t = \left\{\mathbf{Y}, \mathbf{t}\right\}$ consists of the observed outcomes and their sampling times and $\mu_{df}$ and $\Sigma_{df,df}$ are given in Equation (\ref{eq:jointPost}). 
+where $\mathcal{F}_t = \left\{\mathbf{Y}, \mathbf{t}\right\}$ consists of the observed outcomes and their sampling times and $\mu_{df}$ and $\Sigma_{df}$ are given in Equation (\ref{eq:jointPost}). 
 \label{prop:TDIposterior}
 \end{proposition}
 
-We note that the Trend Direction Index depends on the parameters of the model, $\Theta = (m, \theta, \sigma^2)$, which in practice must be estimated from data. When taking their uncertainties into account $\text{TDI}$ becomes a functional distribution over probabilities. 
+We note that the Trend Direction Index depends on the parameters of the model, $\Theta = (\beta, \theta, \sigma^2)$, which in practice must be estimated from data. When taking their uncertainties into account $\text{TDI}$ becomes a functional distribution over probabilities. 
 
 \begin{figure}[htb]
 \center\includegraphics{probabilisticExample}
@@ -117,20 +117,22 @@ We note that the Trend Direction Index depends on the parameters of the model, $
 \label{fig:probabilisticExample}
 \end{figure}
 
-To illustrate our model construction we show a simulated example in Figure \ref{fig:probabilisticExample}. The first and second rows of the plot show 150 random realizations from the posterior distribution of $f$ and $df$ with the expected functions in bold lines, and the third row shows the Trend Direction Index. In this example we simulate using known model parameters and therefore the Trend Direction Index in Equation (\ref{eq:TCIdef2}) is a deterministic function. We have set the mean of the Gaussian Process to $m = 0$ and used the squared exponential (SE) covariance function. This is an often used covariance function in Gaussian Process regression [@rasmussen2003gaussian] and it has the following form
+To illustrate our model construction we show a simulated example in Figure \ref{fig:probabilisticExample}. The first and second rows of the plot show 150 random realizations from the posterior distribution of $f$ and $df$ with the expected functions in bold lines, and the third row shows the Trend Direction Index. In this example we simulate using known model parameters and therefore the Trend Direction Index in Equation (\ref{eq:TCIdef2}) is a deterministic function. We have set the mean of the Gaussian Process to $\mu_\beta(t) = 0$ and used the squared exponential (SE) covariance function. This is an often used covariance function in Gaussian Process regression [@rasmussen2003gaussian] and it has the following form
 \begin{align}
   C_\theta(s,t) = \alpha^2 \exp\left(-\frac{(s-t)^2}{2\rho^2}\right), \quad \theta = (\alpha, \rho)\label{eq:seKernel}
 \end{align}
 The two parameters have the interpretation that $\alpha$ is the standard deviation of the latent function and $\rho$ is its length-scale. We have set $\alpha = 2$ and $\rho = 0.1$ and consider the noise free case with $\sigma^2 = 0$. The three columns of the plot show how the posterior of $f$ and $df$ and the Trend Direction Index are updated after one, two or four observed data points. It is seen how updating the Gaussian Process prior with observed data results in a continuous change in the posterior distribution of $f$ and its derivative $df$. The posterior knowledge about the sign of the derivative is correspondingly reflected in the Trend Direction Index. Going further and further away from the last observed data point it is seen that the posterior of $f$ becomes dominated by its prior distribution. In the same sense $df$ converges to a point-wise symmetric distribution around zero and therefore the Trend Direction Index stabilizes around $50\%$. This is clearly seen in the second column of the figure. 
 
 ## Expected Trend Instability 
+The general form of the Expected Trend Instability index was defined in Equation (\ref{eq:ETIdef}).
+
 \begin{proposition}
 \begin{align}
-  \mathrm{ETI}(\mathcal{T} \mid \Theta) = \int_{\mathcal{T}} \frac{\Sigma_{ddf}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}} \sqrt{1 - \rho(t)^2} \phi\left(\frac{d\mu(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left[2\phi(\eta(t)) + \eta(t) \Erf\left(\frac{\eta(t)}{\sqrt{2}}\right)\right]\mathrm{d}t
+  \mathrm{ETI}(\mathcal{T} \mid \Theta) = \int_{\mathcal{T}} \frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}} \sqrt{1 - \rho(t)^2} \phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left[2\phi(\eta(t)) + \eta(t) \Erf\left(\frac{\eta(t)}{\sqrt{2}}\right)\right]\mathrm{d}t
 \end{align}
 where $\phi$ is the standard normal density function, $\Erf$ is the error function with $\frac{1}{2}\left(\Erf(2^{-1/2} x) + 1\right)$ equal to the standard normal cumulative distribution function, and $\rho$ and $\eta$ are functions defined by
 \begin{align*}
-  \rho(t) = \frac{\Sigma_{df,ddf}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{ddf}(t,t)^{1/2}}, \quad \eta(t) = \frac{ddf(t)}{\Sigma_{ddf}(t,t) \sqrt{1-\rho(t)^2}} - \frac{df(t)\rho(t)}{\Sigma_{df}(t,t) \sqrt{1-\rho(t)^2}}
+  \rho(t) = \frac{\Sigma_{df,d^2\!f}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}}, \quad \eta(t) = \frac{\mu_{d^2\!f}(t)}{\Sigma_{d^2\!f}(t,t) \sqrt{1-\rho(t)^2}} - \frac{\mu_{df}(t)\rho(t)}{\Sigma_{df}(t,t) \sqrt{1-\rho(t)^2}}
 \end{align*}
 \label{prop:ETIposterior}
 \end{proposition}
@@ -272,8 +274,37 @@ Using the standard formulas for conditional distributions in a multivariate norm
   \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2^2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix} - \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\\partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K(\mathbf{t}, \mathbf{t})^{-1}\begin{bmatrix}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\\partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}
 \end{align*}
 
+The posterior moments of $f$ are useful for assessing the fit of the model. By completing the expressions in the previous display we obtain these as
+\begin{align*}
+  \mu_{f}(\mathbf{t}^\ast) &= ... \\
+  \bm{\Sigma}_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= ...  
+\end{align*}
+The posterior moments of $df$ are required in order to calculate the Trend Direction Index in Proposition \ref{prop:TDIposterior}, and these are given by
+\begin{align*}
+  \mu_{df}(\mathbf{t}^\ast) &= ... \\
+  \bm{\Sigma}_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= ...
+\end{align*}
+In order to calculate the Expected Trend Instability index in Proposition \ref{prop:ETIposterior} we further require the posterior moments of $d^2\!f$ and its cross-covariance with $df$. These are given by
+\begin{align*}
+  \mu_{d^2\!f}(\mathbf{t}^\ast) &= ...\\
+  \bm{\Sigma}_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= ...\\
+  \bm{\Sigma}_{df, d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= ...
+\end{align*}
 
 
 ## Proof of Proposition \ref{prop:ETIposterior}
-The generalized Rice formula for the expected number of zero crossings of a Gaussian process $X$ on $\mathcal{I}$ is $\int_{\mathcal{I}}\int_{-\infty}^\infty |v|f_{X(t), dX(t)}(0, v)\mathrm{d}v\mathrm{d}t$ where $f_{X(t), dX(t)}$ is the joint density function of $X$ and $dX$ at time $t$ [\textbf{TODO:} quote Rice]. 
+The generalized Rice formula for the expected number of zero crossings of a Gaussian process $X$ [\textbf{TODO:} Conditions] on an interval $\mathcal{I}$ is 
+\begin{align*}
+\mathrm{ETI}(\mathcal{I}) &= \int_{\mathcal{I}}\int_{-\infty}^\infty |v|f_{X(t), dX(t)}(0, v)\mathrm{d}v\mathrm{d}t
+\end{align*}
+where $f_{X(t), dX(t)}$ is the joint density function of $X$ and $dX$ at time $t$ [@rice1944mathematical].
 
+From Proposition \ref{prop:GPposterior} we have that $(df, d^2\!f) \mid \Theta$ follows a bivariate Gaussian process. Under the conditions of [\textbf{TODO:} ??] we may insert the posterior moments of $(df, d^2\!f) \mid \Theta$ and through a direct integration of the expression in the previous display we obtain that the Expected Trend Instability index generally defined in Equation (\ref{eq:ETIdef}) is given by
+\begin{align*}
+  \mathrm{ETI}(\mathcal{T} \mid \Theta) = \int_{\mathcal{T}} \frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}} \sqrt{1 - \rho(t)^2} \phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left[2\phi(\eta(t)) + \eta(t) \Erf\left(\frac{\eta(t)}{\sqrt{2}}\right)\right]\mathrm{d}t
+\end{align*}
+where $\phi$ is the standard normal density function, $\Erf$ is the error function with $\frac{1}{2}\left(\Erf(2^{-1/2} x) + 1\right)$ equal to the standard normal cumulative distribution function, $\rho$ and $\eta$ are functions defined by
+\begin{align*}
+  \rho(t) = \frac{\Sigma_{df,d^2\!f}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}}, \quad \eta(t) = \frac{\mu_{d^2\!f}(t)}{\Sigma_{d^2\!f}(t,t) \sqrt{1-\rho(t)^2}} - \frac{\mu_{df}(t)\rho(t)}{\Sigma_{df}(t,t) \sqrt{1-\rho(t)^2}}
+\end{align*}
+and $..$, $..$, ... are defined in ?.
