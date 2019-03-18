@@ -64,19 +64,19 @@ The manuscript is structured as follows: In section \ref{sec:method} we present 
 The definitions in the previous section impose the existence of an infinite dimensional latent variable $f$ and its derivative $df$. We assume that $f$ is a latent Gaussian Process which is equivalent to imposing a functional prior distribution on the latent characteristic. Our knowledge about $f$ and $df$ will then be updated based on the observed data giving rise to a joint posterior distribution over $f$ and $df$.
 
 
-## Latent Gaussian Processes
+## Latent Process Model
 A random function $f$ is a Gaussian Process if and only if the vector $(f(t_1), \ldots, f(t_n))$ has a multivariate normal distribution for every set of evaluation points $(t_1, \ldots, t_n) \subset \mathcal{T}$ with $n < \infty$, and we write $f \sim \mathcal{GP}(\mu(\cdot), C(\cdot, \cdot))$ where $\mu\colon\, \mathcal{T} \mapsto \mathbb{R}$ is the mean function and $C\colon\, \mathcal{T} \times \mathcal{T} \mapsto \mathbb{R}$ is a symmetric, positive semi-definite covariance function [@cramer1967stationary]. We assume that the covariance function satisfies the criteria of @scheuerer2010regularity such that the sample paths of $f$ are almost surely differentiable.
 
-Given observed data of the form $(Y_i, t_i)_{i=1}^n$ we specify the data generating process by the following hierarchical model 
+Given observed data of the form $(Y_i, t_i)_{i=1}^n$ we lay out the data generating process by the following hierarchical model 
 \begin{align}
-  f \mid m, \theta &\sim \mathcal{GP}(m, C_\theta(\cdot,\cdot))\label{eq:generatingProcess}\\
-  Y_i \mid t_i, f(t_i), \Theta &\overset{iid}{\sim} N(f(t_i), \sigma^2)\nonumber, \quad \Theta = (m, \theta, \sigma^2)\nonumber
+  f \mid m, \theta &\sim \mathcal{GP}(\mu_\beta(\cdot), C_\theta(\cdot,\cdot))\label{eq:generatingProcess}\\
+  Y_i \mid t_i, f(t_i), \Theta &\overset{iid}{\sim} N(f(t_i), \sigma^2)\nonumber, \quad \Theta = (\beta, \theta, \sigma^2)\nonumber
 \end{align}
-where $m$ is the overall mean of the latent function, $\theta$ is a vector of parameters governing its covariance, and $\sigma^2$ is the observation variance. An important property of Gaussian processes is that they together with their derivatives follow a joint, bivariate Gaussian Process as 
+where $\mu_\beta$ is a mean function parametrized by a vector $\beta$, $\theta$ is a vector of parameters governing its covariance, and $\sigma^2$ is the observation variance. An important property of Gaussian processes is that they together with their derivatives are follows a multivariate Gaussian Process [@cramer1967stationary]. This implies that the joint distribution of $f$ and $df$ is given by the bivariate Gaussian Process
 \begin{align}
-  \begin{bmatrix}f(s)\\ df(t) \end{bmatrix} \mid m, \theta &\sim \mathcal{GP}\left(\begin{bmatrix}m\\ 0\end{bmatrix}, \begin{bmatrix}C_\theta(s, s^\prime) & \partial_2 C_\theta(s, t)\\ \partial_1 C_\theta(t, s) & \partial_1 \partial_2 C_\theta(t, t^\prime)\end{bmatrix}\right)\label{eq:latentJoint}
+  \begin{bmatrix}f(s)\\ df(t) \end{bmatrix} \mid \beta, \theta &\sim \mathcal{GP}\left(\begin{bmatrix}\mu_\beta(s)\\ d\mu_\beta(t)\end{bmatrix}, \begin{bmatrix}C_\theta(s, s^\prime) & \partial_2 C_\theta(s, t)\\ \partial_1 C_\theta(t, s) & \partial_1 \partial_2 C_\theta(t, t^\prime)\end{bmatrix}\right)\label{eq:latentJoint}
 \end{align}
-where $\partial_1$ and $\partial_2$ denote the partial derivatives with respect to the first and second arguments [@cramer1967stationary]. Let $\mathbf{Y} = (Y_1, \ldots, Y_n)$ be the vector of outcomes observed at times $\mathbf{t} = (t_1,\ldots,t_n)$ and $\mathbf{t}^\ast$ any finite dimensional vector of time points not necessarily equal to $\mathbf{t}$. The formulas in the two previous displays then implies that joint distribution of the observed data and $(f,df)$ is given by
+where $d\mu_\beta$ is the derivative function of $\mu_\beta$ and $\partial_j$ denotes the partial derivatives with respect to the $j$'th variable. This generalizes directly to higher order derivatives assuming that necessary regularity conditions are satisfied. Let $\mathbf{Y} = (Y_1, \ldots, Y_n)$ be the vector of outcomes observed at times $\mathbf{t} = (t_1,\ldots,t_n)$ and $\mathbf{t}^\ast$ any finite dimensional vector of time points not necessarily equal to $\mathbf{t}$. The formulas in the two previous displays then implies that joint distribution of the observed data and $(f,df)$ is given by
 \begin{align*}
   \begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ \mathbf{Y}\end{bmatrix} \mid \mathbf{t}, \Theta \sim N\left(\begin{bmatrix}m\\ 0\\ m\end{bmatrix}, \begin{bmatrix}C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) &  \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ C_\theta(\mathbf{t}, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast) & C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\end{bmatrix}\right)
 \end{align*}
@@ -100,7 +100,7 @@ This posterior distribution can then be evaluated at any vector of time points $
 ## Trend Direction Index
 
 \begin{proposition}
-The Trend Direction Index defined formally in Equation (\ref{eq:TCIdef}) can then be written as
+The Trend Direction Index defined generally in Equation (\ref{eq:TCIdef}) can then be written as
 \begin{align}
   \mathrm{TDI}(t, \delta \mid \Theta) &= P(df(t + \delta ) > 0 \mid \mathbf{Y}, \mathbf{t}, \Theta)\label{eq:TCIdef2}\\
   &= \int_0^\infty N\left(u, \mu_{df}(t + \delta), \Sigma_{df,df}(t + \delta, t + \delta)^{1/2}\right)\mathrm{d}u\nonumber
@@ -254,7 +254,25 @@ Something something future work.
 #Appendix
 
 ## Proof of Proposition \ref{prop:GPposterior}
-where the expressions have been simplified by noting that $C_\theta(\mathbf{t}, \mathbf{t}^\ast) =  C_\theta(\mathbf{t}^\ast, \mathbf{t})^T$ and $\partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast) = \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})^T$. 
+We derive the joint posterior distribution of the latent process $(f, df, d^2\!f)$ under the model in Equation (\ref{eq:generatingProcess}). We start by noting that $\mathbf{Y} \mid \mathbf{t}, \Theta$ is jointly normal distributed with the latent processes with marginal mean  $\mu_\beta(\mathbf{t})$ and covariance matrix $K(\mathbf{t}, \mathbf{t}) = C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I$ where $C_\theta(\mathbf{t}, \mathbf{t})$ denotes a matrix consisting of the values of the covariance function at $\left\{(s,t) \in \mathbf{t} \times \mathbf{t} \right\}$, and $I$ is an identity matrix of appropriate dimensions. Combining this with the result from Equation (\ref{eq:latentJoint}) generalized to include the second-order derivative we obtain the following joint distribution for the latent processes and the observed data
+\begin{align*}
+  \begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\\ \mathbf{Y}\end{bmatrix} \mid \mathbf{t}, \Theta \sim N\left(\begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\\ \mu_\beta(\mathbf{t})\end{bmatrix}, \begin{bmatrix}C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) &  \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2\partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2\partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ C_\theta(\mathbf{t}, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)  & C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\end{bmatrix}\right)
+\end{align*}
+where $\partial_j^k$ denotes the $k$'th derivative of the $j$'th variable. The joint posterior distribution of $(f, df, d^2\!f)$ conditional on the parameters and the sampling times is then equal the following multivariate normal distribution
+\begin{align*}
+\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\bm{\mu}(\mathbf{t}^\ast), \bm{\Sigma}(\mathbf{t}^\ast, \mathbf{t}^\ast)\right)
+\end{align*}
+where the moments are partitioned as
+\begin{align*}
+  \bm{\mu}(\mathbf{t}^\ast) = \begin{bmatrix}\mu_f(\mathbf{t}^\ast)\\ \mu_{df}(\mathbf{t}^\ast)\\ \mu_{d^2\!f}(\mathbf{t}^\ast)\end{bmatrix}, \quad \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) = \begin{bmatrix}\bm{\Sigma}_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \bm{\Sigma}_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \bm{\Sigma}_{f,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\\ \bm{\Sigma}_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \bm{\Sigma}_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \bm{\Sigma}_{df,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\\ \bm{\Sigma}_{d^2\!f,f}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \bm{\Sigma}_{d^2\!f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \bm{\Sigma}_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix}
+\end{align*}
+Using the standard formulas for conditional distributions in a multivariate normal model we obtain the following expressions for the joint posterior moments
+\begin{align*}
+  \bm{\mu}(\mathbf{t}^\ast) &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K(\mathbf{t}, \mathbf{t})^{-1} \left(\mathbf{Y} - \begin{bmatrix}-\\ -\\ -\end{bmatrix}\right)\\
+  \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2^2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix} - \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\\partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K(\mathbf{t}, \mathbf{t})^{-1}\begin{bmatrix}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\\partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}
+\end{align*}
+
+
 
 ## Proof of Proposition \ref{prop:ETIposterior}
 The generalized Rice formula for the expected number of zero crossings of a Gaussian process $X$ on $\mathcal{I}$ is $\int_{\mathcal{I}}\int_{-\infty}^\infty |v|f_{X(t), dX(t)}(0, v)\mathrm{d}v\mathrm{d}t$ where $f_{X(t), dX(t)}$ is the joint density function of $X$ and $dX$ at time $t$ [\textbf{TODO:} quote Rice]. 
