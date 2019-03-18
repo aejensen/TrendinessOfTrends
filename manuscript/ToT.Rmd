@@ -266,7 +266,7 @@ where $\partial_j^k$ denotes the $k$'th derivative of the $j$'th variable. The j
 \end{align*}
 where the moments are partitioned as
 \begin{align*}
-  \bm{\mu}(\mathbf{t}^\ast) = \begin{bmatrix}\mu_f(\mathbf{t}^\ast)\\ \mu_{df}(\mathbf{t}^\ast)\\ \mu_{d^2\!f}(\mathbf{t}^\ast)\end{bmatrix}, \quad \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) = \begin{bmatrix}\bm{\Sigma}_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \bm{\Sigma}_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \bm{\Sigma}_{f,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\\ \bm{\Sigma}_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \bm{\Sigma}_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \bm{\Sigma}_{df,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\\ \bm{\Sigma}_{d^2\!f,f}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \bm{\Sigma}_{d^2\!f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \bm{\Sigma}_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix}
+  \bm{\mu}(\mathbf{t}^\ast) = \begin{bmatrix}\mu_f(\mathbf{t}^\ast)\\ \mu_{df}(\mathbf{t}^\ast)\\ \mu_{d^2\!f}(\mathbf{t}^\ast)\end{bmatrix}, \quad \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) = \begin{bmatrix}\Sigma_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{f,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\\ \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{df,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\\ \Sigma_{d^2\!f,f}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{d^2\!f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix}
 \end{align*}
 Using the standard formulas for conditional distributions in a multivariate normal model we obtain the following expressions for the joint posterior moments
 \begin{align*}
@@ -277,18 +277,18 @@ Using the standard formulas for conditional distributions in a multivariate norm
 The posterior moments of $f$ are useful for assessing the fit of the model. By completing the expressions in the previous display we obtain these as
 \begin{align*}
   \mu_{f}(\mathbf{t}^\ast) &= ... \\
-  \bm{\Sigma}_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= ...  
+  \Sigma_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= ...  
 \end{align*}
 The posterior moments of $df$ are required in order to calculate the Trend Direction Index in Proposition \ref{prop:TDIposterior}, and these are given by
 \begin{align*}
   \mu_{df}(\mathbf{t}^\ast) &= ... \\
-  \bm{\Sigma}_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= ...
+  \Sigma_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= ...
 \end{align*}
-In order to calculate the Expected Trend Instability index in Proposition \ref{prop:ETIposterior} we further require the posterior moments of $d^2\!f$ and its cross-covariance with $df$. These are given by
+In order to calculate the Expected Trend Instability index in Proposition \ref{prop:ETIposterior} we in addition require the posterior moments of $d^2\!f$ and its cross-covariance with $df$. These are given by
 \begin{align*}
   \mu_{d^2\!f}(\mathbf{t}^\ast) &= ...\\
-  \bm{\Sigma}_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= ...\\
-  \bm{\Sigma}_{df, d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= ...
+  \Sigma_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= ...\\
+  \Sigma_{df, d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= ...
 \end{align*}
 
 
