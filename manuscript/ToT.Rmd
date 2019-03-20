@@ -41,7 +41,7 @@ We show how the Trend Direction Index can be estimated from data in a Bayesian f
 # Introduction
 This manuscript is concerned with the fundamental problem of estimating an underlying trend based on random variables observed repeatedly over time. In addition to this problem we also wish to assess points in time where it is possible that such a trend is changing. Our motivation is a recent example from the news in Denmark where it was stated that the trend in the proportion of smokers in Denmark has changed at the end of the year 2018. This statement was based on survey data collected yearly since 1998 and reported by the Danish Health Authority [@sst]. It is not immediately obvious what constitutes a trend and more so what a change in a trend is. To elucidate these questions and provide a clear specification we start from the ground by defining the problem. 
 
-[\textbf{TODO:} Claus båtter sig igennem resten af introduktionen]. 
+[\textbf{TODO:} Claus tilbyder at båtte sig igennem resten af introduktionen]. 
 
 [\textbf{TODO:} What do we propose? We work in continuous time and introduce TDI and ETI informally at this point. TDI gives the local probability of the direction of $f$ and can answer the question ,,What is the probability that $f$ is increasing?''. ETI gives the expected number of changes in the direction of $f$ on an interval and can answer the question ,,Is it the first time in 20 years that $f$ has changed trend?]. 
 
@@ -51,6 +51,7 @@ This manuscript is concerned with the fundamental problem of estimating an under
 \label{fig:rawDataPlot}
 \end{figure}
 
+[\textbf{TODO:} Assert that both TDI and EDI are scale free. They don't tell anything about the magnitude of a trend. They should therefore always be accompanied by plots of the posterior of $df$]. 
 
 
 [\textbf{TODO:} Reference some previous work]. @gottlieb2012stickiness define a stickiness coefficient for longitudinal data. Our $\text{ETI}$ has some similarities to the tracking index of @foulkes1981index. Empirical dynamics for longitudinal data has been studied by @muller2010empirical.
