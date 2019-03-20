@@ -111,8 +111,8 @@ Let the data generating model be defined as in Equation (\ref{eq:generatingProce
 \end{align*}
 where
 \begin{align*}
-  \bm{\mu}(\mathbf{t}^\ast) &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1} \begin{bmatrix}\mathbf{Y} - \mu_\beta(\mathbf{t})\\ \mathbf{Y} - d\mu_\beta(\mathbf{t})\end{bmatrix}\\
-  \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast)\\ \end{bmatrix} - \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\\partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}\begin{bmatrix}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\\partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}
+  \bm{\mu}(\mathbf{t}^\ast) &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right)\\
+  \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast)\\ \end{bmatrix} - \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\\partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\begin{bmatrix}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\\partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}
 \end{align*}
 \label{prop:GPposterior}
 \end{proposition}
@@ -300,25 +300,25 @@ where the moments are partitioned as
 \end{align*}
 Using the standard formulas for conditional distributions in a multivariate normal model we obtain the following expressions for the joint posterior moments
 \begin{align*}
-  \bm{\mu}(\mathbf{t}^\ast) &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K(\mathbf{t}, \mathbf{t})^{-1} \begin{bmatrix}\mathbf{Y} - \mu_\beta(\mathbf{t})\\ \mathbf{Y} - d\mu_\beta(\mathbf{t})\\ \mathbf{Y} - d^2\mu_\beta(\mathbf{t})\end{bmatrix}\\
+  \bm{\mu}(\mathbf{t}^\ast) &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K(\mathbf{t}, \mathbf{t})^{-1} (\mathbf{Y} + \mu_\beta(\mathbf{t}))\\
   \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2^2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix} - \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\\partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K(\mathbf{t}, \mathbf{t})^{-1}\begin{bmatrix}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\\partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}
 \end{align*}
 
 The posterior moments of $f$ are useful for assessing the fit of the model. By completing the expressions in the previous display we obtain these as
 \begin{align*}
-  \mu_{f}(\mathbf{t}^\ast) &= \mu_\beta(\mathbf{t}^\ast) + C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}\left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right)\\
-  \Sigma_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}C_\theta(\mathbf{t}^\ast, \mathbf{t})
+  \mu_{f}(\mathbf{t}^\ast) &= \mu_\beta(\mathbf{t}^\ast) + C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right)\\
+  \Sigma_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}C_\theta(\mathbf{t}^\ast, \mathbf{t})
 \end{align*}
 The posterior moments of $df$ are required in order to calculate the Trend Direction Index in Proposition \ref{prop:TDIposterior}, and these are given by
 \begin{align}
-  \mu_{df}(\mathbf{t}^\ast) &= d\mu_\beta(\mathbf{t}^\ast) + \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}\left(\mathbf{Y} - d\mu_\beta(\mathbf{t})\right) \label{eq:appendixPost1}\\
-  \Sigma_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}\partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}) \nonumber
+  \mu_{df}(\mathbf{t}^\ast) &= d\mu_\beta(\mathbf{t}^\ast) + \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right) \label{eq:appendixPost1}\\
+  \Sigma_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}) \nonumber
 \end{align}
 In order to calculate the Expected Trend Instability index in Proposition \ref{prop:ETIposterior} we in addition require the posterior moments of $d^2\!f$ and its cross-covariance with $df$. These are given by
 \begin{align}
-  \mu_{d^2\!f}(\mathbf{t}^\ast) &= d^2\mu_\beta(\mathbf{t}^\ast) + \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}\left(\mathbf{Y} - d^2\mu_\beta(\mathbf{t})\right) \label{eq:appendixPost2}\\
-  \Sigma_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \partial_1^2 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}\partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}) \nonumber \\ 
-  \Sigma_{df, d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left[C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}\partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}) \nonumber
+  \mu_{d^2\!f}(\mathbf{t}^\ast) &= d^2\mu_\beta(\mathbf{t}^\ast) + \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right) \label{eq:appendixPost2}\\
+  \Sigma_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \partial_1^2 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}) \nonumber \\ 
+  \Sigma_{df, d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}) \nonumber
 \end{align}
 
 
