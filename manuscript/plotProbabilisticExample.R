@@ -45,38 +45,71 @@ getPostD <- function(tObs, yObs, tPred, alpha, l, sigmaResid = 1e-9, k = k) {
 }
 
 
-n <- 100
+n <- 125
 k <- 150
 tPred <- seq(0, 1, length.out = n)
 
 doPlotF <- function(obsT, obsY, ...) {
+  beforeT <- which(tPred <= max(obsT))
+  afterT <- which(tPred >= max(obsT))
+  
   set.seed(12345)
-  matplot(tPred, getPost(obsT, obsY, tPred, alpha = 2, l = 0.1)$sim, type="l", lty=1, ylim = c(-7, 7),
+  postDat <- getPost(obsT, obsY, tPred, alpha = 2, l = 0.1)
+  
+  matplot(tPred, postDat$sim, type="n", lty=1, ylim = c(-7, 7),
           xlab = "t", ylab="f(t)", col = add.alpha(1:6, 0.3), xaxt="n", yaxt="n", ...)
-  lines(tPred, getPost(obsT, obsY, tPred, alpha = 2, l = 0.1)$mu, lwd = 3)
+  
+  matplot(tPred[beforeT], postDat$sim[beforeT,], type="l", lty=1, col = add.alpha(1:6, 0.6), add=TRUE)  
+  matplot(tPred[afterT], postDat$sim[afterT,], type="l", lty=1, col = add.alpha(1:6, 0.2), add=TRUE)  
+  
+  lines(tPred[beforeT], postDat$mu[beforeT], lwd = 3)
+  lines(tPred[afterT], postDat$mu[afterT], lwd = 3, col = add.alpha("black", 0.5))
+  
   points(obsT, obsY, pch=19, cex=1.5)
   axis(1, cex.axis = 0.69)
   axis(2, cex.axis = 0.69)
+  lines(rep(obsT[length(obsT)], 2), c(-6, 6), lty = 3)
 }
 
 doPlotDF <- function(obsT, obsY) {
+  beforeT <- which(tPred <= max(obsT))
+  afterT <- which(tPred >= max(obsT))
+  
   set.seed(12345)
-  matplot(tPred, getPostD(obsT, obsY, tPred, alpha = 2, l = 0.1, k = 150)$sim, type="l", lty=1, ylim = c(-100, 100),
+  postDat <- getPostD(obsT, obsY, tPred, alpha = 2, l = 0.1, k = 150)
+  
+  matplot(tPred, postDat$sim, type="n", lty=1, ylim = c(-100, 100),
           xlab = "t", ylab="df(t)", col = add.alpha(1:6, 0.3), xaxt="n", yaxt="n")
-  lines(tPred, getPostD(obsT, obsY, tPred, alpha = 2, l = 0.1, k = 150)$mu, lwd = 3)
-  lines(c(0,1), c(0, 0), lty=2)
+
+  matplot(tPred[beforeT], postDat$sim[beforeT,], type="l", lty=1, col = add.alpha(1:6, 0.6), add=TRUE)  
+  matplot(tPred[afterT], postDat$sim[afterT,], type="l", lty=1, col = add.alpha(1:6, 0.2), add=TRUE)  
+  
+  lines(tPred[beforeT], postDat$mu[beforeT], lwd = 3)
+  lines(tPred[afterT], postDat$mu[afterT], lwd = 3, col = add.alpha("black", 0.5))
+  
+  lines(c(0,1), c(0, 0), lty=3)
   axis(1, cex.axis = 0.69)
   axis(2, cex.axis = 0.69)
+  lines(rep(obsT[length(obsT)], 2), c(-100, 100), lty = 3)
 }
 
 doPlotTCI <- function(obsT, obsY) {
+  beforeT <- which(tPred <= max(obsT))
+  afterT <- which(tPred >= max(obsT))
+  
   set.seed(12345)
   dfSim <- getPostD(obsT, obsY, tPred, alpha = 2, l = 0.1, k = 10^6)$sim
   prob <- apply(dfSim > 0, 1, mean)
-  plot(tPred, prob, type="l", ylim=c(0,1), xaxt="n", yaxt="n", lwd=2, xlab="t", ylab="TDI")
-  lines(c(0,1), c(0.5, 0.5), lty=2)
+  
+  plot(tPred, prob, type="n", ylim=c(0,1), xaxt="n", yaxt="n", lwd=2, xlab="t", ylab="TDI")
+
+  lines(tPred[beforeT], prob[beforeT], lwd = 2)
+  lines(tPred[afterT], prob[afterT], lwd = 2, col = add.alpha("black", 0.6))
+  
+  lines(c(0,1), c(0.5, 0.5), lty=3)
   axis(1, cex.axis = 0.69)
   axis(2, cex.axis = 0.69)
+  lines(rep(obsT[length(obsT)], 2), c(0, 1), lty = 3)
 }
 
 pdf("probabilisticExample.pdf", width = 8, height = 5)
