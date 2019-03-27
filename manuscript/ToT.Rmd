@@ -256,7 +256,7 @@ We fitted the model without a latent class to the data using the Stan implementa
 
 The upper left panel of Figure \ref{fig:smoking1} shows a plot of the raw data points along with the posterior mean of the latent function as the bold line. The dashed lines are lower and upper $95\%$ probability intervals for posterior distribution of $f$ and the dotted lines are lower and upper $95\%$ probability intervals for the posterior predictive distribution of the proportions. The upper right panel shows $3000$ random realizations from the posterior distribution of $f$ and again the posterior mean as the bold line. The lower left panel shows $3000$ random realizations from the posterior distribution of the derivative of the latent function with the posterior mean as a bold line, at the lower right panel shows $3000$ random realizations from the distribution of the Trend Direction Index along with the mean as the bold line.
 
-The figure shows some interesting things. First, around the year 2006 a increasing trend was also seen even though the average Trend Direction Index was only around $60\%$. This was followed by a long period of close to zero probability of a positive derivative. Secondly, the current reported increase in the proportion of smokers appears to have started already four years ago in 2014 when the average Trend Direction Index started to climb above $50\%$. This peaked around 2016 with a Trend Direction Index of $93\%$. Surprisingly, the Trend Direction Index immediately decreases and in 2018 at the latest survey results it is only $14\%$. This suggests with a high probability that there has been an increase in the proportion of smokers in Denmark but that began four years ago and currently there is no strong evidence for this increase to still occur. The value of the Trend Direction Index in $2018$ even suggests that it is decreasing again.
+[\textbf{TODO:} THIS IS DEPRECATED] The figure shows some interesting things. First, around the year 2006 a increasing trend was also seen even though the average Trend Direction Index was only around $60\%$. This was followed by a long period of close to zero probability of a positive derivative. Secondly, the current reported increase in the proportion of smokers appears to have started already four years ago in 2014 when the average Trend Direction Index started to climb above $50\%$. This peaked around 2016 with a Trend Direction Index of $93\%$. Surprisingly, the Trend Direction Index immediately decreases and in 2018 at the latest survey results it is only $14\%$. This suggests with a high probability that there has been an increase in the proportion of smokers in Denmark but that began four years ago and currently there is no strong evidence for this increase to still occur. The value of the Trend Direction Index in $2018$ even suggests that it is decreasing again.
 
 \begin{figure}[htb]
 \center\includegraphics{smoking2-1}
@@ -278,6 +278,12 @@ We also fitted a model with $K = 2$ latent classes to the data. We used a cubic 
 
 # Discussion {#sec:discussion}
 [\textbf{TODO:} Her må der båttes løs]
+
+Something about that the indices are scale-free. We could also define
+\begin{align*}
+  \mathrm{TDI}_u(t, \delta) = P(df(t + \delta ) > u \mid \mathcal{F}_t)
+\end{align*}
+
 
 
 #Bibliography
