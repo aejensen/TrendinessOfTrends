@@ -247,7 +247,7 @@ A report published by The Danish Health Authority in January 2019 updated the es
 where $n_i$ is the number of responders at time $t_i$. How do we best enforce this constraint? \textbf{TODO:} Maybe all of this is an unnecceary complication that we don't need to mention.]
 
 \begin{figure}[htb]
-\center\includegraphics{smoking1}
+\center\includegraphics{finalFitStan1}
 \caption{hejhej}
 \label{fig:smoking1}
 \end{figure}
@@ -268,8 +268,8 @@ We also fitted a model with $K = 2$ latent classes to the data. We used a cubic 
 
 
 \begin{figure}[htb]
-\center\includegraphics{smoking2-2}
-\caption{THIS IS NOT THE CORRECT FIGURE YET (men den er god nok til jazz...)}
+\center\includegraphics{finalFitStan2}
+\caption{}
 \label{fig:smoking2-2}
 \end{figure}
 
@@ -301,7 +301,7 @@ where the moments are partitioned as
 \end{align*}
 Using the standard formulas for conditional distributions in a multivariate normal model we obtain the following expressions for the joint posterior moments
 \begin{align*}
-  \bm{\mu}(\mathbf{t}^\ast) &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K(\mathbf{t}, \mathbf{t})^{-1} (\mathbf{Y} + \mu_\beta(\mathbf{t}))\\
+  \bm{\mu}(\mathbf{t}^\ast) &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K(\mathbf{t}, \mathbf{t})^{-1} (\mathbf{Y} - \mu_\beta(\mathbf{t}))\\
   \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2^2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix} - \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\\partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K(\mathbf{t}, \mathbf{t})^{-1}\begin{bmatrix}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\\partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}
 \end{align*}
 
