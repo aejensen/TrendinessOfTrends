@@ -156,7 +156,7 @@ functions{
           K2_12[i, j] = cov_rq_D2(tPred[i], tPred[j], alpha, rho, nu);
           K2_13[i, j] = cov_rq_D2_D2(tPred[i], tPred[j], alpha, rho, nu);
           K2_22[i, j] = cov_rq_D1_D2(tPred[i], tPred[j], alpha, rho, nu);
-          K2_23[i, j] = cov_rq_D1_D2_D2(tPred[i], tPred[j], alpha, rho, nu); //den er faul
+          K2_23[i, j] = cov_rq_D1_D2_D2(tPred[i], tPred[j], alpha, rho, nu);
           K2_33[i, j] = cov_rq_D1_D1_D2_D2(tPred[i], tPred[j], alpha, rho, nu);
         }
       }
