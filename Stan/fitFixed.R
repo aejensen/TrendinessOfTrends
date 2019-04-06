@@ -74,7 +74,7 @@ band(tPred, apply(pred[,,1], 2, quantile, prob = 0.025), apply(pred[,,1], 2, qua
 band(tPred, apply(pred[,,1], 2, quantile, prob = 0.25), apply(pred[,,1], 2, quantile, prob = 0.75), col = "gray45")
 lines(tPred, apply(pred[,,1], 2, mean), lwd = 2)
 points(dat$t, dat$y, pch = 19, cex=0.8)
-legend("topleft", c("Mean", "50%", "95%", "99%"), col = c("black", "gray45", "gray65", "gray85"), lwd = 2, bty="n", cex=0.6)
+legend("topleft", c("Mean", "50%", "95%", "99%"), col = c("black", "gray45", "gray65", "gray85"), lwd = 2, bty="n", cex=0.7)
 
 plot(tPred, apply(pred[,,3], 2, mean), lwd = 2, type="n", ylim = c(-3, 3), xaxt="n", xlab="Year", ylab="df | Y")
 axis(1, 1998:2018)
@@ -83,7 +83,7 @@ band(tPred, apply(pred[,,3], 2, quantile, prob = 0.025), apply(pred[,,3], 2, qua
 band(tPred, apply(pred[,,3], 2, quantile, prob = 0.25), apply(pred[,,3], 2, quantile, prob = 0.75), col = "gray45")
 lines(tPred, apply(pred[,,3], 2, mean), lwd = 2)
 abline(h = 0, lty = 3)
-legend("topleft", c("Mean", "50%", "95%", "99%"), col = c("black", "gray45", "gray65", "gray85"), lwd = 2, bty="n", cex=0.6)
+legend("topleft", c("Mean", "50%", "95%", "99%"), col = c("black", "gray45", "gray65", "gray85"), lwd = 2, bty="n", cex=0.7)
 
 plot(tPred, t(pred[1,,5])*100, type="l", lty = 1, lwd = 2, xaxt="n", xlab="Year", ylab="TDI [%]")
 axis(1, 1998:2018)
