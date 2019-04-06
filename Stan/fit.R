@@ -120,7 +120,7 @@ ETI2_d_f <- approxfun(ETI2_d$x, ETI2_d$y)
 ETI2_seq1 <- seq(quantile(ETI2, 0.025), quantile(ETI2, 0.975), length.out=100)
 ETI2_seq2 <- seq(quantile(ETI2, 0.25), quantile(ETI2, 0.75), length.out=100)
 
-pdf("gpFit_globalETI.pdf", width = 8, height = 4)
+pdf("gpFit_ETI.pdf", width = 8, height = 4)
 par(mfrow=c(1,2), bty="n", mar =  c(2.3, 2.3, 1, 0), mgp=c(1.3,0.4,0))
 plot(0, 0, type="n", xlim=c(1,6), ylim=c(0,1), xlab="ETI", ylab="Posterior density", xaxt="n")
 axis(1, seq(1, 6, 0.5), cex.axis = 0.8)
