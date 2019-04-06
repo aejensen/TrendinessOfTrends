@@ -109,7 +109,7 @@ functions{
     Calculate the posterior moments
     */
     {
-      matrix[n, n] K; // C(t, t) + sigma^2 * I
+      matrix[n, n] K; //C(t, t) + sigma^2 * I
       for(i in 1:n) {
         for(j in 1:n) {
           K[i, j] = cov_rq(t[i], t[j], alpha, rho, nu);
@@ -123,9 +123,9 @@ functions{
     
     // Calculate posterior means
     {
-      matrix[n, p] K1_f;   // C(t, tPred)
-      matrix[n, p] K1_df;  // d_2 C(t, tPred)
-      matrix[n, p] K1_ddf; // d_2^2 C(t, tPred)
+      matrix[n, p] K1_f;   //C(t, tPred)
+      matrix[n, p] K1_df;  //d_2 C(t, tPred)
+      matrix[n, p] K1_ddf; //d_2^2 C(t, tPred)
       matrix[n, 3*p] K1;
       vector[3*p] m_vec;      
       for(i in 1:n) {
@@ -144,12 +144,12 @@ functions{
     
     // Calculate posterior covariance
     {
-      matrix[p, p] K2_11; // C(tPred, tPred)
-      matrix[p, p] K2_12; // d_2 C(tPred, tPred)
-      matrix[p, p] K2_13; // d_2^2 C(tPred, tPred)
-      matrix[p, p] K2_22; // d_1 d_2 C(tPred, tPred)
-      matrix[p, p] K2_23; // d_1 d_2^2 C(tPred, tPred)
-      matrix[p, p] K2_33; // d_1^2 d_2^2 C(tPred, tPred)
+      matrix[p, p] K2_11; //C(tPred, tPred)
+      matrix[p, p] K2_12; //d_2 C(tPred, tPred)
+      matrix[p, p] K2_13; //d_2^2 C(tPred, tPred)
+      matrix[p, p] K2_22; //d_1 d_2 C(tPred, tPred)
+      matrix[p, p] K2_23; //d_1 d_2^2 C(tPred, tPred)
+      matrix[p, p] K2_33; //d_1^2 d_2^2 C(tPred, tPred)
       for(i in 1:p) {
         for(j in 1:p) {
           K2_11[i, j] = cov_rq(tPred[i], tPred[j], alpha, rho, nu);
