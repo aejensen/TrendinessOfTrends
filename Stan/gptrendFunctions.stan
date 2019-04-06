@@ -1,14 +1,17 @@
 functions{
   real cov_rq(real s, real t, real alpha, real rho, real nu) {
+    //Rational Quadratic (RQ) covariance function
     return square(alpha) * pow(1 + square(s - t) / (2 * nu * square(rho)), -nu);
   }
 
   real cov_rq_D2(real s, real t, real alpha, real rho, real nu) {
+    //d_2 C(s,t)
     real k = (2 * (s-t) * nu) / (square(s-t) + 2*nu*square(rho));
     return cov_rq(s, t, alpha, rho, nu) * k; 
   }
 
   real cov_rq_D2_D2(real s, real t, real alpha, real rho, real nu) {
+    //d_2^2 C(s,t)
     real d = square(s - t);
     real num = 2 * nu * (d * (1 + 2*nu) - 2*nu*square(rho));
     real den = square(d + 2 * nu * square(rho));
@@ -16,12 +19,14 @@ functions{
   }
 
   real cov_rq_D1_D2(real s, real t, real alpha, real rho, real nu) {
+    //d_1 d_2 C(s,t)
     real num = 4*square(nu)*square(rho) - 2*square(s-t)*nu*(1 + 2*nu);
     real den = square(square(s-t) + 2 *nu*square(rho));
     return cov_rq(s, t, alpha, rho, nu) * (num / den);
   }
 
   real cov_rq_D1_D2_D2(real s, real t, real alpha, real rho, real nu) {
+    //d_1 d_2^2 C(s,t)
     real d = square(s - t);
     real num = 4 * (s - t) * nu * (1 + nu) * (-d * (1 + 2 * nu) + 6 * nu * square(rho));
     real den = pow(d + 2 * nu * square(rho), 3);
@@ -29,6 +34,7 @@ functions{
   }
 
   real cov_rq_D1_D1_D2_D2(real s, real t, real alpha, real rho, real nu) {
+    //d_1^2 d_2^2 C(s,t)
     real d = square(s -t);
     real den = pow(d + 2 * nu * square(rho), 4);
     real num1 = 4 * square(d) * nu * (1 + nu) * (3 + 8 * nu + 4 * square(nu));
@@ -39,10 +45,12 @@ functions{
   }
   
   vector dnorm(vector x) {
+    //Vectorized standard normal density function
     return exp(-0.5 * square(x)) / sqrt(2 * pi());
   }
 
   vector pnorm(vector x) {
+    //Vectorized standard normal cumulative density function
     return 0.5 * (erf(x / sqrt(2)) + 1);
   }
 
