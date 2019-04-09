@@ -1,14 +1,14 @@
 #include /gptrendFunctions.stan
 
 data {
-  int<lower = 1> n;  // Number of observations
-  real t[n];         // Vector of sampling times
-  vector[n] y;       // Vector of outcomes
+  int<lower = 1> n;  //Number of observations
+  real t[n];         //Vector of sampling times
+  vector[n] y;       //Vector of outcomes
   
-  int<lower = 1> p;  // Number of prediction points
-  real tPred[p];     // Vector of prediction points
+  int<lower = 1> p;  //Number of prediction points
+  real tPred[p];     //Vector of prediction points
 
-  // Fixed parameters (e.g., empirical Bayes estimates)
+  //Fixed parameters (e.g., empirical Bayes estimates)
   real mu;
   real<lower = 0> alpha;  
   real<lower = 0> rho;
@@ -36,11 +36,15 @@ model {
 }
 
 generated quantities {
-  vector[n] mY = rep_vector(mu, n);
-  vector[p] m = rep_vector(mu, p);
-  vector[p] dm = rep_vector(0, p);
-  vector[p] ddm = rep_vector(0, p);
+  matrix[p, 6] pred;
   
-  matrix[p, 6] pred = gpFit_rng(tPred, t, y, mY, m, dm, ddm, alpha, rho, nu, sigma);
+  {
+    vector[n] mY = rep_vector(mu, n);
+    vector[p] m = rep_vector(mu, p);
+    vector[p] dm = rep_vector(0, p);
+    vector[p] ddm = rep_vector(0, p);
+  
+    pred = gpFit_rng(tPred, t, y, mY, m, dm, ddm, alpha, rho, nu, sigma);
+  }
 }
 

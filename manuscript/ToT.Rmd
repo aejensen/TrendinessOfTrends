@@ -255,11 +255,11 @@ and we note that $\lim_{\nu \rightarrow \infty} C_\theta^\text{RQ}(s,t) = C_\the
 
 The combination of mean and covariance functions results in 12 candidate models. To select the model providing the best fit to data we used leave-one-out cross-validation. For each model, $\mathcal{M}$ we in turn excluded a single data point $(t_i, Y_i)$ and estimated the parameters $\Theta = (\beta, \theta, \sigma^2)$ by maximizing the marginal log-likelihood
 \begin{align*}
-  \Theta_{-i}^\mathcal{M} = \argsup_{\Theta} N\left(\mathbf{Y}_{-i} \mid \mu_\beta^\mathcal{M}(\mathbf{t}_{-i}), C_\theta^\mathcal{M}(\mathbf{t}_{-i}, \mathbf{t}_{-i}) + \sigma^2 I\right)
+  \widehat{\Theta}_{-i}^\mathcal{M} = \argsup_{\Theta} N\left(\mathbf{Y}_{-i} \mid \mu_\beta^\mathcal{M}(\mathbf{t}_{-i}), C_\theta^\mathcal{M}(\mathbf{t}_{-i}, \mathbf{t}_{-i}) + \sigma^2 I\right)
 \end{align*}
 These parameter estimates were then plugged into the expression for the posterior expectation of $f$ in Proposition \ref{prop:GPposterior}, and the squared prediction error was averaged accross all data points
 \begin{align*}
-  \text{MSPE}_{\text{LOO}}^\mathcal{M} = \frac{1}{n}\sum_{i=1}^{n} \left(Y_i - \E[f(t_i) \mid \mathbf{Y}_{-i}, \mathbf{t}_{-i} \Theta_{-i}^\mathcal{M}]\right)^2
+  \text{MSPE}_{\text{LOO}}^\mathcal{M} = \frac{1}{n}\sum_{i=1}^{n} \left(Y_i - \E[f(t_i) \mid \mathbf{Y}_{-i}, \mathbf{t}_{-i} \widehat{\Theta}_{-i}^\mathcal{M}]\right)^2
 \end{align*}
 The model providing the best fit to data was selected as $\argmin_\mathcal{M} \text{MSPE}_{\text{LOO}}^\mathcal{M}$. Tabel \ref{tab:looTale} shows the mean squared prediction error for each of the models. For the models with a Rational Quadratic covariance function and a linear and a quadratic mean function the parameter $\nu$ diverged numerically implying convergence to the Squared Exponential covariance function. This is indicated by $\Leftarrow$. The best fitting model according to the $\text{MSPE}_{\text{LOO}}$ criterion had a constant mean function and a Rational Quadratic covariance function.
 
@@ -277,16 +277,19 @@ Quadratic & 0.736 & $\Leftarrow$ & 0.800 & 0.785
 
 We fitted the model without a latent class to the data using the Stan implementation with the squared exponential covariance function. We ran four chains for 25000 iterations each with half of the iterations used for warm-up. Convergence was assessed by the potential scale reduction factor ($\widehat{R}$) of @gelman1992inference. The results from the fitted model are seen in Figure \ref{fig:smoking1}.
 
-The upper left panel of Figure \ref{fig:smoking1} shows a plot of the raw data points along with the posterior mean of the latent function as the bold line. The dashed lines are lower and upper $95\%$ probability intervals for posterior distribution of $f$ and the dotted lines are lower and upper $95\%$ probability intervals for the posterior predictive distribution of the proportions. The upper right panel shows $3000$ random realizations from the posterior distribution of $f$ and again the posterior mean as the bold line. The lower left panel shows $3000$ random realizations from the posterior distribution of the derivative of the latent function with the posterior mean as a bold line, at the lower right panel shows $3000$ random realizations from the distribution of the Trend Direction Index along with the mean as the bold line.
-
 \begin{figure}[htb]
-\center\includegraphics{finalFitStan1}
+\center\includegraphics{../figures/gpFit}
 \caption{hejhej}
 \label{fig:smoking1}
 \end{figure}
 
+\begin{figure}[htb]
+\center\includegraphics{../figures/gpFit_ETI}
+\caption{hejhej}
+\label{fig:ETI}
+\end{figure}
 
-[\textbf{TODO:} THIS IS DEPRECATED] The figure shows some interesting things. First, around the year 2006 a increasing trend was also seen even though the average Trend Direction Index was only around $60\%$. This was followed by a long period of close to zero probability of a positive derivative. Secondly, the current reported increase in the proportion of smokers appears to have started already four years ago in 2014 when the average Trend Direction Index started to climb above $50\%$. This peaked around 2016 with a Trend Direction Index of $93\%$. Surprisingly, the Trend Direction Index immediately decreases and in 2018 at the latest survey results it is only $14\%$. This suggests with a high probability that there has been an increase in the proportion of smokers in Denmark but that began four years ago and currently there is no strong evidence for this increase to still occur. The value of the Trend Direction Index in $2018$ even suggests that it is decreasing again.
+
 
 \begin{figure}[htb]
 \center\includegraphics{smoking2-1}
@@ -298,7 +301,7 @@ We also fitted a model with $K = 2$ latent classes to the data. We used a cubic 
 
 
 \begin{figure}[htb]
-\center\includegraphics{finalFitStan2}
+%\center\includegraphics{finalFitStan2}
 \caption{}
 \label{fig:smoking2-2}
 \end{figure}

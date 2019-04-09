@@ -1,27 +1,27 @@
 functions{
   real cov_rq(real s, real t, real alpha, real rho, real nu) {
     //Rational Quadratic (RQ) covariance function
-    return square(alpha) * pow(1 + square(s - t) / (2 * nu * square(rho)), -nu);
+    return square(alpha) * pow(1 + square(s - t) / (2*nu*square(rho)), -nu);
   }
 
   real cov_rq_D2(real s, real t, real alpha, real rho, real nu) {
     //d_2 C(s,t)
-    real k = (2 * (s-t) * nu) / (square(s-t) + 2*nu*square(rho));
+    real k = (2 * (s-t) * nu) / (square(s-t) + 2 * nu * square(rho));
     return cov_rq(s, t, alpha, rho, nu) * k; 
   }
 
   real cov_rq_D2_D2(real s, real t, real alpha, real rho, real nu) {
     //d_2^2 C(s,t)
     real d = square(s - t);
-    real num = 2 * nu * (d * (1 + 2*nu) - 2*nu*square(rho));
+    real num = 2 * nu * (d * (1 + 2 * nu) - 2 * nu * square(rho));
     real den = square(d + 2 * nu * square(rho));
     return cov_rq(s, t, alpha, rho, nu) * (num / den); 
   }
 
   real cov_rq_D1_D2(real s, real t, real alpha, real rho, real nu) {
     //d_1 d_2 C(s,t)
-    real num = 4*square(nu)*square(rho) - 2*square(s-t)*nu*(1 + 2*nu);
-    real den = square(square(s-t) + 2 *nu*square(rho));
+    real num = 4 * square(nu) * square(rho) - 2 * square(s-t) * nu * (1 + 2 * nu);
+    real den = square(square(s-t) + 2 * nu * square(rho));
     return cov_rq(s, t, alpha, rho, nu) * (num / den);
   }
 
@@ -73,15 +73,15 @@ functions{
     */
     vector[p] mu_df = mu[(p+1):(2*p)];
     vector[p] mu_ddf = mu[(2*p+1):(3*p)];
-    vector[p] sigma_df = diagonal(cov[(p+1):(2*p), (p+1):(2*p)]);
-    vector[p] sigma_ddf = diagonal(cov[(2*p+1):(3*p), (2*p+1):(3*p)]);
+    vector[p] sigma_df = sqrt(diagonal(cov[(p+1):(2*p), (p+1):(2*p)]));
+    vector[p] sigma_ddf = sqrt(diagonal(cov[(2*p+1):(3*p), (2*p+1):(3*p)]));
     vector[p] sigma_df_ddf = diagonal(cov[(p+1):(2*p), (2*p+1):(3*p)]);
   
-    vector[p] omega = sigma_df_ddf ./ (sqrt(sigma_df) .* sqrt(sigma_ddf));
-    vector[p] eta = (mu_ddf - sqrt(sigma_ddf) .* omega .* mu_df ./ sqrt(sigma_df)) ./ (sqrt(sigma_ddf) .* sqrt(1 - square(omega)));
+    vector[p] omega = sigma_df_ddf ./ (sigma_df .* sigma_ddf);
+    vector[p] eta = (mu_ddf - sigma_ddf .* omega .* mu_df ./ sigma_df) ./ (sigma_ddf .* sqrt(1 - square(omega)));
   
-    vector[p] t1 = sqrt(sigma_ddf) ./ sqrt(sigma_df) .* sqrt(1 - square(omega));
-    vector[p] t2 = dnorm(mu_df ./ sqrt(sigma_df)) .* (2 * dnorm(eta) + eta .* (2* pnorm(eta) - 1));
+    vector[p] t1 = sigma_ddf ./ sigma_df .* sqrt(1 - square(omega));
+    vector[p] t2 = dnorm(mu_df ./ sigma_df) .* (2 * dnorm(eta) + eta .* (2* pnorm(eta) - 1));
     
     vector[p] eddy = t1 .* t2;
     
@@ -121,7 +121,7 @@ functions{
       L = cholesky_decompose(K);
     }
     
-    // Calculate posterior means
+    //Calculate posterior means
     {
       matrix[n, p] K1_f;   //C(t, tPred)
       matrix[n, p] K1_df;  //d_2 C(t, tPred)
@@ -142,7 +142,7 @@ functions{
       mu_joint = m_vec + L_div_K1' * mdivide_left_tri_low(L, y - mY); 
     }
     
-    // Calculate posterior covariance
+    //Calculate posterior covariance
     {
       matrix[p, p] K2_11; //C(tPred, tPred)
       matrix[p, p] K2_12; //d_2 C(tPred, tPred)
@@ -192,7 +192,7 @@ functions{
     }
     
     /* 
-    Simulate from the joint distribution
+    Simulate from the joint posterior distribution
     */
     {
       //Add a small constant to the diagonal for numerical stability
