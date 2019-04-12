@@ -54,17 +54,6 @@ empiricalEstimate <- function(y, thres=0) {
   x1 + x2
 }
 
-#numericalEstimate <- function(t, alpha, rho) {
-#  getMat <- function(s) {
-#    v1 <- seCov_d1_d2(s, s, alpha, rho)
-#    v2 <- seCov_d1_d1_d2_d2(s, s, alpha, rho)
-#    v12 <- seCov_d1_d2_d2(s, s, alpha, rho)
-#    covMat <- matrix(c(v1, v12, v12, v2), 2, 2)
-#    covMat
-#  }
-#  pracma::quadinf(function(v) abs(v) * dmvnorm(cbind(0, v), c(0,0), getMat(t)), -Inf, Inf)$Q
-#}
-
 analyticEstimate <- function(t, alpha, rho) {
   c1 <- seCov_d1_d2(t, t, alpha, rho)
   c2 <- seCov_d1_d1_d2_d2(t, t, alpha, rho)
@@ -98,7 +87,7 @@ which3 <- sapply(1:ncol(d3$df), function(k) !all(d3$df[,k] >= 0) & !all(d3$df[,k
 
 col <- c("navy", "darkgoldenrod")
 
-pdf("../figures/ETIexample.pdf", width = 8, height = 4)
+pdf("../figures/ETIexample.pdf", width = 8, height = 4.5)
 par(mfrow=c(2,3), bty="n", mar =  c(2.3, 2.3, 1, 0), mgp=c(1.3,0.4,0), font.main = 1)
 matplot(tEval, d1$f, type="l", ylim=c(-2,2), col = col[which1 + 1], lty=c(1,5)[which1 + 1], 
         xlab="t", ylab="f(t)", main = "ETI([0;1]) = 0.25")

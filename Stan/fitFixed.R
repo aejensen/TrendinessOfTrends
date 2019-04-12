@@ -12,7 +12,7 @@ options(mc.cores = parallel::detectCores())
 ########################################################
 load("../Data/smoking.RData")
 dat <- data.frame(t = smoking$year, y = smoking$p)
-tPred <- seq(1998, 2018, length.out = 200)
+tPred <- seq(1998, 2018, length.out = 200) #length = 500 used for manuscript
 
 ########################################################
 # Estimate Empirical Bayes parameters
@@ -30,6 +30,7 @@ opt.rq <- DEoptim(function(par) {
 }, lower = c(0,0,0,0,0), upper = c(50,50,50,50,50), control = ctl)
 par.rq <- opt.rq$optim$bestmem
 par.rq
+signif(par.rq, 3)
 
 ########################################################
 # Run Stan script
@@ -41,19 +42,23 @@ sDat$rho <- par.rq[3]
 sDat$nu <- par.rq[4]
 sDat$sigma <- par.rq[5]
 
-iter <- 10000
+iter <- 10000 #25000 used for manuscript
 seed <- 12345
 
 m <- stan_model("gptrendFixed.stan")
 fit <- sampling(m, data = sDat, iter = iter, seed = seed, algorithm = "Fixed_param")
 pred <- extract(fit, "pred")$pred
-#save(tPred, dat, pred, file="predFixed.RData")
+save(tPred, dat, pred, file="predFixed.RData")
 
 ########################################################
 # Get some summary statistics
 ########################################################
+load("predFixed.RData")
+
 #TDI summary at selected years
 round(approxfun(tPred, pred[1,,5]*100)(2013:2018), 2)
+
+uniroot(function(x) approxfun(tPred, pred[1,,5]*100)(x) - 50, c(2010, 2018))$root
 
 #ETI summary
 round(integrate(splinefun(tPred, pred[1,,6]), 1998, 2018)$value, 2)
@@ -62,8 +67,6 @@ round(integrate(splinefun(tPred, pred[1,,6]), 2008, 2018)$value, 2)
 ########################################################
 # Plot fit
 ########################################################
-#load("predFixed.RData")
-
 band <- function(t, l, u, col) {
   polygon(c(t, rev(t)), c(l, rev(u)), col=col, border = NA)
 }
@@ -90,10 +93,15 @@ abline(h = 0, lty = 2)
 legend("topleft", c("Mean", "50%", "95%", "99%"), col = c("black", "gray45", "gray65", "gray85"), 
        lwd = 2, bty="n", cex=0.7, lty = c(1, NA, NA, NA), pch = c(NA, 15, 15, 15), pt.cex=1.5)
 
-plot(tPred, t(pred[1,,5])*100, type="l", lty = 1, lwd = 2, xaxt="n", xlab="Year", ylab="TDI [%]")
+plot(tPred, t(pred[1,,5])*100, type="l", lty = 1, lwd = 2, xaxt="n", xlab="Year", 
+     ylab="Trend Direction Index [%]", ylim=c(0,100))
 axis(1, 1998:2018)
 abline(h = 50, lty = 2)
+title("TDI(2018, Year - 2018)", font.main=1)
 
-plot(tPred, t(pred[1,,6]), type="l", lty = 1, lwd = 2, xaxt="n", xlab="Year", ylab="Local ETI")
+plot(tPred, t(pred[1,,6]), type="l", lty = 1, lwd = 2, xaxt="n", xlab="Year", 
+     ylab="Expected Trend Instability", ylim=c(0,1.8), yaxt="n")
+title(bquote(ETI[Year] ~ "([1998; 2018])"), font.main=1)
 axis(1, 1998:2018)
+axis(2, seq(0, 1.8, length.out=7))
 dev.off()

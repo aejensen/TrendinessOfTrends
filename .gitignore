@@ -3,3 +3,9 @@
 *.thm
 manuscript/unused.R
 *.lb
+*.rds
+Stan/predFixed.RData
+Stan/pred.RData
+pred.RData
+predFixed.RData
+Stan/.Rhistory

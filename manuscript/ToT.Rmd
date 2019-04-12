@@ -1,5 +1,5 @@
 ---
-title: "The Trendiness of Trends (or how I learned to stop worrying and love the uncertainty of changes)"
+title: "Quantifying the Trendiness of Trends (or how I learned to stop worrying and love the uncertainty of changes)"
 author: | 
   | Andreas Kryger Jensen and Claus Ekstrøm
   | Biostatistics, Institute of Public Health, University of Copenhagen
@@ -14,7 +14,7 @@ header-includes:
   - \DeclareMathOperator*{\Cov}{Cov}
   - \DeclareMathOperator*{\Var}{Var}
   - \DeclareMathOperator*{\Erf}{Erf}
-  - \DeclareMathOperator{\Multinomial}{Multinomial}
+  - \usepackage{multirow}
   - \usepackage[amsthm,thmmarks]{ntheorem}
   - \newtheorem{definition}{Definition}
   - \newtheorem{assumption}{Assumption}
@@ -48,7 +48,7 @@ This manuscript is concerned with the fundamental problem of estimating an under
 
 \begin{figure}[htb]
 \center\includegraphics{../figures/rawDataPlot}
-\caption{The proportion of daily or occational smokers in Denmark during the last 20 years estimated from survey data and reported by the Danish Health Authority.}
+\caption{The proportion of daily or occational smokers in Denmark during the last 20 years estimated from survey data and reported by the Danish Health Authority. [\textbf{TODO:} Mention in text why 2009 is missing]}
 \label{fig:rawDataPlot}
 \end{figure}
 
@@ -62,30 +62,30 @@ The manuscript is structured as follows: In section \ref{sec:method} we present 
 
 
 # Methods {#sec:method}
-We assume that reality evolves in continuous time $t \in \mathcal{T} \subset \mathbb{R}$ and that there exists a latent, random function $f = \left\{f(t) : t \in \mathcal{T}\right\}$ that governs the underlying evolution of some observable characteristic. We are able to observe a noisy version of this latent characteristic by sampling $f$ at discrete time points according to the additive model $Y_i = f(t_i) + \varepsilon_i$ where $Y_i$ is the $i$'th observation at time $t_i \in \mathcal{T}$ and $\varepsilon_i$ is a random variable with $\E[\varepsilon_i \mid t_i] = 0$ [\textbf{TODO}: Explain why?]. Given observations of the form $(Y_i, t_i)_{i=1}^n$ we are interested in estimating the dynamical properties of the latent $f$.
+We assume that reality evolves in continuous time $t \in \mathcal{T} \subset \mathbb{R}$ and that there exists a latent, random function $f = \left\{f(t) : t \in \mathcal{T}\right\}$ that governs the underlying evolution of some observable characteristic in a population. We are able to observe a noisy version of this latent characteristic by sampling $f$ at discrete time points according to the additive model $Y_i = f(t_i) + \varepsilon_i$ where $Y_i$ is the $i$'th observation at time $t_i \in \mathcal{T}$ and $\varepsilon_i$ is a random variable with $\E[\varepsilon_i \mid t_i] = 0$ [\textbf{TODO}: Explain why?]. Given observations of the form $(Y_i, t_i)_{i=1}^n$ we are interested in estimating the dynamical properties of the latent $f$.
 
-The trend of $f$ is defined as its instantaneous slope given by the function $df(t) = \left(\frac{\mathrm{d}f(s)}{\mathrm{d}s}\right)(t)$, and we say that $f$ exhibits a positive trend at $t$ if $df(t) > 0$ and a negative trend at $t$ if $df(t) < 0$. A change in trend is defined as a point in time where $df$ changes sign, i.e., a positive trend becomes a negative trend meaning that $f$ goes from being increasing to becoming decreasing or vice versa. As $f$ is a random function there are no exact points in time where $df$ changes sign. This is instead a gradual and continuous concept and the assessment must be defined in terms of the probability that a change in trend is occurring. This stands in contrast to traditional change-point models which assume that there are one or more fixed time points where sudden a change happens (see e.g., @picard1985testing).
+The trend of $f$ is defined as its instantaneous slope given by the function $df(t) = \left(\frac{\mathrm{d}f(s)}{\mathrm{d}s}\right)(t)$, and we say that $f$ exhibits a positive trend at $t$ if $df(t) > 0$ and a negative trend at $t$ if $df(t) < 0$. A change in trend is defined as a point in time where $df$ changes sign, i.e., a positive trend becomes a negative trend meaning that $f$ goes from being increasing to becoming decreasing or vice versa. As $f$ is a random function there are no exact points in time where $df$ changes sign. This is instead a gradual and continuous concept and the assessment must be defined in terms of the probability that a change in trend is occurring. This stands in contrast to traditional change-point models which assume that there are one or more exact time points where sudden a change in a regression parameter occurs [@picard1985testing].
 
 To quantify the probability that a trend is changing we introduce the following local probabilistic Trend Direction Index
 \begin{align}
   \mathrm{TDI}(t, \delta) = P(df(t + \delta ) > 0 \mid \mathcal{F}_t)\label{eq:TCIdef}
 \end{align}
-where $\mathcal{F}_t$ is the $\sigma$-algebra of all available information observed up until time $t$. The value of $\mathrm{TDI}(t, \delta)$ is equal to the probability that $f$ is increasing at time $t + \delta$ given all we know about the data generating process up until time $t$. A similar definition could be given for a negative trend but that is equal to $1 - \mathrm{TDI}(t, \delta)$ and therefore redundant. The sign of $\delta$ determines whether we wish to estimate the past ($\delta \leq 0$) or forecast into the future ($\delta > 0$). Most of the examples seen in the news concerning public health outcomes is concerned with $t$ being equal to the current calendar time and $\delta = 0$. This excludes using a standard change-point model as there are no observations beyond the stipulated change-point.
+where $\mathcal{F}_t$ is the $\sigma$-algebra of all available information observed up until time $t$. The value of $\mathrm{TDI}(t, \delta)$ is equal to the probability that $f$ is increasing at time $t + \delta$ given all we know about the data generating process up until time $t$. A similar definition could be given for a negative trend but that is equal to $1 - \mathrm{TDI}(t, \delta)$ and therefore redundant. The sign of $\delta$ determines whether we wish to estimate the past ($\delta \leq 0$) or forecast into the future ($\delta > 0$). Most of the examples seen in the news concerning public health outcomes is concerned with $t$ being equal to the current calendar time and $\delta = 0$. This excludes using both change-point or segmented regression models [@quandt1958estimation] as there are no observations beyond the stipulated change-point. [\textbf{TODO:} Something about $\text{TDI}(t + \delta) = 0.5$ is a natural threshold for trendiness.]
 
-In addition to the Trend Direction Index we also define a global index of trend instability. We say that a function $f$ is \textit{trend stable} on an interval $\mathcal{I} \subseteq \mathcal{T}$ if it remains either increasing or decreasing so that its trend maintains its sign. We quantify the trend instability by the expected number of times $f$ changes direction on the interval, which is equivalent to either counting the expected number local maxima of $f$ or the number of zero crossings by $df$. We define the Expected Trend Instability as
+In addition to the Trend Direction Index we also define a global index of trend instability. We say that a function $f$ is \textit{trend stable} on an interval $\mathcal{I} \subseteq \mathcal{T}$ if it remains either increasing or decreasing so that its trend maintains its sign. We quantify the trend instability by the expected number of times $f$ changes direction on the interval, which is equivalent to either counting the number of zero crossings by $df$. Informally at this point we define the Expected Trend Instability as
 \begin{align}
   \text{ETI}(\mathcal{I}) = \E\left[\#\left\{t \in \mathcal{I} : df(t) = 0\right\} \mid \mathcal{F}\right]\label{eq:ETIdef}
 \end{align}
-which is the expected value of the size of the random point set of zero crossings by $df$ on $\mathcal{I}$ conditional on a suitable sigma algebra $\mathcal{F}$. The value of $\text{ETI}$ is a finite [\textbf{TODO:} finite because of assumptions] real positive number, and the lower $\text{ETI}(\mathcal{I})$ is, the more trend stable $f$ is on $\mathcal{I}$ and vice versa. [\textbf{TODO:} Maybe something about normalizing by $\mathcal{I}$ or the intepretation.]
+which is the expected value of the size of the random point set of zero crossings by $df$ on $\mathcal{I}$ conditional on a suitable sigma algebra $\mathcal{F}$. The value of $\text{ETI}$ is a finite [\textbf{TODO:} finite because of assumptions] real positive number, and the lower $\text{ETI}(\mathcal{I})$ is, the more trend stable $f$ is on $\mathcal{I}$ and vice versa.
 
 
-## Latent Process Model
+## Latent Gaussian Process Model
 The definitions in the previous section impose the existence of an infinite dimensional latent variable $f$ and its derivative $df$. In the following we assume that $f$ is a latent Gaussian Process which is equivalent to imposing a functional prior distribution on the latent characteristic [\textbf{TODO: something about flexible}]. Our knowledge about $f$ and $df$ will then be updated based on the observed data giving rise to a joint posterior distribution over $f$ and $df$.
 
 A random function $f$ is a Gaussian Process if and only if the vector $(f(t_1), \ldots, f(t_n))$ has a multivariate normal distribution for every set of evaluation points $(t_1, \ldots, t_n) \subset \mathcal{T}$ with $n < \infty$, and we write $f \sim \mathcal{GP}(\mu(\cdot), C(\cdot, \cdot))$ where $\mu\colon\, \mathcal{T} \mapsto \mathbb{R}$ is the mean function and $C\colon\, \mathcal{T} \times \mathcal{T} \mapsto \mathbb{R}$ is a symmetric, positive semi-definite covariance function [@cramer1967stationary]. Given observed data of the form $(Y_i, t_i)_{i=1}^n$ we lay out the data generating process by the following hierarchical model 
 \begin{align}
   f \mid \beta, \theta &\sim \mathcal{GP}(\mu_\beta(\cdot), C_\theta(\cdot,\cdot))\label{eq:generatingProcess}\\
-  Y_i \mid t_i, f(t_i), \Theta &\overset{iid}{\sim} N(f(t_i), \sigma^2)\nonumber, \quad \Theta = (\beta, \theta, \sigma^2)\nonumber
+  Y_i \mid t_i, f(t_i), \Theta &\overset{iid}{\sim} N(f(t_i), \sigma^2)\nonumber, \quad \Theta = (\beta, \theta, \sigma)\nonumber
 \end{align}
 where $\beta$ is a vector of parameters for the mean function of $f$, $\theta$ is a vector of parameters governing the covariance of $f$, and $\sigma^2$ is the observation variance. We assume the following regularity conditions.
 
@@ -143,14 +143,17 @@ We note that the Trend Direction Index depends on the parameters of the model, $
 \label{fig:probabilisticExample}
 \end{figure}
 
-To illustrate the Trend Direction Index we show an example in the noise free case with known model parameters in Figure \ref{fig:probabilisticExample}. The first and second rows of the plot show 150 random realizations from the posterior distribution of $f$ and $df$ with the expected functions in bold lines, and the third row shows the Trend Direction Index. In this example we simulate using known model parameters and therefore the Trend Direction Index in Proposition \ref{prop:TDIposterior} is a deterministic function. We have set the mean of the Gaussian Process to $\mu_\beta(t) = 0$ and used the squared exponential (SE) covariance function. [\textbf{TODO:} Move this to estimation] This is an often used covariance function in Gaussian Process regression [@rasmussen2003gaussian] and it has the following form
-\begin{align}
-  C_\theta(s,t) = \alpha^2 \exp\left(-\frac{(s-t)^2}{2\rho^2}\right), \quad \theta = (\alpha, \rho)\label{eq:seKernel}
-\end{align}
-The two parameters have the interpretation that $\alpha$ is the standard deviation of the latent function and $\rho$ is its length-scale. For the example we have used $\alpha = 2$ and $\rho = 0.1$ and consider the noise free case with $\sigma^2 = 0$. The three columns of the plot show how the posterior of $f$ and $df$ and the Trend Direction Index are updated after one, two or four observed data points. It is seen how updating the Gaussian Process prior with observed data results in a continuous change in the posterior distribution of $f$ and its derivative $df$. The posterior knowledge about the sign of the derivative is correspondingly reflected in the Trend Direction Index. Going further and further away from the last observed data point it is seen that the posterior of $f$ becomes dominated by its prior distribution. In the same sense $df$ converges to a point-wise symmetric distribution around zero and therefore the Trend Direction Index stabilizes around $50\%$. This is clearly seen in the second column of the figure. [\textbf{TODO}: More explaining]
+To illustrate the Trend Direction Index we show an example in the noise free case with known model parameters in Figure \ref{fig:probabilisticExample}. The first and second rows of the plot show 150 random realizations from the posterior distribution of $f$ and $df$ with the expected functions in bold lines, and the third row shows the Trend Direction Index. In this example we simulate using known model parameters and therefore the Trend Direction Index in Proposition \ref{prop:TDIposterior} is a deterministic function. The three columns of the plot show how the posterior of $f$ and $df$ and the Trend Direction Index are updated after one, two or four observed data points. It is seen how updating the Gaussian Process prior with observed data results in a continuous change in the posterior distribution of $f$ and its derivative $df$. The posterior knowledge about the sign of the derivative is correspondingly reflected in the Trend Direction Index. Going further and further away from the last observed data point it is seen that the posterior of $f$ becomes dominated by its prior distribution. In the same sense $df$ converges to a point-wise symmetric distribution around zero and therefore the Trend Direction Index stabilizes around $50\%$. This is clearly seen in the second column of the figure. [\textbf{TODO}: More explaining]
 
 ## Expected Trend Instability 
 The general form of the Expected Trend Instability index was defined in Equation (\ref{eq:ETIdef}).
+\begin{align}
+  \lambda(t) = ??
+\end{align}
+
+\begin{align}
+  \text{ETI}(\mathcal{T}) = \int_\mathcal{T} \lambda(s)ds
+\end{align}
 
 \begin{proposition}
 \begin{align*}
@@ -186,32 +189,52 @@ where $\text{Half-Normal}$ denotes the half-normal distribution due to the requi
 
 We have implemented both our model with and without a latent class in Stan [@carpenter2017stan]. Stan is a probabilistic programming language that enables full Bayesian statistical inference using Markov chain Monte Carlo sampling and can be used together with R through the \texttt{rstan} package [@rstan]. The Stan programs for our two models are available at the first author's Github repository [@gptrendStan].
 
+We ran four chains for 25000 iterations each with half of the iterations used for warm-up. Convergence was assessed by the potential scale reduction factor ($\widehat{R}$) of @gelman1992inference.
+
 
 
 # Application {#sec:application}
-A report published by The Danish Health Authority in January 2019 updated the estimated proportion of smokers in Denmark with new data from 2018 [@sst]. The data was based on an internet survey including 5017 participants. The report also included data on the proportion of smokers in Denmark during the last 20 years. These data were shown in Figure \ref{fig:rawDataPlot}. The report was picked up by several news papers under headlines stating that the proportion of smokers in Denmark had significantly increased for the first time in two decades [@politiken]. The report published no statistical analyses for this statement but wrote in a note that because the study population is so large, then more or less all differences become statistically significant at the $5\%$ level. This is an illustrative example of our proposed Trend Direction Index and we wish to apply it for assessing the probabilities of the following statements: i) the proportion of smokers is increasing in the year 2018 conditional on data from the last 20 years and ii) this is the first time during these 20 years that the porportion has increased. 
+A report published by The Danish Health Authority in January 2019 updated the estimated proportion of smokers in Denmark with new data from 2018 [@sst]. The data was based on an internet survey including 5017 participants. The report also included data on the proportion of smokers in Denmark during the last 20 years. These data were shown in Figure \ref{fig:rawDataPlot}. The report was picked up by several news papers under headlines stating that the proportion of smokers in Denmark had significantly increased for the first time in two decades [@politiken]. The report published no statistical analyses for this statement but stated in a note that because the study population is so large, then more or less all differences become statistically significant at the $5\%$ level (this was erronously written as a $95\%$ significance level in the report). 
 
-A standard approach to testing whether the proportion of smokers in 2018 has increased compared to a previous year would be to apply a $\chi^2$-test in $2\times 2$ table. Performing the $\chi^2$-test of independence between the proportion of smokers in 2018 and the proportions in 2017, 2016, 2015, 2014, and 2013 yielded p-values of $0.074$, $0.020$, $0.495$, $0.012$, and $0.576$ respectively. Using a significance level of $5\%$, the conclusion is ambiguous. The was no significant difference in proportions when comparing 2018 with 2017 but the opposite was the case when comparing 2018 with 2016. Three out of these five comparisons resulted in non-rejection of the null-hypothesis.
+This data set provides an instrumental way of examplifying our two proposed trend quantification measures. In this application we with to assess the statistical properties of following questions:
+\begin{itemize}
+\item[Q1:]{Is the proportion of smokers increasing in the year 2018 conditional on data from the last 20 years?}
+\item[Q2:]{If the proportion of smokers is currently increasing, when did this increase probably start?}
+\item[Q3:]{Is it the first time during the last 20 years that the trend in the proportion of smokers has changed?}
+\end{itemize}
+
+A simple approach for trying to answer questions Q1 and Q2 would be to apply a $\chi^2$-test in a $2\times 2$ table. Table \ref{tab:chisqtests} shows the p-values for the $\chi^2$-test of independence between the proportion of smokers in 2018 and each of the five previous years. Using a significance level of $5\%$ the conclusion is ambiguous. Compared to the previous year, there was no significant change in the proportion in 2018. Three out of these five comparisons fail to show a significant change in proportions. It is therefore clear that such point-wise testing is not sufficienly perceptive to catch the underlying continuous development.
+
+\begin{table}[htbp]
+\center
+\begin{tabular}{c|rrrrr}
+2018 & 2017 & 2016 & 2015 & 2014 & 2013\\ \hline
+p-value & 0.074 & \textbf{0.020} & 0.495 & \textbf{0.012} & 0.576
+\end{tabular}
+\caption{p-values obtained from $\chi^2$-tests of independence between the proportion of smokers in 2018 and the five previous years. Numbers in bold are significant differences at the $5\%$ level.}
+\label{tab:chisqtests}
+\end{table}
+
+Similarly, a simple approach for trying to answer question Q3 would be to look at the cumulative number of times that the difference in proportion between consecutive years changes sign. In the data set there were nine changes in the sign of the difference between the proportion in each year and the proportion in the previous year giving this very curde estimate of the number of times, that the trend has changed. This approach suffers from the facts that it is based on a finite difference approximation at the observed time points to the continous derivative, and that it uses the noisy measurements instead of the values of the latent function.
 
 
-We first consider the Gaussian Process model without latent classes. To complete the model specification we must choose the functional forms of the mean and covariance functions of the latent Gaussian Process. We considered three different mean functions: a constant mean $\mu_\beta(t) = \beta_0$, a linear mean $\mu_\beta(t) = \beta_0 + \beta_1 t$, and a quadratic mean function $\mu_\beta(t) = \beta_0 + \beta_1 t + \beta_2 t^2$. For the covariance function we consider the Squared Exponential (SE), the Rational Quadratic (RQ), the Matern 3/2 (M3/2), and the Matern 5/2 (M5/2) covariance functions. The expressions for these stationary covariance functions are given by
+We now present an analysis of the data set using our proposed model. To complete the model specification in Equation (\ref{eq:generatingProcess}) we must decide on the functional forms of the mean and covariance functions of the latent Gaussian Process. We considered three different mean functions: a constant mean, $\mu_\beta(t) = \beta_0$, a linear mean, $\mu_\beta(t) = \beta_0 + \beta_1 t$, and a quadratic mean function, $\mu_\beta(t) = \beta_0 + \beta_1 t + \beta_2 t^2$. For the covariance function we consider the Squared Exponential (SE), the Rational Quadratic (RQ), the Matern 3/2 (M3/2), and the Matern 5/2 (M5/2) covariance functions. The expressions for these covariance functions are given by
 \begin{align*}
-  C_\theta^\text{SE}(s, t) &= \alpha^2\exp\left(-\frac{(s-t)^2}{2\rho^2}\right)\\ 
-  C_\theta^\text{RQ}(s, t) &= \alpha^2\left(1 + \frac{(s-t)^2}{2\nu \rho^2}\right)^{-\nu}\\
-  C_\theta^\text{M3/2}(s, t) &= \alpha^2\left(1 + \frac{\sqrt{3}\sqrt{(s-t)^2}}{\rho}\right)\exp\left(-\frac{\sqrt{3}\sqrt{(s-t)^2}}{\rho}\right)\\
-  C_\theta^\text{M5/2}(s, t) &= \alpha^2\left(1 + \frac{\sqrt{5}\sqrt{(s-t)^2}}{\rho} + \frac{5(s-t)^2}{3\rho^2}\right)\exp\left(-\frac{\sqrt{5}\sqrt{(s-t)^2}}{\rho}\right)
+  C_\theta^\text{SE}(s, t) &= \alpha^2\exp\left(-\frac{(s-t)^2}{2\rho^2}\right), \quad \theta = (\alpha, \rho)\\ 
+  C_\theta^\text{RQ}(s, t) &= \alpha^2\left(1 + \frac{(s-t)^2}{2\rho^2\nu}\right)^{-\nu}, \quad \theta = (\alpha, \rho, \nu)\\
+  C_\theta^\text{M3/2}(s, t) &= \alpha^2\left(1 + \frac{\sqrt{3}\sqrt{(s-t)^2}}{\rho}\right)\exp\left(-\frac{\sqrt{3}\sqrt{(s-t)^2}}{\rho}\right), \quad \theta = (\alpha, \rho)\\
+  C_\theta^\text{M5/2}(s, t) &= \alpha^2\left(1 + \frac{\sqrt{5}\sqrt{(s-t)^2}}{\rho} + \frac{5(s-t)^2}{3\rho^2}\right)\exp\left(-\frac{\sqrt{5}\sqrt{(s-t)^2}}{\rho}\right), \quad \theta = (\alpha, \rho)
 \end{align*}
-and we note that $\lim_{\nu \rightarrow \infty} C_\theta^\text{RQ}(s,t) = C_\theta^\text{SE}(s,t)$. [\textbf{TODO:} Something about the sample path regularity for these covariance functions. M3/2 cannot be used for ETI but okay for TDI]. 
+and we note that the Rational Quadractic covariance function converges to the Squared Exponential covariance function for $\nu \rightarrow \infty$, $\lim_{\nu \rightarrow \infty} C_\theta^\text{RQ}(s,t) = C_\theta^\text{SE}(s,t)$. [\textbf{TODO:} Something about the sample path regularity for these covariance functions. M3/2 cannot be used for ETI but okay for TDI]. 
 
-The combination of mean and covariance functions results in 12 candidate models. To select the model providing the best fit to data we used leave-one-out cross-validation. For each model, $\mathcal{M}$ we in turn excluded a single data point $(t_i, Y_i)$ and estimated the parameters $\Theta = (\beta, \theta, \sigma^2)$ by maximizing the marginal log-likelihood
+The total combination of mean and covariance functions results in 12 candidate models, and to select the model providing the best fit to data we used leave-one-out cross-validation based on maximum likelihood estimation. For each model, $\mathcal{M}$, we turn by turn excluded a single observation $(t_i, Y_i)$ from the vectors of observed outcomes and time points, and we let the leave-one-out data be denoted by $(\mathbf{Y}_{-i}, \mathbf{t}_{-i})$. Based on the leave-one-out data sets we estimated the parameters,  $\Theta_{-i}^{\mathcal{M}} = (\beta, \theta, \sigma^2)$, of the latent Gaussian Process for each model by maximizing the marginal log-likelihood function of the model in Equation (\ref{eq:generatingProcess}). These estimates were given by
 \begin{align*}
-  \widehat{\Theta}_{-i}^\mathcal{M} = \argsup_{\Theta} N\left(\mathbf{Y}_{-i}; \mu_\beta^\mathcal{M}(\mathbf{t}_{-i}), C_\theta^\mathcal{M}(\mathbf{t}_{-i}, \mathbf{t}_{-i}) + \sigma^2 I\right)
+  \widehat{\Theta}_{-i}^\mathcal{M} = \argsup_{\Theta} \log N\left(\mathbf{Y}_{-i} \mid \mu_\beta^\mathcal{M}(\mathbf{t}_{-i}), C_\theta^\mathcal{M}(\mathbf{t}_{-i}, \mathbf{t}_{-i}) + \sigma^2 I\right)
 \end{align*}
-These parameter estimates were then plugged into the expression for the posterior expectation of $f$ in Proposition \ref{prop:GPposterior}, and the squared prediction error was averaged accross all data points
+and then plugged into the expression for the posterior expectation of $f$ in Proposition \ref{prop:GPposterior} to obtain the leave-out-out predictions. The mean squared prediction error was then calculated from the squared errors between the leave-one-out predictions and the observed values averaged accross all data points:
 \begin{align*}
   \text{MSPE}_{\text{LOO}}^\mathcal{M} = \frac{1}{n}\sum_{i=1}^{n} \left(Y_i - \E[f(t_i) \mid \mathbf{Y}_{-i}, \mathbf{t}_{-i} \widehat{\Theta}_{-i}^\mathcal{M}]\right)^2
 \end{align*}
-The model providing the best fit to data was selected as $\argmin_\mathcal{M} \text{MSPE}_{\text{LOO}}^\mathcal{M}$. Tabel \ref{tab:looTale} shows the mean squared prediction error for each of the models. For the models with a Rational Quadratic covariance function and a linear and a quadratic mean function the parameter $\nu$ diverged numerically implying convergence to the Squared Exponential covariance function. This is indicated by $\Leftarrow$. The best fitting model according to the $\text{MSPE}_{\text{LOO}}$ criterion had a constant mean function and a Rational Quadratic covariance function.
 
 \begin{table}[htbp]
 \center
@@ -225,22 +248,53 @@ Quadratic & 0.736 & $\Leftarrow$ & 0.800 & 0.785
 \label{tab:looTale}
 \end{table}
 
-We fitted the model without a latent class to the data using the Stan implementation with the squared exponential covariance function. We ran four chains for 25000 iterations each with half of the iterations used for warm-up. Convergence was assessed by the potential scale reduction factor ($\widehat{R}$) of @gelman1992inference. The results from the fitted model are seen in Figure \ref{fig:smoking1}.
+The model providing the best fit to data was selected as $\mathcal{M}_{\text{opt}} = \argmin_\mathcal{M} \text{MSPE}_{\text{LOO}}^\mathcal{M}$. Tabel \ref{tab:looTale} shows the mean squared prediction error for each of the models. For the models with a Rational Quadratic covariance function and a linear and a quadratic mean function the parameter $\nu$ diverged numerically implying convergence to the Squared Exponential covariance function. This is indicated in the table by $\Leftarrow$. Comparing the leave-one-out mean squared prediction errors for the candidate models, the optimal model has a constant mean function and a Rational Quadratic covariance function. Equation (\ref{eq:optModelParEstimates}) shows the marginal maximum likelihood estimates of the parameters of the optimal model.
+\begin{align}
+  \widehat{\beta_0^\text{ML}} = 28.001, \quad \widehat{\alpha^\text{ML}} = 4.543, \quad \widehat{\rho^\text{ML}} = 4.438, \quad \widehat{\nu^\text{ML}} = 1.020, \quad \widehat{\sigma^\text{ML}} = 0.622\label{eq:optModelParEstimates}
+\end{align}
+
+Figure \ref{fig:likFitPlot} shows the fit of the model by plugging in the values of the marginal maximum likelihood estimates into the expressions for the posterior distrubutions of $f$ and $df$ defined in Proposition \ref{prop:GPposterior}, the Trend Direction Index in Proposition \ref{prop:TDIposterior}, and the Local Expected Trend Instability in Proposition \ref{prop:ETIposterior}.
 
 \begin{figure}[htb]
-\center\includegraphics{../figures/gpFit}
+\center\includegraphics{../figures/likFitPlot}
 \caption{hejhej}
-\label{fig:smoking1}
+\label{fig:likFitPlot}
 \end{figure}
+
+The top row of Figure \ref{fig:bayesFitPlot} shows the posterior distributions of the Trend Direction Index and the Local Expected Trend Instability from the Bayesian model. The bottom row shows the posterior distributions of the Expected Trend Instability during the last twenty years and the last ten years.
+
 
 \begin{figure}[htb]
-\center\includegraphics{../figures/gpFit_ETI}
+\center\includegraphics{../figures/bayesFitPlot.pdf}
 \caption{hejhej}
-\label{fig:ETI}
+\label{fig:bayesFitPlot}
 \end{figure}
 
 
+\begin{table}[htbp]
+\center
+\begin{tabular}{l|rrl}
+  & Maximum Likelihood & \multicolumn{2}{l}{Bayesian Posterior}\\ \hline
+$\text{TDI}(2018, 0)$  & 95.24\% & 93.32\% & $[82.15\%; 98.86\%]$\\
+$\text{TDI}(2018, -1)$ & 95.92\% & 94.21\% & $[84.28\%; 99.11\%]$\\
+$\text{TDI}(2018, -2)$ & 74.41\% & 77.87\% & $[51.02\%; 94.94\%]$\\
+$\text{TDI}(2018, -3)$ & 33.36\% & 44.11\% & $[18.23\%; 69.19\%]$\\
+$\text{TDI}(2018, -4)$ & 18.96\% & 20.60\% & $[6.05\%; 31.82\%]$\\
+$\text{TDI}(2018, -5)$ & 9.50\% & 6.21\% & $[0.03\%; 22.21\%]$\\ \hline
+$\text{ETI}([2008, 2018])$ & 1.39 & 1.25 & $[1.02; 2.22]$\\
+$\text{ETI}([1998, 2018])$ & 3.68 & 3.36 & $[1.24; 4.79]$\\
+\end{tabular}
+\caption{hej}
+\label{tab:summaries}
+\end{table}
 
+Cross-point for 50% for MLE: year = 2015.48.
+
+Cross-point for 50% for Bayes: [2014.62; 2015.96]
+
+Posterior 95% CI for $\rho$: $[3.155; 6.206]$
+
+Posterior 95% CI for $\nu$: $[0.328; 10.768]$
 
 # Discussion {#sec:discussion}
 [\textbf{TODO:} Her må der båttes løs]
@@ -261,7 +315,11 @@ Also something about stationarity of $C_\theta$.
 #Appendix
 
 ## Proof of Proposition \ref{prop:GPposterior}
-We derive the joint posterior distribution of the latent process $(f, df, d^2\!f)$ under the model in Equation (\ref{eq:generatingProcess}). We start by noting that $\mathbf{Y} \mid \mathbf{t}, \Theta$ is jointly normal distributed with the latent processes with marginal mean  $\mu_\beta(\mathbf{t})$ and covariance matrix $K(\mathbf{t}, \mathbf{t}) = C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I$ where $C_\theta(\mathbf{t}, \mathbf{t})$ denotes a matrix consisting of the values of the covariance function at $\left\{(s,t) \in \mathbf{t} \times \mathbf{t} \right\}$, and $I$ is an identity matrix of appropriate dimensions. Combining this with the result from Equation (\ref{eq:latentJoint}) generalized to also include the second-order derivative of $f$ we obtain the following joint distribution for the latent processes and the observed data
+We derive the joint posterior distribution of the latent process $(f, df, d^2\!f)$ under the model in Equation (\ref{eq:generatingProcess}). We start by noting that $\mathbf{Y} \mid \mathbf{t}, \Theta$ is jointly normal distributed with the latent processes with marginal mean  $\mu_\beta(\mathbf{t})$ and covariance matrix
+\begin{align*}
+  K(\mathbf{t}, \mathbf{t}) = C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I
+\end{align*}
+where $C_\theta(\mathbf{t}, \mathbf{t})$ denotes a matrix consisting of the values of the covariance function at $\left\{(s,t) \in \mathbf{t} \times \mathbf{t} \right\}$, and $I$ is an identity matrix of appropriate dimensions. Combining this with the result from Equation (\ref{eq:latentJoint}) generalized to also include the second-order derivative of $f$ we obtain the following joint distribution for the latent processes and the observed data
 \begin{align*}
   \begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\\ \mathbf{Y}\end{bmatrix} \mid \mathbf{t}, \Theta \sim N\left(\begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\\ \mu_\beta(\mathbf{t})\end{bmatrix}, \begin{bmatrix}C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) &  \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2\partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2\partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ C_\theta(\mathbf{t}, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)  & C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\end{bmatrix}\right)
 \end{align*}

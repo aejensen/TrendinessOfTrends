@@ -12,7 +12,7 @@ options(mc.cores = parallel::detectCores())
 ########################################################
 load("../Data/smoking.RData")
 dat <- data.frame(t = smoking$year, y = smoking$p)
-tPred <- seq(1998, 2018, length.out = 200)
+tPred <- seq(1998, 2018, length.out = 200) #length = 500 used for manuscript
 
 ########################################################
 # Estimate parameters form marginal likelihood
@@ -41,32 +41,36 @@ sDat$rho_mu <- par.rq[3]
 sDat$nu_mu <- par.rq[4]
 sDat$sigma_mu <- par.rq[5]
 
-iter <- 25000
+iter <- 10000 #25000 used for manuscript
 seed <- 12345
 
 m <- stan_model("gptrend.stan")
 fit <- sampling(m, data = sDat, iter = iter, seed = seed)
 summary(fit, c("mu", "alpha", "rho", "nu", "sigma"))$summary
 pred <- extract(fit, "pred")$pred
-#save(tPred, dat, pred, file="pred.RData")
+save(tPred, dat, pred, file="pred.RData")
 
 ########################################################
 # Get some summary statistics
 ########################################################
-#TDI summary in 2018
-quantile(pred[,length(tPred),5]*100, prob = c(0.025, 0.5, 0.975))
+load("pred.RData")
+
+#TDI summary
+round(cbind(2018-(0:5), 
+            approxfun(tPred, apply(pred[,,5]*100, 2, median))(2018-(0:5)),
+            approxfun(tPred, apply(pred[,,5]*100, 2, quantile, prob = 0.025))(2018-(0:5)),
+            approxfun(tPred, apply(pred[,,5]*100, 2, quantile, prob = 0.975))(2018-(0:5))), 2)
+
+uniroot(function(x) approxfun(tPred, apply(pred[,,5]*100, 2, quantile, prob = 0.025))(x) - 50, c(2010, 2018))$root
+uniroot(function(x) approxfun(tPred, apply(pred[,,5]*100, 2, quantile, prob = 0.5))(x) - 50, c(2010, 2018))$root
+uniroot(function(x) approxfun(tPred, apply(pred[,,5]*100, 2, quantile, prob = 0.975))(x) - 50, c(2010, 2018))$root
+
 
 #ETI summary
 ETI1 <- sapply(1:dim(pred)[1], function(i) integrate(splinefun(tPred, pred[i,,6]), 1998, 2018)$value)
 ETI2 <- sapply(1:dim(pred)[1], function(i) integrate(splinefun(tPred, pred[i,,6]), 2008, 2018)$value)
 round(quantile(ETI1, c(0.025, 0.5, 0.975)), 2)
 round(quantile(ETI2, c(0.025, 0.5, 0.975)), 2)
-
-hist(extract(fit, "nu")$nu)
-plot(density(extract(fit, "nu")$nu))
-hist(extract(fit, "alpha")$alpha)
-hist(extract(fit, "rho")$rho)
-hist(extract(fit, "sigma")$sigma)
 
 ########################################################
 # Plot 1
