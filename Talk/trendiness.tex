@@ -326,10 +326,10 @@ Letting $\mathcal{F}_t = \sigma\left\{\mathbf{Y}, \mathbf{t}\right\}$, we may ex
   We need to calculate this for the posterior distribution of $(df, d^2\!f)$. We obtain:
 {\tiny
   \begin{align*}
-    \mathrm{ETI}(\mathcal{T} \mid \Theta) = \int_{\mathcal{T}} \frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}} \sqrt{1 - \omega(t)^2}   \phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left[2\phi(\eta(t)) + \eta(t) \Erf\left(\frac{\eta(t)}{\sqrt{2}}\right)\right]\mathrm{d}t
+    \mathrm{ETI}(\mathcal{I} \mid \Theta) = \int_{\mathcal{I}} \frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}} \sqrt{1 - \omega(t)^2}   \phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left[2\phi(\zeta(t)) + \zeta(t) \Erf\left(\frac{\zeta(t)}{\sqrt{2}}\right)\right]\mathrm{d}t
   \end{align*}
   \begin{align*}
-  \omega(t) = \frac{\Sigma_{df,d^2\!f}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}}, \quad \eta(t) = \frac{d^2\!f(t) - df(t)\Sigma_{d^2\!f}(t,t)^{1/2}\omega(t)\Sigma_{df}(t,t)^{-1/2}}{\Sigma_{d^2\!f}(t,t)^{1/2}(1 - \omega(t)^2)^{1/2}}
+  \omega(t) = \frac{\Sigma_{df,d^2\!f}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}}, \quad \zeta(t) = \frac{\mu_{d^2\!f}(t) - \mu_{df}(t)\Sigma_{d^2\!f}(t,t)^{1/2}\omega(t)\Sigma_{df}(t,t)^{-1/2}}{\Sigma_{d^2\!f}(t,t)^{1/2}(1 - \omega(t)^2)^{1/2}}
   \end{align*}
 }
 \end{frame}

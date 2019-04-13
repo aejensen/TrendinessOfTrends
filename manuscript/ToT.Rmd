@@ -28,11 +28,11 @@ bibliography: bibliography.bib
 
 
 \begin{abstract}
-A statement often seen in the news concerning some public health outcome is that some trend has changed or been broken. Such statements are often based on longitudinal data from e.g., surveys, and the change in the trend is claimed to have occurred at the time of the latest data collection. These kinds of statistical assessments are very important as they may influence public health decisions on a national level.
+A statement often seen in the news concerning some public health outcome is that some trend has changed or been broken. Such statements are often based on longitudinal data from e.g., surveys, and the change in the trend is claimed to have occurred at the time of the latest data collection. These types of statistical assessments are very important as they may potentially influence public health decisions on a national level.
 
-Standard change-point models are not applicable since there are no observations beyond the time of the stipulated change-point. Instead we propose a statistical model using methods from Functional Data Analysis under the assumption that reality evolves in continuous time. Under this assumption we define what constitutes a trend and a change in a trend, and we introduce a probabilistic Trend Direction Index. This index has the intuitive interpretation of the probability that an underlying trend has changed direction at any given time conditional on observed data and can be used for both estimation and forecasting. [\textbf{TODO:} Also mention ETI.]
+Instead we propose a statistical model using methods from Functional Data Analysis under the assumption that reality evolves in continuous time. Under this assumption we define what constitutes a trend and a change in a trend, and we introduce a probabilistic Trend Direction Index. This index has the intuitive interpretation of the probability that an underlying trend has changed direction at any given time conditional on observed data. We also define a global index of Expected Trend Instability that quantifies the expected number of times a trend changes on an interval.
 
-We show how the Trend Direction Index can be estimated from data in a Bayesian framework and give an application to development of the proportion of smokers in Denmark during the last 20 years. We also show how our model can be extended to include a time-varying latent class variable enabling data-driven adaptation to underlying non-stationarity.
+We show how the Trend Direction Index and the Expected Trend Instability can be estimated from data in a Bayesian framework and give an application to development of the proportion of smokers in Denmark during the last 20 years.
 \end{abstract}
 
 \begin{center}
@@ -46,6 +46,8 @@ This manuscript is concerned with the fundamental problem of estimating an under
 
 [\textbf{TODO:} What do we propose? We work in continuous time and introduce TDI and ETI informally at this point. TDI gives the local probability of the direction of $f$ and can answer the question ,,What is the probability that $f$ is increasing?''. ETI gives the expected number of changes in the direction of $f$ on an interval and can answer the question ,,Is it the first time in 20 years that $f$ has changed trend?]. 
 
+[\textbf{TODO:} We are not doing a hypothesis test and compute a p-value. I.e., we do not calculate the probablity that an observed change in trend is different than would have been expected if there was no change in trend. We estimate the actual probability that the trend in changing.] 
+
 \begin{figure}[htb]
 \center\includegraphics{../figures/rawDataPlot}
 \caption{The proportion of daily or occational smokers in Denmark during the last 20 years estimated from survey data and reported by the Danish Health Authority. [\textbf{TODO:} Mention in text why 2009 is missing]}
@@ -55,7 +57,7 @@ This manuscript is concerned with the fundamental problem of estimating an under
 [\textbf{TODO:} Assert that both TDI and EDI are scale free. They don't tell anything about the magnitude of a trend. They should therefore always be accompanied by plots of the posterior of $df$]. 
 
 
-[\textbf{TODO:} Reference some previous work]. @gottlieb2012stickiness define a stickiness coefficient for longitudinal data. Our $\text{ETI}$ has some similarities to the tracking index of @foulkes1981index. Empirical dynamics for longitudinal data has been studied by @muller2010empirical.
+[\textbf{TODO:} Reference some previous work]. @gottlieb2012stickiness define a stickiness coefficient for longitudinal data. Our $\text{ETI}$ has some similarities to the tracking index of @foulkes1981index.
 
 The manuscript is structured as follows: In section \ref{sec:method} we present our statistical model based on a latent Gaussian Process formulation giving rise to analytic expressions for the Trend Direction Index and the Expected Trend Instability index conditional on observed data. We then extend this basic model to enable a data-driven adaptation to non-stationarity in the underlying dynamics. Section \ref{sec:estimation} is concerned with estimating the models parameters, and we give an application to the proportion of smokers in Denmark during the last 20 years in section \ref{sec:application}, and we conclude with a discussion.
 
@@ -70,19 +72,19 @@ To quantify the probability that a trend is changing we introduce the following 
 \begin{align}
   \mathrm{TDI}(t, \delta) = P(df(t + \delta ) > 0 \mid \mathcal{F}_t)\label{eq:TCIdef}
 \end{align}
-where $\mathcal{F}_t$ is the $\sigma$-algebra of all available information observed up until time $t$. The value of $\mathrm{TDI}(t, \delta)$ is equal to the probability that $f$ is increasing at time $t + \delta$ given all we know about the data generating process up until time $t$. A similar definition could be given for a negative trend but that is equal to $1 - \mathrm{TDI}(t, \delta)$ and therefore redundant. The sign of $\delta$ determines whether we wish to estimate the past ($\delta \leq 0$) or forecast into the future ($\delta > 0$). Most of the examples seen in the news concerning public health outcomes is concerned with $t$ being equal to the current calendar time and $\delta = 0$. This excludes using both change-point or segmented regression models [@quandt1958estimation] as there are no observations beyond the stipulated change-point. [\textbf{TODO:} Something about $\text{TDI}(t + \delta) = 0.5$ is a natural threshold for trendiness.]
+where $\mathcal{F}_t$ is the $\sigma$-algebra of all available information observed up until time $t$. The value of $\mathrm{TDI}(t, \delta)$ is equal to the probability that $f$ is increasing at time $t + \delta$ given all we know about the data generating process up until time $t$. A similar definition could be given for a negative trend but that is equal to $1 - \mathrm{TDI}(t, \delta)$ and therefore redundant. The sign of $\delta$ determines whether we wish to estimate the past ($\delta \leq 0$) or forecast into the future ($\delta > 0$). Most of the examples seen in the news concerning public health outcomes is concerned with $t$ being equal to the current calendar time and $\delta = 0$. This excludes using both change-point or segmented regression models [@quandt1958estimation] as there are no observations beyond the stipulated change-point. A useful parametrization of the Trend Direction Index is $\mathrm{TDI}(\max \mathcal{T}, t - \max \mathcal{T})$ with $t \leq \max \mathcal{T}$ which conditions on the full observation period and looks back in time. In this parametrization $t = \max \mathcal{T}$ corresponds to the Trend Direction Index at the end of the observation period. A natural threshold for trendiness is $\mathrm{TDI} = 0.5$ corresponding to a situation where the trend is symmetrically distributed around zero. Depending on the application, different thresholds can be used based on external loss or utility functions.
 
-In addition to the Trend Direction Index we also define a global index of trend instability. We say that a function $f$ is \textit{trend stable} on an interval $\mathcal{I} \subseteq \mathcal{T}$ if it remains either increasing or decreasing so that its trend maintains its sign. We quantify the trend instability by the expected number of times $f$ changes direction on the interval, which is equivalent to either counting the number of zero crossings by $df$. Informally at this point we define the Expected Trend Instability as
+In addition to the Trend Direction Index we also define a global index of trend instability. We say that a function $f$ is \textit{trend stable} on an interval $\mathcal{I} \subseteq \mathcal{T}$ if it remains either increasing or decreasing so that its trend maintains its sign. As a quantification of the trend instability of a function $f$ we propose to use the expected number of times that the function changes direction on the interval. This is equivaltn to counting the number of zero crossings by $df$ on $\mathcal{I}$. Informally at this point, we define the Expected Trend Instability as
 \begin{align}
   \text{ETI}(\mathcal{I}) = \E\left[\#\left\{t \in \mathcal{I} : df(t) = 0\right\} \mid \mathcal{F}\right]\label{eq:ETIdef}
 \end{align}
-which is the expected value of the size of the random point set of zero crossings by $df$ on $\mathcal{I}$ conditional on a suitable sigma algebra $\mathcal{F}$. The value of $\text{ETI}$ is a finite [\textbf{TODO:} finite because of assumptions] real positive number, and the lower $\text{ETI}(\mathcal{I})$ is, the more trend stable $f$ is on $\mathcal{I}$ and vice versa.
+which is the expected value of the size of the random point set of zero crossings by $df$ on $\mathcal{I}$ conditional on a suitable $\sigma$-algebra $\mathcal{F}$. An Expected Trend Instability of zero implies that $f$... The lower $\text{ETI}(\mathcal{I})$ is, the more trend stable $f$ is on $\mathcal{I}$ and vice versa.
 
 
 ## Latent Gaussian Process Model
 The definitions in the previous section impose the existence of an infinite dimensional latent variable $f$ and its derivative $df$. In the following we assume that $f$ is a latent Gaussian Process which is equivalent to imposing a functional prior distribution on the latent characteristic [\textbf{TODO: something about flexible}]. Our knowledge about $f$ and $df$ will then be updated based on the observed data giving rise to a joint posterior distribution over $f$ and $df$.
 
-A random function $f$ is a Gaussian Process if and only if the vector $(f(t_1), \ldots, f(t_n))$ has a multivariate normal distribution for every set of evaluation points $(t_1, \ldots, t_n) \subset \mathcal{T}$ with $n < \infty$, and we write $f \sim \mathcal{GP}(\mu(\cdot), C(\cdot, \cdot))$ where $\mu\colon\, \mathcal{T} \mapsto \mathbb{R}$ is the mean function and $C\colon\, \mathcal{T} \times \mathcal{T} \mapsto \mathbb{R}$ is a symmetric, positive semi-definite covariance function [@cramer1967stationary]. Given observed data of the form $(Y_i, t_i)_{i=1}^n$ we lay out the data generating process by the following hierarchical model 
+A random function $f$ is a Gaussian Process if and only if the vector $(f(t_1), \ldots, f(t_n))$ has a multivariate normal distribution for every set of evaluation points $(t_1, \ldots, t_n) \subset \mathcal{T}$ with $n < \infty$, and we write $f \sim \mathcal{GP}(\mu(\cdot), C(\cdot, \cdot))$ where $\mu\colon\, \mathcal{T} \mapsto \mathbb{R}$ is the mean function and $C\colon\, \mathcal{T} \times \mathcal{T} \mapsto \mathbb{R}$ is a symmetric, positive definite covariance function [@cramer1967stationary]. Given observed data of the form $(Y_i, t_i)_{i=1}^n$ we lay out the data generating process by the following hierarchical model 
 \begin{align}
   f \mid \beta, \theta &\sim \mathcal{GP}(\mu_\beta(\cdot), C_\theta(\cdot,\cdot))\label{eq:generatingProcess}\\
   Y_i \mid t_i, f(t_i), \Theta &\overset{iid}{\sim} N(f(t_i), \sigma^2)\nonumber, \quad \Theta = (\beta, \theta, \sigma)\nonumber
@@ -92,8 +94,8 @@ where $\beta$ is a vector of parameters for the mean function of $f$, $\theta$ i
 \begin{assumption}
 We assume that $f$ is a separable Gaussian process and that
 \begin{enumerate}
-  \item{a}
-  \item{b}
+  \item[A1:]{?}
+  \item[A2:]{?}
 \end{enumerate}
 This ensures that the sample paths of $f$ are in $C^r(\mathcal{T})$. We require that $r \geq 1$ for the Trend Direction Index and $r \geq 2$ for the index of Expected Trend Instability.
 
@@ -147,24 +149,26 @@ To illustrate the Trend Direction Index we show an example in the noise free cas
 
 ## Expected Trend Instability 
 The general form of the Expected Trend Instability index was defined in Equation (\ref{eq:ETIdef}).
-\begin{align}
-  \lambda(t) = ??
-\end{align}
 
-\begin{align}
-  \text{ETI}(\mathcal{T}) = \int_\mathcal{T} \lambda(s)ds
-\end{align}
 
 \begin{proposition}
+The local Expected Trend Instability is
 \begin{align*}
-  \mathrm{ETI}(\mathcal{T} \mid \Theta) = \int_{\mathcal{T}} \sqrt{\frac{\Sigma_{d^2\!f}(t,t)}{\Sigma_{df}(t,t)}} \sqrt{1 - \rho(t)^2} \phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left[2\phi(\eta(t)) + \eta(t) \Erf\left(\frac{\eta(t)}{\sqrt{2}}\right)\right]\mathrm{d}t
+  \mathrm{dETI}(t, \mathcal{I} \mid \Theta) = \frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}} \left(1 - \omega(t)^2\right)^{1/2} \phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left[2\phi(\zeta(t)) + \zeta(t) \Erf\left(\frac{\zeta(t)}{\sqrt{2}}\right)\right]
 \end{align*}
-where $\phi$ is the standard normal density function, $\Erf$ is the error function with $\frac{1}{2}\left(\Erf(2^{-1/2} x) + 1\right)$ equal to the standard normal cumulative distribution function, and $\rho$ and $\eta$ are functions defined by
+where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function, and $\omega$ and $\zeta$ are given by
 \begin{align*}
-  \rho(t) = \frac{\Sigma_{df,d^2\!f}(t,t)}{\sqrt{\Sigma_{df}(t,t)\Sigma_{d^2\!f}(t,t)}}, \quad \eta(t) = \frac{\mu_{d^2\!f}(t)}{\Sigma_{d^2\!f}(t,t) \sqrt{1-\rho(t)^2}} - \frac{\mu_{df}(t)\rho(t)}{\Sigma_{df}(t,t) \sqrt{1-\rho(t)^2}}
+  \omega(t) = \frac{\Sigma_{df,d^2\!f}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}}, \quad \zeta(t) = \frac{\mu_{d^2\!f}(t) - \mu_{df}(t)\Sigma_{d^2\!f}(t,t)^{1/2}\omega(t) \Sigma_{df}(t,t)^{-1/2}}{\Sigma_{d^2\!f}(t,t)^{1/2}(1-\omega(t)^2)^{1/2}}
+\end{align*}
+where $\mu_{df}$, $\mu_{d^2\!f}$, $\Sigma_{df}$, $\Sigma_{d^2\!f}$ and $\Sigma_{df,d^2\!f}$ are the posterior moments given in ???.
+The Expected Trend Instability is then given by integrating the local Expected Trend Instability over the interval
+\begin{align*}
+  \mathrm{ETI}(\mathcal{I} \mid \Theta) = \int_\mathcal{I} \mathrm{dETI}(s, \mathcal{I} \mid \Theta)\mathrm{d}s
 \end{align*}
 \label{prop:ETIposterior}
 \end{proposition}
+
+The value of $\text{ETI}$ is a finite [\textbf{TODO:} finite because of assumptions] real positive value.
 
 Figure \ref{fig:ETIexample} shows that Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vitae vulputate tellus. Cras vitae tempor nibh. Donec dignissim ex ex, nec dignissim magna hendrerit in. Aenean orci nunc, rhoncus quis dictum vitae, tristique non lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nulla facilisi. Vivamus eget ante consectetur, bibendum nulla non, ultrices risus. Nulla neque mauris, tempus quis dui eu, eleifend gravida sem. Nulla blandit non tortor pellentesque varius.
 
@@ -191,6 +195,9 @@ We have implemented both our model with and without a latent class in Stan [@car
 
 We ran four chains for 25000 iterations each with half of the iterations used for warm-up. Convergence was assessed by the potential scale reduction factor ($\widehat{R}$) of @gelman1992inference.
 
+\begin{align}
+L(\Theta \mid \mathbf{Y}, \mathbf{t}) &=  \frac{1}{2}\log |C_{\theta}(\mathbf{t}, \mathbf{t})| - \frac{1}{2}(\mathbf{Y} - \mu_\beta(\mathbf{t}))C_{\theta}(\mathbf{t}, \mathbf{t})^{-1}(\mathbf{Y} - \mu_\beta(\mathbf{t}))^T\label{eq:margloglik}
+\end{align}
 
 
 # Application {#sec:application}
@@ -229,12 +236,13 @@ and we note that the Rational Quadractic covariance function converges to the Sq
 
 The total combination of mean and covariance functions results in 12 candidate models, and to select the model providing the best fit to data we used leave-one-out cross-validation based on maximum likelihood estimation. For each model, $\mathcal{M}$, we turn by turn excluded a single observation $(t_i, Y_i)$ from the vectors of observed outcomes and time points, and we let the leave-one-out data be denoted by $(\mathbf{Y}_{-i}, \mathbf{t}_{-i})$. Based on the leave-one-out data sets we estimated the parameters,  $\Theta_{-i}^{\mathcal{M}} = (\beta, \theta, \sigma^2)$, of the latent Gaussian Process for each model by maximizing the marginal log-likelihood function of the model in Equation (\ref{eq:generatingProcess}). These estimates were given by
 \begin{align*}
-  \widehat{\Theta}_{-i}^\mathcal{M} = \argsup_{\Theta} \log N\left(\mathbf{Y}_{-i} \mid \mu_\beta^\mathcal{M}(\mathbf{t}_{-i}), C_\theta^\mathcal{M}(\mathbf{t}_{-i}, \mathbf{t}_{-i}) + \sigma^2 I\right)
+\widehat{\Theta}_{-i}^\mathcal{M} = \argsup_{\Theta} L(\Theta \mid \mathbf{Y}_{-i}, \mathbf{t}_{-i}) 
 \end{align*}
-and then plugged into the expression for the posterior expectation of $f$ in Proposition \ref{prop:GPposterior} to obtain the leave-out-out predictions. The mean squared prediction error was then calculated from the squared errors between the leave-one-out predictions and the observed values averaged accross all data points:
+where the log-likliehood is given by Equation (\ref{eq:margloglik}). These estimates and then plugged into the expression for the posterior expectation of $f$ in Proposition \ref{prop:GPposterior} to obtain the leave-out-out predictions. The mean squared prediction error was then calculated from the squared errors between the leave-one-out predictions and the observed values averaged accross all data points:
 \begin{align*}
-  \text{MSPE}_{\text{LOO}}^\mathcal{M} = \frac{1}{n}\sum_{i=1}^{n} \left(Y_i - \E[f(t_i) \mid \mathbf{Y}_{-i}, \mathbf{t}_{-i} \widehat{\Theta}_{-i}^\mathcal{M}]\right)^2
+  \text{MSPE}_{\text{LOO}}^\mathcal{M} = \frac{1}{n}\sum_{i=1}^{n} \left(Y_i - \E[f(t_i) \mid \mathbf{Y}_{-i}, \mathbf{t}_{-i}, \widehat{\Theta}_{-i}^\mathcal{M}]\right)^2
 \end{align*}
+and the model providing the best fit to data was selected as $\mathcal{M}_{\text{opt}} = \argmin_\mathcal{M} \text{MSPE}_{\text{LOO}}^\mathcal{M}$.
 
 \begin{table}[htbp]
 \center
@@ -244,20 +252,20 @@ Constant & 0.682 & \textbf{0.651} & 0.687 & 0.660\\
 Linear & 0.806 & $\Leftarrow	$ & 0.896 & 0.865\\
 Quadratic & 0.736 & $\Leftarrow$ & 0.800 & 0.785
 \end{tabular}
-\caption{Leave-one-out cross-validated mean squared error of prediction for each of the 12 candidate models. $\Leftarrow$ indicates numerical convergerce to the SE covariance function.}
+\caption{Leave-one-out cross-validated mean squared error of prediction for each of the 12 candidate models. $\Leftarrow$ indicates numerical convergence to the SE covariance function.}
 \label{tab:looTale}
 \end{table}
 
-The model providing the best fit to data was selected as $\mathcal{M}_{\text{opt}} = \argmin_\mathcal{M} \text{MSPE}_{\text{LOO}}^\mathcal{M}$. Tabel \ref{tab:looTale} shows the mean squared prediction error for each of the models. For the models with a Rational Quadratic covariance function and a linear and a quadratic mean function the parameter $\nu$ diverged numerically implying convergence to the Squared Exponential covariance function. This is indicated in the table by $\Leftarrow$. Comparing the leave-one-out mean squared prediction errors for the candidate models, the optimal model has a constant mean function and a Rational Quadratic covariance function. Equation (\ref{eq:optModelParEstimates}) shows the marginal maximum likelihood estimates of the parameters of the optimal model.
+Tabel \ref{tab:looTale} shows the mean squared prediction error for each of the models. For the models with a Rational Quadratic covariance function and a linear and a quadratic mean function the parameter $\nu$ diverged numerically implying convergence to the Squared Exponential covariance function. Comparing the leave-one-out mean squared prediction errors for the candidate models, the optimal model has a constant mean function and a Rational Quadratic covariance function. The marginal maximum likelihood estimates of the parameters of the optimal model was
 \begin{align}
-  \widehat{\beta_0^\text{ML}} = 28.001, \quad \widehat{\alpha^\text{ML}} = 4.543, \quad \widehat{\rho^\text{ML}} = 4.438, \quad \widehat{\nu^\text{ML}} = 1.020, \quad \widehat{\sigma^\text{ML}} = 0.622\label{eq:optModelParEstimates}
+  \widehat{\beta_0^\text{ML}} = 28.001, \quad \widehat{\alpha^\text{ML}} = 4.543, \quad \widehat{\rho^\text{ML}} = 4.438, \quad \widehat{\nu^\text{ML}} = 1.020, \quad \widehat{\sigma^\text{ML}} = 0.622
 \end{align}
 
 Figure \ref{fig:likFitPlot} shows the fit of the model by plugging in the values of the marginal maximum likelihood estimates into the expressions for the posterior distrubutions of $f$ and $df$ defined in Proposition \ref{prop:GPposterior}, the Trend Direction Index in Proposition \ref{prop:TDIposterior}, and the Local Expected Trend Instability in Proposition \ref{prop:ETIposterior}.
 
 \begin{figure}[htb]
 \center\includegraphics{../figures/likFitPlot}
-\caption{hejhej}
+\caption{Results from fitting the latent Gaussian Process model by maximum likelihood. The first row shows the posterior distributions of $f$ (left) and $df$ (right) with the posterior mean in bold and gray areas show point-wise probability intervals for the posterior distribution. The observed data is indicated by points. The second row shows the estimated Trend Direction Index (left) and the local Expected Trend Instability (right).}
 \label{fig:likFitPlot}
 \end{figure}
 
@@ -284,7 +292,7 @@ $\text{TDI}(2018, -5)$ & 9.50\% & 6.21\% & $[0.03\%; 22.21\%]$\\ \hline
 $\text{ETI}([2008, 2018])$ & 1.39 & 1.25 & $[1.02; 2.22]$\\
 $\text{ETI}([1998, 2018])$ & 3.68 & 3.36 & $[1.24; 4.79]$\\
 \end{tabular}
-\caption{hej}
+\caption{Summary measures from the Maximum Likelihood and Bayesian analyses. The rows show the estimated Trend Direction Index for 2013 to 2018 and the Expected Trend Instability for the last 10 and 20 years all conditional on data from 1998 to 2018. For the Bayesian analysis posterior medians and 95\% posterior probability intervals are given.}
 \label{tab:summaries}
 \end{table}
 
@@ -304,6 +312,12 @@ Something about that the indices are scale-free hence TDI should be interpreted 
   \mathrm{TDI}_u(t, \delta) = P(df(t + \delta ) > u \mid \mathcal{F}_t)
 \end{align*}
 where $u$ is some trend value.
+
+We could also have defined
+\begin{align*}
+  \text{ETI}^\uparrow(\mathcal{I}) &= \E\left[\#\left\{t \in \mathcal{I} : df(t) = 0, d^2\!f(t) > 0\right\} \mid \mathcal{F}\right]
+\end{align*}
+counting the expected number of up-crossings at zero by $df$ (the number of times $f$ has gone from being decreasing to increasing) on $\mathcal{T}$.
 
 Also something about stationarity of $C_\theta$.
 

@@ -9,3 +9,12 @@ Stan/pred.RData
 pred.RData
 predFixed.RData
 Stan/.Rhistory
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.gz
+*.toc
