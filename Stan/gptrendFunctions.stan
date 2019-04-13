@@ -1,3 +1,9 @@
+/*
+  Stan implementation of the Trendiness of Trends
+  This file contains functions doing most of the work
+  AKJ, 2019
+*/
+
 functions{
   real cov_rq(real s, real t, real alpha, real rho, real nu) {
     //Rational Quadratic (RQ) covariance function
