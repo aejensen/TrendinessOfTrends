@@ -1,3 +1,9 @@
+/*
+  Stan implementation of the Trendiness of Trends
+  This is the Bayesian version
+  AKJ, 2019
+*/
+
 #include /gptrendFunctions.stan
 
 data {
@@ -9,9 +15,11 @@ data {
   real tPred[p];     // Vector of prediction points
 
   real mu_mu;
+  
   real alpha_mu;  
   real rho_mu;
   real nu_mu;
+  
   real sigma_mu;
 }
 
@@ -41,9 +49,11 @@ model {
   }
   
   mu ~ student_t(3, mu_mu, 3);
+  
   alpha ~ student_t(3, alpha_mu, 3);
   rho ~ normal(rho_mu, 1);
   nu ~ student_t(3, nu_mu, 3);
+  
   sigma ~ student_t(3,sigma_mu, 3);
   
   y ~ multi_normal_cholesky(rep_vector(mu, n), L);
@@ -52,10 +62,10 @@ model {
 generated quantities {
   matrix[p, 6] pred;
   {
-    vector[n] mY = rep_vector(mu, n);
-    vector[p] m = rep_vector(mu, p);
-    vector[p] dm = rep_vector(0, p);
-    vector[p] ddm = rep_vector(0, p);
+    vector[n] mY = rep_vector(mu, n); //mu_beta(t)
+    vector[p] m = rep_vector(mu, p);  //mu_beta(t*)
+    vector[p] dm = rep_vector(0, p);  //d mu_beta(t*)
+    vector[p] ddm = rep_vector(0, p); //d^2 mu_beta(t*)
   
     pred = gpFit_rng(tPred, t, y, mY, m, dm, ddm, alpha, rho, nu, sigma);
   }

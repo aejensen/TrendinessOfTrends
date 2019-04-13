@@ -1,3 +1,9 @@
+/*
+  Stan implementation of the Trendiness of Trends
+  This is the fixed parameters version
+  AKJ, 2019
+*/
+
 #include /gptrendFunctions.stan
 
 data {
@@ -10,9 +16,11 @@ data {
 
   //Fixed parameters (e.g., empirical Bayes estimates)
   real mu;
+  
   real<lower = 0> alpha;  
   real<lower = 0> rho;
   real<lower = 0> nu;
+  
   real<lower = 0> sigma;
 }
 
@@ -39,12 +47,11 @@ generated quantities {
   matrix[p, 6] pred;
   
   {
-    vector[n] mY = rep_vector(mu, n);
-    vector[p] m = rep_vector(mu, p);
-    vector[p] dm = rep_vector(0, p);
-    vector[p] ddm = rep_vector(0, p);
+    vector[n] mY = rep_vector(mu, n); //mu_beta(t)
+    vector[p] m = rep_vector(mu, p);  //mu_beta(t*)
+    vector[p] dm = rep_vector(0, p);  //d mu_beta(t*)
+    vector[p] ddm = rep_vector(0, p); //d^2 mu_beta(t*)
   
     pred = gpFit_rng(tPred, t, y, mY, m, dm, ddm, alpha, rho, nu, sigma);
   }
 }
-
