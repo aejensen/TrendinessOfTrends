@@ -63,9 +63,9 @@ generated quantities {
   matrix[p, 6] pred;
   {
     vector[n] mY = rep_vector(mu, n); //mu_beta(t)
-    vector[p] m = rep_vector(mu, p);  //mu_beta(t*)
-    vector[p] dm = rep_vector(0, p);  //d mu_beta(t*)
-    vector[p] ddm = rep_vector(0, p); //d^2 mu_beta(t*)
+    vector[p] m = rep_vector(mu, p);  //mu_beta(tPred)
+    vector[p] dm = rep_vector(0, p);  //d mu_beta(tPred)
+    vector[p] ddm = rep_vector(0, p); //d^2 mu_beta(tPred)
   
     pred = gpFit_rng(tPred, t, y, mY, m, dm, ddm, alpha, rho, nu, sigma);
   }
