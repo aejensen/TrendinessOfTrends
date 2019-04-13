@@ -55,7 +55,7 @@ model {
   rho ~ normal(rho_mu, 1);
   nu ~ student_t(3, nu_mu, 3);
   
-  sigma ~ student_t(3,sigma_mu, 3);
+  sigma ~ student_t(3, sigma_mu, 3);
   
   y ~ multi_normal_cholesky(rep_vector(mu, n), L);
 }

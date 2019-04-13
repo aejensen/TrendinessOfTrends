@@ -179,25 +179,22 @@ Figure \ref{fig:ETIexample} shows that Lorem ipsum dolor sit amet, consectetur a
 \end{figure}
 
 
+## Estimation {#sec:estimation}
+The latent Gaussian Process model defined in Equation (\ref{eq:generatingProcess}) requires estimates of the parameter vector $\Theta$ in order to calculate the joint posterior distribution required for the trend indices. Different methods for fitting models with latent Gaussian Processes such as maximum likelihood (also called Empirical Bayes), fully Bayesian estimation and variational Bayes have been considered in the litterature.
 
-# Estimation {#sec:estimation}
-Given observed data $(Y_i, t_i)_{i=1}^n$ there are different approach for estimating models with latent Gaussian Processes. We believe that when doing a probabilistic assessment of a latent variable, such as the Trend Direction Index, it is important to account for all the uncertainty in the model. This is best achieved by using a fully Bayesian estimation. This requires placing prior distributions on the model parameters $\Theta$. These will then be updated based on the observed data and the Trend Direction Index in Proposition \ref{prop:TDIposterior} is then conditional on these posterior distributions. 
-
-[\textbf{TODO:} Write about the covariance function here]
-
-In our application we use the squared exponential covariance function defined in Equation (\ref{eq:seKernel}) which means that our model without the latent class has the following parameters $\Theta = (\beta, \alpha, \rho, \sigma)$. We suggest using the following prior distributions
-\begin{align*}
-  \beta \overset{iid}{\sim} N(m_\beta, 3), \quad \alpha \sim \text{Half-Normal}(0, 3), \quad \rho \sim \Gamma^{-1}(\rho_a, \rho_b), \quad \sigma \sim \text{Half-Normal}(0, 3)
-\end{align*}
-where $\text{Half-Normal}$ denotes the half-normal distribution due to the requirement of positivity of $\alpha$ and $\sigma$ and $\Gamma^{-1}$ is the inverse Gamma distribution (\textbf{TODO:} This is not scale-free. Fix). These provide weakly informative priors for the model parameters. We set the hyper-parameter $\mu_m$ in the prior for $m$ as the empirical average of the observed outcomes, $\mu_m = \frac{1}{n}\sum_{i=1}^n Y_i$. The hyper-parameters for the length-scale parameter $\rho$ deserve special attention. The sampling design of the data, i.e., the values of $t_1, \ldots, t_n$, restricts the possible values of estimable length-scales. Specifically, it is impossible to have a length-scale of the latent function smaller than smallest distance between any two sampling times. Similarly, it is impossible to have a length-scale that is greater than the range of the sampling times. To include this information in the prior distribution of $\rho$ while simultaneously not enforcing hard constraints we find the values of $\rho_a$ and $\rho_b$ such that $P(\rho_\text{min} \leq \rho \leq \rho_\text{max}) = 1 - \gamma$ where $\rho_\text{min} = \min_{i,i^\prime} |t_i - t_i^\prime|$, $\rho_\text{max} = \max_{i,i^\prime} |t_i - t_i^\prime|$ and $\gamma$ is a small probability, e.g., $5\%$ or $1\%$. The values of $\rho_a$ and $\rho_b$ can be found using numerical optimization.
-
-We have implemented both our model with and without a latent class in Stan [@carpenter2017stan]. Stan is a probabilistic programming language that enables full Bayesian statistical inference using Markov chain Monte Carlo sampling and can be used together with R through the \texttt{rstan} package [@rstan]. The Stan programs for our two models are available at the first author's Github repository [@gptrendStan].
-
-We ran four chains for 25000 iterations each with half of the iterations used for warm-up. Convergence was assessed by the potential scale reduction factor ($\widehat{R}$) of @gelman1992inference.
-
+Maximum marginal likelihood:
 \begin{align}
 L(\Theta \mid \mathbf{Y}, \mathbf{t}) &=  \frac{1}{2}\log |C_{\theta}(\mathbf{t}, \mathbf{t})| - \frac{1}{2}(\mathbf{Y} - \mu_\beta(\mathbf{t}))C_{\theta}(\mathbf{t}, \mathbf{t})^{-1}(\mathbf{Y} - \mu_\beta(\mathbf{t}))^T\label{eq:margloglik}
 \end{align}
+
+Bayesian general prior:
+\begin{align*}
+  \Theta_k \sim \text{Half-T}\left(\widehat{\Theta_k^\text{ML}}, \tau_k^2, \kappa_k\right)
+\end{align*}
+We have implemented both our model in Stan [@carpenter2017stan]. Stan is a probabilistic programming language that enables full Bayesian statistical inference using Markov chain Monte Carlo sampling and can be used together with R through the \texttt{rstan} package [@rstan]. The Stan programs are available at the first author's Github repository [@gptrendStan].
+
+
+Given observed data $(Y_i, t_i)_{i=1}^n$ there are different approach for estimating models with latent Gaussian Processes. We believe that when doing a probabilistic assessment of a latent variable, such as the Trend Direction Index, it is important to account for all the uncertainty in the model. This is best achieved by using a fully Bayesian estimation. This requires placing prior distributions on the model parameters $\Theta$. These will then be updated based on the observed data and the Trend Direction Index in Proposition \ref{prop:TDIposterior} is then conditional on these posterior distributions. 
 
 
 # Application {#sec:application}
@@ -226,12 +223,12 @@ Similarly, a simple approach for trying to answer question Q3 would be to look a
 
 
 We now present an analysis of the data set using our proposed model. To complete the model specification in Equation (\ref{eq:generatingProcess}) we must decide on the functional forms of the mean and covariance functions of the latent Gaussian Process. We considered three different mean functions: a constant mean, $\mu_\beta(t) = \beta_0$, a linear mean, $\mu_\beta(t) = \beta_0 + \beta_1 t$, and a quadratic mean function, $\mu_\beta(t) = \beta_0 + \beta_1 t + \beta_2 t^2$. For the covariance function we consider the Squared Exponential (SE), the Rational Quadratic (RQ), the Matern 3/2 (M3/2), and the Matern 5/2 (M5/2) covariance functions. The expressions for these covariance functions are given by
-\begin{align*}
-  C_\theta^\text{SE}(s, t) &= \alpha^2\exp\left(-\frac{(s-t)^2}{2\rho^2}\right), \quad \theta = (\alpha, \rho)\\ 
-  C_\theta^\text{RQ}(s, t) &= \alpha^2\left(1 + \frac{(s-t)^2}{2\rho^2\nu}\right)^{-\nu}, \quad \theta = (\alpha, \rho, \nu)\\
-  C_\theta^\text{M3/2}(s, t) &= \alpha^2\left(1 + \frac{\sqrt{3}\sqrt{(s-t)^2}}{\rho}\right)\exp\left(-\frac{\sqrt{3}\sqrt{(s-t)^2}}{\rho}\right), \quad \theta = (\alpha, \rho)\\
-  C_\theta^\text{M5/2}(s, t) &= \alpha^2\left(1 + \frac{\sqrt{5}\sqrt{(s-t)^2}}{\rho} + \frac{5(s-t)^2}{3\rho^2}\right)\exp\left(-\frac{\sqrt{5}\sqrt{(s-t)^2}}{\rho}\right), \quad \theta = (\alpha, \rho)
-\end{align*}
+\begin{align}
+  C_\theta^\text{SE}(s, t) &= \alpha^2\exp\left(-\frac{(s-t)^2}{2\rho^2}\right), \quad \theta = (\alpha, \rho)\label{eq:covariancefunctions}\\ 
+  C_\theta^\text{RQ}(s, t) &= \alpha^2\left(1 + \frac{(s-t)^2}{2\rho^2\nu}\right)^{-\nu}, \quad \theta = (\alpha, \rho, \nu)\nonumber\\
+  C_\theta^\text{M3/2}(s, t) &= \alpha^2\left(1 + \frac{\sqrt{3}\sqrt{(s-t)^2}}{\rho}\right)\exp\left(-\frac{\sqrt{3}\sqrt{(s-t)^2}}{\rho}\right), \quad \theta = (\alpha, \rho)\nonumber\\
+  C_\theta^\text{M5/2}(s, t) &= \alpha^2\left(1 + \frac{\sqrt{5}\sqrt{(s-t)^2}}{\rho} + \frac{5(s-t)^2}{3\rho^2}\right)\exp\left(-\frac{\sqrt{5}\sqrt{(s-t)^2}}{\rho}\right), \quad \theta = (\alpha, \rho)\nonumber
+\end{align}
 and we note that the Rational Quadractic covariance function converges to the Squared Exponential covariance function for $\nu \rightarrow \infty$, $\lim_{\nu \rightarrow \infty} C_\theta^\text{RQ}(s,t) = C_\theta^\text{SE}(s,t)$. [\textbf{TODO:} Something about the sample path regularity for these covariance functions. M3/2 cannot be used for ETI but okay for TDI]. 
 
 The total combination of mean and covariance functions results in 12 candidate models, and to select the model providing the best fit to data we used leave-one-out cross-validation based on maximum likelihood estimation. For each model, $\mathcal{M}$, we turn by turn excluded a single observation $(t_i, Y_i)$ from the vectors of observed outcomes and time points, and we let the leave-one-out data be denoted by $(\mathbf{Y}_{-i}, \mathbf{t}_{-i})$. Based on the leave-one-out data sets we estimated the parameters,  $\Theta_{-i}^{\mathcal{M}} = (\beta, \theta, \sigma^2)$, of the latent Gaussian Process for each model by maximizing the marginal log-likelihood function of the model in Equation (\ref{eq:generatingProcess}). These estimates were given by
@@ -257,17 +254,24 @@ Quadratic & 0.736 & $\Leftarrow$ & 0.800 & 0.785
 \end{table}
 
 Tabel \ref{tab:looTale} shows the mean squared prediction error for each of the models. For the models with a Rational Quadratic covariance function and a linear and a quadratic mean function the parameter $\nu$ diverged numerically implying convergence to the Squared Exponential covariance function. Comparing the leave-one-out mean squared prediction errors for the candidate models, the optimal model has a constant mean function and a Rational Quadratic covariance function. The marginal maximum likelihood estimates of the parameters of the optimal model was
-\begin{align}
+\begin{align*}
   \widehat{\beta_0^\text{ML}} = 28.001, \quad \widehat{\alpha^\text{ML}} = 4.543, \quad \widehat{\rho^\text{ML}} = 4.438, \quad \widehat{\nu^\text{ML}} = 1.020, \quad \widehat{\sigma^\text{ML}} = 0.622
-\end{align}
+\end{align*}
 
 Figure \ref{fig:likFitPlot} shows the fit of the model by plugging in the values of the marginal maximum likelihood estimates into the expressions for the posterior distrubutions of $f$ and $df$ defined in Proposition \ref{prop:GPposterior}, the Trend Direction Index in Proposition \ref{prop:TDIposterior}, and the Local Expected Trend Instability in Proposition \ref{prop:ETIposterior}.
 
 \begin{figure}[htb]
 \center\includegraphics{../figures/likFitPlot}
-\caption{Results from fitting the latent Gaussian Process model by maximum likelihood. The first row shows the posterior distributions of $f$ (left) and $df$ (right) with the posterior mean in bold and gray areas show point-wise probability intervals for the posterior distribution. The observed data is indicated by points. The second row shows the estimated Trend Direction Index (left) and the local Expected Trend Instability (right).}
+\caption{Results from fitting the latent Gaussian Process model by maximum likelihood. The first row shows the posterior distributions of $f$ (left) and $df$ (right) with the posterior means in bold and gray areas showing point-wise probability intervals for the posterior distribution. The second row shows the estimated Trend Direction Index (left) and the local Expected Trend Instability (right).}
 \label{fig:likFitPlot}
 \end{figure}
+
+\begin{alignat*}{3}
+ \beta_0 &\sim T\left(\widehat{\beta_0^\text{ML}}, 3, 3\right) &\quad \alpha &\sim \text{Half-}T\left(\widehat{\alpha^\text{ML}}, 3, 3\right) &\quad \rho &\sim \text{Half-}N\left(\widehat{\rho^\text{ML}}, 1\right)\\	
+ \nu &\sim \text{Half-}T\left(\widehat{\nu^\text{ML}}, 3, 3\right) & \sigma &\sim \text{Half-}T\left(\widehat{\sigma^\text{ML}}, 3, 3\right)  & 
+\end{alignat*}
+
+We ran four chains for 25,000 iterations each with half of the iterations used for warm-up. Convergence was assessed by the potential scale reduction factor ($\widehat{R}$) of @gelman1992inference.
 
 The top row of Figure \ref{fig:bayesFitPlot} shows the posterior distributions of the Trend Direction Index and the Local Expected Trend Instability from the Bayesian model. The bottom row shows the posterior distributions of the Expected Trend Instability during the last twenty years and the last ten years.
 
@@ -300,9 +304,11 @@ Cross-point for 50% for MLE: year = 2015.48.
 
 Cross-point for 50% for Bayes: [2014.62; 2015.96]
 
-Posterior 95% CI for $\rho$: $[3.155; 6.206]$
 
-Posterior 95% CI for $\nu$: $[0.328; 10.768]$
+Figures \ref{fig:likFitPlot} and \ref{fig:bayesFitPlot} and the summary statistics in Table \ref{tab:summaries} indicate that the Bayesian estimates generally produce a high degree of smoothness in the model fit. This can be seen from the plot of the median local Expected Trend Instability in Figure \ref{fig:bayesFitPlot} which is generally lower than its corresponding maximum likelihood point estimates in Figure \ref{fig:likFitPlot}. This is similarly reflected in the median ETI estimates which are lower than their values under maximum likelihood in Table \ref{tab:summaries}. Looking at the posterior distributions of the covariance parameters $\theta$ (not shown), we see that this is mainly a result of not restricting the parameter $\nu$ to its maximum likelihood value. The 95\% probability interval of the posterior distribution of $\nu$ was $[0.328; 10.743]$ which is highly right-skewed compared to the maximum likelihood estimate of $\widehat{\nu^\text{ML}} = 1.020$. 
+
+To understand the effect of $\nu$ on the smoothness of the fitted models can compare the local expected number of crossings by a Gaussian Process and its derivative at their mean values in the simple case with a zero mean and either the Rational Quadratic or the Squared Exponential covariance function. In this case the formula in Proposition \ref{prop:ETIposterior} simplifies immensely so that the local expected number of mean-crossing by $f$ is equal to $\pi^{-1}(\frac{\partial_1 \partial_2 C_\theta(t, t)}{ C_\theta(t,t)})^{1/2}$ and for $df$ it is equal to $\pi^{-1}(\frac{\partial_1^2 \partial_2^2 C_\theta(t, t)}{ \partial_1\partial_2 C_\theta(t,t)})^{1/2}$. From the expressions in Equation (\ref{eq:covariancefunctions}) we see that the local expected number of mean-crossings by $f$ is the same for both the Squared Exponential and the Rational Quadratic covariance functions and is equal to $\pi^{-1}\rho^{-1}$. However, for $df$ we see that its local expected number of mean-crossings is equal to $3^{1/2}\pi^{-1}\rho^{-1}$ for the Squared Exponential covariance function and $3^{1/2}\pi^{-1}\rho^{-1}(1 + \nu^{-1})^{1/2}$ for the Rational Quadratic covariance function. As $1 < \left(1 + v^{-1}\right)^{1/2} < \infty$ for $0 < \nu < \infty$ and monotonically decreasing for $\nu \rightarrow \infty$ with a limit value of one, we see that the local expected number of mean-crossings by $df$ is always larger for the Rational Quadratic covariance functions compared to the Squared Exponential covariance function with equality in the limit. A right-skewed posterior distribution of $\nu$ therefore generally favors fewer crossings of the trend leading to a more stable trend and a smaller value of the Expected Trend Instability.
+
 
 # Discussion {#sec:discussion}
 [\textbf{TODO:} Her må der båttes løs]
@@ -320,6 +326,8 @@ We could also have defined
 counting the expected number of up-crossings at zero by $df$ (the number of times $f$ has gone from being decreasing to increasing) on $\mathcal{T}$.
 
 Also something about stationarity of $C_\theta$.
+
+Different distributions of $Y \mid f$ could be used (e.g. binary outcomes) but then maximum likelihood estimation is not analytically tractable. 
 
 
 #Bibliography
