@@ -85,7 +85,7 @@ which is the expected value of the size of the random point set of zero crossing
 ## Latent Gaussian Process Model
 The definitions in the previous section impose the existence of an infinite dimensional latent variable $f$ and its derivative $df$. In the following we assume that $f$ is a latent Gaussian Process which is equivalent to imposing a functional prior distribution on the latent characteristic [\textbf{TODO: something about flexible}]. Our knowledge about $f$ and $df$ will then be updated based on the observed data giving rise to a joint posterior distribution over $f$ and $df$.
 
-A random function $f$ is a Gaussian Process if and only if the vector $(f(t_1), \ldots, f(t_n))$ has a multivariate normal distribution for every set of evaluation points $(t_1, \ldots, t_n) \subset \mathcal{T}$ with $n < \infty$, and we write $f \sim \mathcal{GP}(\mu(\cdot), C(\cdot, \cdot))$ where $\mu\colon\, \mathcal{T} \mapsto \mathbb{R}$ is the mean function and $C\colon\, \mathcal{T} \times \mathcal{T} \mapsto \mathbb{R}$ is a symmetric, positive definite covariance function [@cramer1967stationary]. Given observed data of the form $(Y_i, t_i)_{i=1}^n$ we lay out the data generating process by the following hierarchical model 
+A random function $f$ is a Gaussian Process if and only if the vector $(f(t_1), \ldots, f(t_n))$ has a multivariate normal distribution for every set of evaluation points $(t_1, \ldots, t_n) \subset \mathcal{T}$ with $n < \infty$, and we write $f \sim \mathcal{GP}(\mu(\cdot), C(\cdot, \cdot))$ where $\mu\colon\, \mathcal{T} \mapsto \mathbb{R}$ is the mean function and $C\colon\, \mathcal{T} \times \mathcal{T} \mapsto \mathbb{R}$ is a symmetric, positive definite covariance function [@cramer1967stationary]. We let $\mu(\mathbf{t}) \in \mathbb{R}^p$ and $C(\mathbf{t}, \mathbf{t}) \in \mathbb{R}\times\mathbb{R}$ denote the mean vector and covariance matrix obtained by evaluating $\mu$ and $C$ at a finite vector of time points $\mathbf{t}$. Given observed data of the form $(Y_i, t_i)_{i=1}^n$ we lay out the data generating process by the following hierarchical model 
 \begin{align}
   f \mid \beta, \theta &\sim \mathcal{GP}(\mu_\beta(\cdot), C_\theta(\cdot,\cdot))\label{eq:generatingProcess}\\
   Y_i \mid t_i, f(t_i), \Theta &\overset{iid}{\sim} N(f(t_i), \sigma^2)\nonumber, \quad \Theta = (\beta, \theta, \sigma)\nonumber
@@ -107,20 +107,21 @@ Under the above assumptions, an important property of a Gaussian process is that
 \begin{align}
   \begin{bmatrix}f(s)\\ df(t)\\ d^2\!f(u)\end{bmatrix} \mid \beta, \theta &\sim \mathcal{GP}\left(\begin{bmatrix}\mu_\beta(s)\\ d\mu_\beta(t)\\ d^2\!\mu_\beta(u)\end{bmatrix}, \begin{bmatrix}C_\theta(s, s^\prime) & \partial_2 C_\theta(s, t) & \partial_2^2 C_\theta(s, u)\\ \partial_1 C_\theta(t, s) & \partial_1 \partial_2 C_\theta(t, t^\prime) & \partial_1 \partial_2^2 C_\theta(t, u)\\ \partial_1^2 C_\theta(u, s) & \partial_1^2\partial_2 C_\theta(u, t) & \partial_1^2 \partial_2^2 C_\theta(u, u^\prime)\end{bmatrix}\right)\label{eq:latentJoint}
 \end{align}
-where $d^k\!\mu_\beta$ is the $k$'th derivative of $\mu_\beta$ and $\partial_j$ denotes the partial derivatives with respect to the $k$'th variable. Let $\mathbf{Y} = (Y_1, \ldots, Y_n)$ be the vector of outcomes observed at times $\mathbf{t} = (t_1,\ldots,t_n) \subset \mathbf{T}$ and $\mathbf{t}^\ast$ any finite dimensional vector of time points not necessarily equal to $\mathbf{t}$. Formulas (\ref{eq:generatingProcess}) and (\ref{eq:latentJoint}) imply that joint distribution of $(f(\mathbf{t}^\ast),df(\mathbf{t}^\ast), \mathbf{Y}) \mid \mathbf{t}, \Theta$ is multivariate normal, and that the marginal distribution of the observed data is $\mathbf{Y} \mid \mathbf{t}, \Theta = N(\mu_\beta(\mathbf{t}), C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I)$ where $C_\theta(\mathbf{t}, \mathbf{t})$ denotes a matrix consisting of the values of the covariance function at $\left\{(s,t) \in \mathbf{t} \times \mathbf{t} \right\}$, and $I$ is an identity matrix of appropriate dimensions.  Predictions of the latent function and its derivative at $\mathbf{t}^\ast$ are given by the posterior distribution $(f(\mathbf{t}^\ast),df(\mathbf{t}^\ast)) \mid \mathbf{Y}, \mathbf{t}, \Theta$. This distribution is also multivariate normal and its moments are given in Proposition \ref{prop:GPposterior}.
+where $d^k\!\mu_\beta$ is the $k$'th derivative of $\mu_\beta$ and $\partial_j$ denotes the partial derivatives with respect to the $k$'th variable. Let $\mathbf{Y} = (Y_1, \ldots, Y_n)$ be the vector of outcomes observed at times $\mathbf{t} = (t_1,\ldots,t_n) \subset \mathbf{T}$ and $\mathbf{t}^\ast$ any finite dimensional vector of time points not necessarily equal to $\mathbf{t}$. Formulas (\ref{eq:generatingProcess}) and (\ref{eq:latentJoint}) imply that joint distribution of $(f(\mathbf{t}^\ast),df(\mathbf{t}^\ast), \mathbf{Y}) \mid \mathbf{t}, \Theta$ is multivariate normal, and that the marginal distribution of the observed data is $\mathbf{Y} \mid \mathbf{t}, \Theta = N(\mu_\beta(\mathbf{t}), C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I)$ where $I$ is an identity matrix of appropriate dimensions.  Predictions of the latent function and its derivative at $\mathbf{t}^\ast$ are given by the posterior distribution $(f(\mathbf{t}^\ast),df(\mathbf{t}^\ast)) \mid \mathbf{Y}, \mathbf{t}, \Theta$. This distribution is also multivariate normal and its moments are given in Proposition \ref{prop:GPposterior}.
 
 \vspace{0.2cm}
 
 \begin{proposition}
-Let the data generating model be defined as in Equation (\ref{eq:generatingProcess}) and $\mathbf{t}^\ast$ any finite vector of time points. The posterior distribution of $(f, df)$ evaluated at $\mathbf{t}^\ast$ is then given by
+Let the data generating model be defined as in Equation (\ref{eq:generatingProcess}) and $\mathbf{t}^\ast$ any finite vector of time points. The posterior distribution of $(f, df, d^2\!f)$ evaluated at $\mathbf{t}^\ast$ is then given by
 \begin{align*}
 \begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\bm{\mu}(\mathbf{t}^\ast), \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) \right)
 \end{align*}
 where
 \begin{align*}
-  \bm{\mu}(\mathbf{t}^\ast) &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\!\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right)\\
-  \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast)\\ \end{bmatrix} - \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\begin{bmatrix}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}
+  \bm{\mu}(\mathbf{t}^\ast) &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\!\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K_{\theta,\sigma}(\mathbf{t}, \mathbf{t})^{-1} \left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right)\\
+  \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2^2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix} - \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K_{\theta,\sigma}(\mathbf{t}, \mathbf{t})^{-1}\begin{bmatrix}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}
 \end{align*}
+and $K_{\theta,\sigma}(\mathbf{t}, \mathbf{t}) = C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I$.
 \label{prop:GPposterior}
 \end{proposition}
 
@@ -176,15 +177,19 @@ Usually, $\mathcal{F}$ will be the $\sigma$-algebra generated by all the availab
 \vspace{0.2cm}
 
 \begin{proposition}
-The local Expected Trend Instability is
+Let $\mu_{df}$, $\mu_{d^2\!f}$, $\Sigma_{df}$, $\Sigma_{d^2\!f}$ and $\Sigma_{df,d^2\!f}$ be the moments of the joint posterior distribution of $(df, d^2\!f)$ as stated in Proposition \ref{prop:GPposterior}. [\textbf{TODO}: Assumptions.] The local Expected Trend Instability is then given by
 \begin{align*}
-  \mathrm{dETI}(t, \mathcal{I} \mid \Theta) = \frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}} \left(1 - \omega(t)^2\right)^{1/2} \phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left[2\phi(\zeta(t)) + \zeta(t) \Erf\left(\frac{\zeta(t)}{\sqrt{2}}\right)\right]
+d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) = \frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}}\left(1-\omega(t)^2\right)^{1/2}\phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left(2\phi(\zeta(t)) + \zeta(t)\Erf\left(\frac{\zeta(t)}{2^{1/2}}\right)\right)
 \end{align*}
 where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function, and $\omega$ and $\zeta$ are given by
 \begin{align*}
-  \omega(t) = \frac{\Sigma_{df,d^2\!f}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}}, \quad \zeta(t) = \frac{\mu_{d^2\!f}(t) - \mu_{df}(t)\Sigma_{d^2\!f}(t,t)^{1/2}\omega(t) \Sigma_{df}(t,t)^{-1/2}}{\Sigma_{d^2\!f}(t,t)^{1/2}(1-\omega(t)^2)^{1/2}}
+  \omega(t) = \frac{\Sigma_{df,d^2\!f}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}},\quad \zeta(t) = \frac{\mu_{df}(t)\Sigma_{d^2\!f}(t,t)^{1/2}\omega(t)\Sigma_{df}(t,t)^{-1/2} - \mu_{d^2\!f}(t)}{\Sigma_{d^2\!f}(t,t)^{1/2}\left(1 - \omega(t)^2\right)^{1/2}}
 \end{align*}
-where $\mu_{df}$, $\mu_{d^2\!f}$, $\Sigma_{df}$, $\Sigma_{d^2\!f}$ and $\Sigma_{df,d^2\!f}$ are the posterior moments given in ???.
+and 
+\begin{align*}
+  \mathrm{ETI}(\mathcal{I} \mid \Theta) &= \int_\mathcal{I}d\mathrm{ETI}_\mathcal{I}(t \mid \Theta)
+\end{align*}
+something something.
 \label{prop:ETIposterior}
 \end{proposition}
 
@@ -202,23 +207,30 @@ Figure \ref{fig:ETIexample} shows an example of $25$ random Gaussian Processes o
 ## Estimation {#sec:estimation}
 The latent Gaussian Process model defined in Equation (\ref{eq:generatingProcess}) requires estimates of the parameter vector $\Theta$ in order to calculate the joint posterior distribution required for the trend indices. These parameters must be estimated from data $(Y_i, t_i)_{i=1}^n$. We consider two different estimation procedures: maximum likelihood estimation and a fully Bayesian estimator.  
 
-Since our model normal. Maximum likelihood estimation is possible through the marginal likelihood of the observed data obtained by integrating out the distribution of the Gaussian Process. The marginal likelihood function is equal to
+Maximum likelihood estimation for our model consists of finding the parameters that maximize the marginal likelihood of the observed data and plugging these into the expressions. Since the observation part of the model consists of normal distributed random variables conditional on the latent Gaussian Process, the marginal distribution of $\mathbf{Y}$ is found by integrating out the distribution of the latent Gaussian Process in the conditional distribution $\mathbf{Y} \mid f(\mathbf{t}), \mathbf{t}, \Theta$. This is a multivariate normal distribution with mean $\mu_\beta(\mathbf{t})$ and covariance function $C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I$, and the marginal log likelihood function takes the following form
 \begin{align}
-L(\Theta \mid \mathbf{Y}, \mathbf{t}) &=  \frac{1}{2}\log |C_{\theta}(\mathbf{t}, \mathbf{t})| - \frac{1}{2}(\mathbf{Y} - \mu_\beta(\mathbf{t}))C_{\theta}(\mathbf{t}, \mathbf{t})^{-1}(\mathbf{Y} - \mu_\beta(\mathbf{t}))^T\label{eq:margloglik}
+\log L(\Theta \mid \mathbf{Y}, \mathbf{t}) &\propto - \frac{1}{2}\log |C_{\theta}(\mathbf{t}, \mathbf{t}) + \sigma^2 I| - \frac{1}{2}(\mathbf{Y} - \mu_\beta(\mathbf{t}))^T\left[C_{\theta}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}(\mathbf{Y} - \mu_\beta(\mathbf{t}))\label{eq:margloglik}
 \end{align}
-and the maximum likelihood estimate of the parameters is therefore $\widehat{\Theta^\text{ML}} = \argsup_{\Theta} L(\Theta \mid \mathbf{Y}, \mathbf{t})$. This estimate can then be plugged into the expressions for the Trend Direction Index and the Expected Trend Instability as
+The maximum likelihood estimate of $\widehat{\Theta^\text{ML}} = \argsup_{\Theta = (\beta, \theta, \sigma)} \log L(\Theta \mid \mathbf{Y}, \mathbf{t})$ can be obtained by numerical optimization or by calculating the roots to the score equations $\nabla_\theta \log L(\Theta \mid \mathbf{Y}, \mathbf{t}) = 0$. The maximum likelihood estimate can then be plugged in to the expressions for the posterior distributions of $(f, df, d^2\!f)$ in Proposition \ref{prop:GPposterior} and simulated at any vector of time point $\mathbf{t}^\ast$. Point estimates of the Trend Direction Index and the Expected Trend Instability are similarly given by
 \begin{align*}
   \mathrm{TDI}\left(t, \delta \mid \widehat{\Theta^\text{ML}}\right) \quad \text{and} \quad \mathrm{ETI}\left(\mathcal{I} \mid \widehat{\Theta^\text{ML}}\right)
 \end{align*}
+where the expressions can be found in Propositions \ref{prop:TDIposterior} and \ref{prop:ETIposterior} respectively.
 
-For the Bayesian estimation, the generating model in Equation (\ref{eq:generatingProcess}) must be augmented with a prior distribution of the model parameters
+The maximum likelihood estimator is easy and fast to compute, but it is difficult to propagate the uncertainty of the estimate through to the posterior distributions and the trend indices. This is disadvantageous because in order to do a qualified assessment of trendiness we are not only interested in point estimates but also the their uncertainties. A Baysian estimator, while slower to calculate, provides a straightforward way of including for all uncertainties in the model. For the Bayesian estimator, the generating model in Equation (\ref{eq:generatingProcess}) must be augmented with another level specifying prior distribution of the model parameters
 \begin{align*}
-  \Theta = (\beta, \theta, \sigma) \sim G(\Psi)
+  (\beta, \theta, \sigma) \sim G(\Psi)
 \end{align*}
-where $G$ is some family of distribution functions index by a vector of hyper-parameters $\Psi$. We have implemented the Bayesian estimator in Stan [@carpenter2017stan]. Stan is a probabilistic programming language that enables full Bayesian statistical inference using Markov chain Monte Carlo sampling and can be used through R by the \texttt{rstan} package [@rstan]. The Stan programs are available at the first author's Github repository [@gptrendStan].
+where $G$ is some family of distribution functions index by a vector of hyper-parameters $\Psi$. 
 
+The posterior distribution of the trend indices can then be summarized through their $\tau$ quantiles $Q_\tau$ such as
+\begin{align*}
+  P\left(\mathrm{TDI}\left(t, \delta \mid \Theta\right) \leq \tau\right) = Q_\tau(t, \delta), \quad P\left(\mathrm{ETI}\left(\mathcal{I} \mid \Theta\right) \leq \tau\right) = Q_\tau \quad \tau \in (0; 1)
+\end{align*}
+which can be estimated from the MCMC samples by their empirical counterparts.
 
-it is important to account for all the uncertainty in the model. These will then be updated based on the observed data and the Trend Direction Index in Proposition \ref{prop:TDIposterior} is then conditional on these posterior distributions. 
+We have implemented the Bayesian estimator in Stan [@carpenter2017stan]. Stan is a probabilistic programming language that enables full Bayesian statistical inference using Markov chain Monte Carlo sampling and can be used through R by the \texttt{rstan} package [@rstan]. The Stan programs are available at the first author's Github repository [@gptrendStan].
+
 
 
 # Application {#sec:application}
@@ -257,7 +269,7 @@ and we note that the Rational Quadractic covariance function converges to the Sq
 
 The total combination of mean and covariance functions results in 12 candidate models, and to select the model providing the best fit to data we used leave-one-out cross-validation based on maximum likelihood estimation. For each model, $\mathcal{M}$, we turn by turn excluded a single observation $(t_i, Y_i)$ from the vectors of observed outcomes and time points, and we let the leave-one-out data be denoted by $(\mathbf{Y}_{-i}, \mathbf{t}_{-i})$. Based on the leave-one-out data sets we estimated the parameters,  $\Theta_{-i}^{\mathcal{M}} = (\beta, \theta, \sigma^2)$, of the latent Gaussian Process for each model by maximizing the marginal log-likelihood function of the model in Equation (\ref{eq:generatingProcess}). These estimates were given by
 \begin{align*}
-\widehat{\Theta}_{-i}^\mathcal{M} = \argsup_{\Theta} L(\Theta \mid \mathbf{Y}_{-i}, \mathbf{t}_{-i}) 
+\widehat{\Theta}_{-i}^\mathcal{M} = \argsup_{\Theta} \log L(\Theta \mid \mathbf{Y}_{-i}, \mathbf{t}_{-i}) 
 \end{align*}
 where the log-likliehood is given by Equation (\ref{eq:margloglik}). These estimates and then plugged into the expression for the posterior expectation of $f$ in Proposition \ref{prop:GPposterior} to obtain the leave-out-out predictions. The mean squared prediction error was then calculated from the squared errors between the leave-one-out predictions and the observed values averaged accross all data points:
 \begin{align*}
@@ -278,9 +290,9 @@ Quadratic & 0.736 & $\Leftarrow$ & 0.800 & 0.785
 \end{table}
 
 Tabel \ref{tab:looTale} shows the mean squared prediction error for each of the models. For the models with a Rational Quadratic covariance function and a linear and a quadratic mean function the parameter $\nu$ diverged numerically implying convergence to the Squared Exponential covariance function. Comparing the leave-one-out mean squared prediction errors for the candidate models, the optimal model has a constant mean function and a Rational Quadratic covariance function. The marginal maximum likelihood estimates of the parameters of the optimal model was
-\begin{align*}
-  \widehat{\beta_0^\text{ML}} = 28.001, \quad \widehat{\alpha^\text{ML}} = 4.543, \quad \widehat{\rho^\text{ML}} = 4.438, \quad \widehat{\nu^\text{ML}} = 1.020, \quad \widehat{\sigma^\text{ML}} = 0.622
-\end{align*}
+\begin{align}
+  \widehat{\beta_0^\text{ML}} = 28.001, \quad \widehat{\alpha^\text{ML}} = 4.543, \quad \widehat{\rho^\text{ML}} = 4.438, \quad \widehat{\nu^\text{ML}} = 1.020, \quad \widehat{\sigma^\text{ML}} = 0.622\label{eq:mlEstimates}
+\end{align}
 
 Figure \ref{fig:likFitPlot} shows the fit of the model by plugging in the values of the marginal maximum likelihood estimates into the expressions for the posterior distrubutions of $f$ and $df$ defined in Proposition \ref{prop:GPposterior}, the Trend Direction Index in Proposition \ref{prop:TDIposterior}, and the Local Expected Trend Instability in Proposition \ref{prop:ETIposterior}.
 
@@ -294,6 +306,7 @@ Figure \ref{fig:likFitPlot} shows the fit of the model by plugging in the values
  \beta_0 &\sim T\left(\widehat{\beta_0^\text{ML}}, 3, 3\right), &\quad \alpha &\sim \text{Half-}T\left(\widehat{\alpha^\text{ML}}, 3, 3\right), &\quad \rho &\sim \text{Half-}N\left(\widehat{\rho^\text{ML}}, 1\right)\\	
  \nu &\sim \text{Half-}T\left(\widehat{\nu^\text{ML}}, 3, 3\right), & \sigma &\sim \text{Half-}T\left(\widehat{\sigma^\text{ML}}, 3, 3\right)  & 
 \end{alignat*}
+where the maximum likelihood values are given in Equation (\ref{eq:mlEstimates}).
 
 We ran four chains for 25,000 iterations each with half of the iterations used for warm-up. Convergence was assessed by the potential scale reduction factor ($\widehat{R}$) of @gelman1992inference.
 
@@ -353,6 +366,8 @@ Also something about stationarity of $C_\theta$.
 
 Different distributions of $Y \mid f$ could be used (e.g. binary outcomes) but then maximum likelihood estimation is not analytically tractable. 
 
+Everything including implementations and supplementary material is available at @gptrendStan.
+
 
 #Bibliography
 <div id="refs"></div>
@@ -402,46 +417,68 @@ In order to calculate the Expected Trend Instability index in Proposition \ref{p
 This completes the proof.
 
 ## Proof of Proposition \ref{prop:ETIposterior}
-@rice1944mathematical showed that the local expected number of zero-crossings of a Gaussian process $X$ at time $t$ is given by
+@rice1945mathematical showed in section 3.3 that the local expected number of zero-crossings of a Gaussian process $X$ at time $t$ is given by
 \begin{align*}
 \int_{-\infty}^\infty |v|f_{X(t), dX(t)}(0, v)\mathrm{d}v
 \end{align*}
-where $f_{X(t), dX(t)}$ is the joint density function of $X$ and its derivative $dX$ at time $t$. [\textbf{TODO:} Conditions] By the definition of the local Expected Trend Instability in Equation (\ref{eq:localETI}) we must therefore calculate the Rice formula for the joint posterior distribution of $(df, d^2\!f)$. From Proposition \ref{prop:GPposterior} it follows that the distribution of $(df, d^2\!f) \mid \mathbf{Y}, \mathbf{t}, \Theta$ is bivariate normal for each $t$ where we assume that the $\sigma$-algebra is generated by all observed data. The joint posterior density function evaluated at $(0, v)$ can be factorized as
+where $f_{X(t), dX(t)}$ is the joint density function of $X$ and its derivative $dX$ at time $t$. [\textbf{TODO:} Conditions] The derive the expression local Expected Trend Instability in Equation (\ref{eq:localETI}) we must apply the Rice formula to the joint posterior distribution of $(df, d^2\!f)$. From Proposition \ref{prop:GPposterior} the distribution of $(df, d^2\!f) \mid \mathbf{Y}, \mathbf{t}, \Theta$ is bivariate normal for each $t$. 
+
+Let $\mu_{df}(t)$, $\mu_{d^2\!f}(t)$, $\Sigma_{df}(s,t)$ and $\Sigma_{d^2\!f}(s,t)$ be defined as in Proposition \ref{prop:GPposterior} and define further
+\begin{align*}
+  \omega(t) = \frac{\Sigma_{df, d^2\!f}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}}
+\end{align*}
+as the posterior point-wise cross-correlation function between $df$ and $d^2\!f$. The joint posterior density function of $(df, d^2\!f)$ at any time $t$ evaluated at $(0, v)$ can be factorized as
 \begin{align*}
 f_{df(t), d^2\!f(t)}(0, v \mid \Theta) = c_1(t) e^{c_2(t)} e^{-c_3(t) v^2 - 2c_4(t) v}
 \end{align*}
-where $c_1(t), \ldots, c_4(t)$ are functions of time, independent of $v$ and given by
-\begin{alignat*}{2}
- c_1(t) &= \frac{1}{2\pi \gamma \sigma (1-\rho^2)^{1/2}} &\quad c_2(t) &= \frac{\mu_{df}(t)^2\gamma^2 -2\mu_{df}(t)\mu_{d^2\!f}(t)\gamma\rho\sigma+\mu_{d^2\!f}(t)^2\sigma^2}{2\gamma^2(\rho^2-1)\sigma^2}\\	
- c_3(t) &= -\frac{1}{2\gamma^2(\rho^2-1)} & c_4(t) &= -\frac{\mu_{df}(t) \gamma \rho - \mu_{d^2\!f}(t) \sigma}{2\gamma^2(\rho^2-1)\sigma}
-\end{alignat*}
-where  $\mu_{df}$, $\mu_{d^2\!f}$, $\Sigma_{df}$, $\Sigma_{d^2\!f}$ and $\Sigma_{df,d^2\!f}$ are defined in Equations (\ref{eq:appendixPost1}) and (\ref{eq:appendixPost2}). The local Expected Trend Instability can then be written as
+where $c_1, \ldots, c_4$ are functions of time given by
 \begin{align*}
-d\mathrm{ETI}_\mathcal{I}(t, \mid \Theta) &= \int_{-\infty}^\infty |v| f_{df(t), d^2\!f(t)}(0, v)\mathrm{d}v \\
- &= c_1(t) e^{c_2(t)}\int_{-\infty}^\infty |v| e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\\
- &= c_1(t) e^{c_2(t)}\left(\int_0^\infty v e^{-c_3(t) v^2 + 2c_4(t) v}\mathrm{d}v + \int_0^\infty v e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\right)
+ c_1(t) &= \frac{1}{2\pi \Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2} (1-\omega(t)^2)^{1/2}}\\
+ c_2(t) &= \frac{\mu_{df}(t)^2\Sigma_{d^2\!f}(t,t) -2\mu_{df}(t)\mu_{d^2\!f}(t)\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}\omega(t) + \mu_{d^2\!f}(t)^2\Sigma_{df}(t,t)}{2\Sigma_{d^2\!f}(t,t)(\omega(t)^2-1)\Sigma_{df}(t,t)}\\	
+ c_3(t) &= -\frac{1}{2\Sigma_{d^2\!f}(t,t)(\omega(t)^2-1)}\\
+ c_4(t) &= -\frac{\mu_{df}(t) \Sigma_{d^2\!f}(t,t)^{1/2} \omega(t) - \mu_{d^2\!f}(t) \Sigma_{df}(t,t)^{1/2}}{2\Sigma_{d^2\!f}(t,t)(\omega(t)^2-1)\Sigma_{df}(t,t)^{1/2}}
 \end{align*}
-where the second equality follows by even function. As $c_3(t) > 0$ for $\gamma > 0$ and $-1 < \rho < 1$ by assumption ??? we obtain the following solution for the intergral by using formula 5 in section 3.462 on page 365 of @gradshteyn2014table 
+By Rice's formula, the local Expected Trend Instability can then be written as
 \begin{align*}
-\int_{0}^\infty v e^{-c_3(t) v^2 \pm 2c_4(t) v}\mathrm{d}v = \frac{1}{2c_3(t)} \pm \frac{c_4(t)}{2c_3(t)}\sqrt{\frac{\pi}{c_3(t)}}e^{\frac{c_4(t)^2}{c_3(t)}}\left(1 \pm \Erf\left(\frac{c_4(t)}{\sqrt{c_3(t)}}\right)\right)
+d\mathrm{ETI}_\mathcal{I}(t, \mid \Theta) &= \int_{-\infty}^\infty |v| f_{df(t), d^2\!f(t)}(0, v)\mathrm{d}v\\
+ &= c_1(t) e^{c_2(t)}\int_{-\infty}^\infty |v| e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\nonumber\\
+ &= c_1(t) e^{c_2(t)}\left(\int_0^\infty v e^{-c_3(t) v^2 + 2c_4(t) v}\mathrm{d}v + \int_0^\infty v e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\right)\nonumber
 \end{align*}
-where $\Erf\colon\, x \mapsto 2\pi^{-1}\int_0^x e^{-u^2}\mathrm{d}u$ is the error function. This implies that the local Expected Trend Instability is given by
+As $c_3(t) > 0$ for $\gamma > 0$ and $|\rho| < 1$ by Assumption [\textbf{TODO}:???] we obtain the following solution for the intergral by using formula 5 in section 3.462 on page 365 of @gradshteyn2014table 
 \begin{align*}
-d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) &= c_1(t) e^{c_2(t)}\left(\frac{1}{c_3(t)} + \frac{c_4(t)}{c_3(t)}\sqrt{\frac{\pi}{c_3(t)}}e^{\frac{c_4(t)^2}{c_3(t)}}\Erf\left(\frac{c_4(t)}{\sqrt{c_3(t)}}\right)\right)
+\int_{0}^\infty v e^{-c_3(t) v^2 \pm 2c_4(t) v}\mathrm{d}v = \frac{1}{2c_3(t)} \pm \frac{c_4(t)}{2c_3(t)}\frac{\pi^{1/2}}{c_3(t)^{1/2}}e^{\frac{c_4(t)^2}{c_3(t)}}\left(1 \pm \Erf\left(\frac{c_4(t)}{\sqrt{c_3(t)}}\right)\right)
+\end{align*}
+where $\Erf\colon\, x \mapsto 2\pi^{-1}\int_0^x e^{-u^2}\mathrm{d}u$ is the error function. Combining the equations in the two previous displays we may write the local Expected Trend Instability as
+\begin{align*}
+d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) &= c_1(t) e^{c_2(t)}\left(\frac{1}{c_3(t)} + \frac{c_4(t)}{c_3(t)}\frac{\pi^{1/2}}{c_3(t)^{1/2}}e^{\frac{c_4(t)^2}{c_3(t)}}\Erf\left(\frac{c_4(t)}{\sqrt{c_3(t)}}\right)\right)
 \end{align*}
 
-Reparametrization
-\begin{align}
-d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) &= c_1(t) e^{c_2(t)}\left(\frac{1}{c_3(t)} + \frac{c_4(t)}{c_3(t)}\sqrt{\frac{\pi}{c_3(t)}}e^{\zeta(t)}\Erf\left(\zeta(t)^{1/2}\right)\right)
-\end{align}
+Defining $\zeta(t) = \sqrt{2}c_4(t)c_3(t)^{-1/2}$ we may rewrite the expression as
+\begin{align*}
+d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) &= \frac{c_1(t)}{c_3(t)}\left(e^{c_2(t)} + \frac{\pi^{1/2}}{2^{1/2}} e^{\frac{c_4(t)^2}{c_3(t)} + c_2(t)} \zeta(t) \Erf\left(\frac{\zeta(t)}{2^{1/2}}\right)\right)
+\end{align*}
+and by simple algebra we note that
+\begin{align*}
+  \frac{c_4(t)^2}{c_3(t)} + c_2(t) = -\frac{\mu_{df}(t)^2}{2\Sigma_{df}(t,t)}, \quad \frac{c_1(t)}{c_3(t)} =  \frac{1}{\pi}\frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}}\left(1-\omega(t)^2\right)^{1/2}
+\end{align*}
+which provides the following result
+\begin{align*}
+d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) = \frac{1}{\pi}\frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}}\left(1-\omega(t)^2\right)^{1/2}\left(e^{c_2(t)} + \pi \phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right) \zeta(t) \Erf\left(\frac{\zeta(t)}{2^{1/2}}\right)\right)
+\end{align*}
+where $\phi\colon\, x \mapsto (2\pi)^{-1/2}e^{-x^2}$ is the density function of the standard normal distribution. Again by algebra we observe that 
+\begin{align*}
+  c_2(t) = - \frac{1}{2}\left(\zeta(t)^2 + \frac{\mu_{df}(t)^2}{\Sigma_{df}(t,t)}\right)
+\end{align*}
+so by rewriting $e^{c_2(t)}$ in terms of $\zeta(t)$ and the normal density function and collecting the terms we arrive at the following expression for local Expected Trend Instability
+\begin{align*}
+d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) = \frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}}\left(1-\omega(t)^2\right)^{1/2}\phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left(2\phi(\zeta(t)) + \zeta(t)\Erf\left(\frac{\zeta(t)}{2^{1/2}}\right)\right)
+\end{align*}
+where
+\begin{align*}
+  \zeta(t) = \frac{\mu_{df}(t)\Sigma_{d^2\!f}(t,t)^{1/2}\omega(t)\Sigma_{df}(t,t)^{-1/2} - \mu_{d^2\!f}(t)}{\Sigma_{d^2\!f}(t,t)^{1/2}\left(1 - \omega(t)^2\right)^{1/2}}
+\end{align*}
 
-\begin{align}
-  \zeta(t) = \frac{c_4(t)^2}{c_3(t)}
-\end{align}
-
-Defining $\mathrm{ETI}(\mathcal{I} \mid \Theta) = \int_\mathcal{I} d\mathrm{ETI}(s, \mathcal{T} \mid \Theta)\mathrm{d}s$ completes the proof.
-
-Also prove that
+[\textbf{TODO}:] Also show that
 \begin{align}
   \mathrm{ETI}(\mathcal{I} \mid \Theta) &= \int_\mathcal{I}d\mathrm{ETI}_\mathcal{I}(t \mid \Theta)\\
    &= \int_\mathcal{I}\E[dN_\mathcal{I}(t) \mid \mathcal{F}, \Theta]\\
@@ -449,14 +486,5 @@ Also prove that
    &= \E[N_\mathcal{I}(\max \mathcal{I}) \mid \mathcal{F}, \Theta)
 \end{align}
 
-#Buuh
-Under the conditions of [\textbf{TODO:} ??] we may insert the posterior moments of $(df, d^2\!f) \mid \Theta$ and through a direct integration of the expression in the previous display we obtain that the Expected Trend Instability index generally defined in Equation (\ref{eq:ETIdef}) is given by
-\begin{align*}
-  \mathrm{ETI}(\mathcal{T} \mid \Theta) = \int_{\mathcal{T}} \frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}} \sqrt{1 - \omega(t)^2} \phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left[2\phi(\eta(t)) + \eta(t) \Erf\left(\frac{\eta(t)}{\sqrt{2}}\right)\right]\mathrm{d}t
-\end{align*}
-where $\phi(x) = (2\pi)^{-1/2} \exp(-\frac{1}{2}x^2)$ is the standard normal density function, $\Erf(x) = 2\pi^{-1/2}\int_0^x \exp\left(-u^2\right)\mathrm{d}u$ is the error function, and $\omega$ and $\eta$ are functions defined by
-\begin{align*}
-  \omega(t) = \frac{\Sigma_{df,d^2\!f}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}}, \quad \eta(t) = \frac{\mu_{d^2\!f}(t)}{\Sigma_{d^2\!f}(t,t) \sqrt{1-\omega(t)^2}} - \frac{\mu_{df}(t)\omega(t)}{\Sigma_{df}(t,t) \sqrt{1-\omega(t)^2}}
-\end{align*}
-and $\mu_{df}$, $\mu_{d^2\!f}$, $\Sigma_{df}$, $\Sigma_{d^2\!f}$ and $\Sigma_{df,d^2\!f}$ are defined in Equations (\ref{eq:appendixPost1}) and (\ref{eq:appendixPost2}). [\textbf{TODO:} Check formula for $\eta$]
+Defining $\mathrm{ETI}(\mathcal{I} \mid \Theta) = \int_\mathcal{I} d\mathrm{ETI}(s, \mathcal{T} \mid \Theta)\mathrm{d}s$ completes the proof.
 
