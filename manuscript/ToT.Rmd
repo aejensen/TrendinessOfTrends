@@ -31,7 +31,7 @@ bibliography: bibliography.bib
 \begin{abstract}
 A statement often seen in the news concerning some public health outcome is that some trend has changed or been broken. Such statements are often based on longitudinal data from e.g., surveys, and the change in the trend is claimed to have occurred at the time of the latest data collection. These types of statistical assessments are very important as they may potentially influence public health decisions on a national level.
 
-Instead we propose a statistical model using methods from Functional Data Analysis under the assumption that reality evolves in continuous time. Under this assumption we define what constitutes a trend and a change in a trend, and we introduce a probabilistic Trend Direction Index. This index has the intuitive interpretation of the probability that an underlying trend has changed direction at any given time conditional on observed data. We also define a global index of Expected Trend Instability that quantifies the expected number of times a trend changes on an interval.
+Instead we propose a statistical model using methods from Functional Data Analysis under the assumption that reality evolves in continuous time. Under this assumption we define what constitutes a trend and a change in a trend, and we introduce a probabilistic Trend Direction Index. This index has the intuitive interpretation of the probability that a function has changed monotonicity at any given time conditional on observed data. We also define a global index of Expected Trend Instability that quantifies the expected number of times a trend changes on an interval.
 
 We show how the Trend Direction Index and the Expected Trend Instability can be estimated from data in a Bayesian framework and give an application to development of the proportion of smokers in Denmark during the last 20 years.
 \end{abstract}
@@ -45,7 +45,7 @@ This manuscript is concerned with the fundamental problem of estimating an under
 
 [\textbf{TODO:} Claus tilbyder at båtte sig igennem resten af introduktionen]. 
 
-[\textbf{TODO:} What do we propose? We work in continuous time and introduce TDI and ETI informally at this point. TDI gives the local probability of the direction of $f$ and can answer the question ,,What is the probability that $f$ is increasing?''. ETI gives the expected number of changes in the direction of $f$ on an interval and can answer the question ,,Is it the first time in 20 years that $f$ has changed trend?]. 
+[\textbf{TODO:} What do we propose? We work in continuous time and introduce TDI and ETI informally at this point. TDI gives the local probability of the monotonicity of $f$ and can answer the question ,,What is the probability that $f$ is increasing?''. ETI gives the expected number of changes in the monotonicity of $f$ on an interval and can answer the question ,,Is it the first time in 20 years that $f$ has changed trend?]. 
 
 [\textbf{TODO:} We are not doing a hypothesis test and compute a p-value. I.e., we do not calculate the probablity that an observed change in trend is different than would have been expected if there was no change in trend. We estimate the actual probability that the trend in changing.] 
 
@@ -75,7 +75,7 @@ To quantify the probability that a trend is changing we introduce the following 
 \end{align}
 where $\mathcal{F}_t$ is the $\sigma$-algebra of all available information observed up until time $t$. The value of $\mathrm{TDI}(t, \delta)$ is equal to the probability that $f$ is increasing at time $t + \delta$ given all we know about the data generating process up until time $t$. A similar definition could be given for a negative trend but that is equal to $1 - \mathrm{TDI}(t, \delta)$ and therefore redundant. The sign of $\delta$ determines whether we wish to estimate the past ($\delta \leq 0$) or forecast into the future ($\delta > 0$). Most of the examples seen in the news concerning public health outcomes is concerned with $t$ being equal to the current calendar time and $\delta = 0$. This excludes using both change-point or segmented regression models [@quandt1958estimation] as there are no observations beyond the stipulated change-point. A useful parametrization of the Trend Direction Index is $\mathrm{TDI}(\max \mathcal{T}, t - \max \mathcal{T})$ with $t \leq \max \mathcal{T}$ which conditions on the full observation period and looks back in time. In this parametrization $t = \max \mathcal{T}$ corresponds to the Trend Direction Index at the end of the observation period. A natural threshold for trendiness is $\mathrm{TDI} = 0.5$ corresponding to a situation where the trend is symmetrically distributed around zero. Depending on the application, different thresholds can be used based on external loss or utility functions.
 
-In addition to the Trend Direction Index we also define a global index of trend instability. We say that a function $f$ is \textit{trend stable} on an interval $\mathcal{I} \subseteq \mathcal{T}$ if it remains either increasing or decreasing so that its trend maintains its sign. As a quantification of the trend instability of a function $f$ we propose to use the expected number of times that the function changes direction on the interval. This is equivaltn to counting the number of zero crossings by $df$ on $\mathcal{I}$. Informally at this point, we define the Expected Trend Instability as
+In addition to the Trend Direction Index we also define a global index of trend instability. We say that a function $f$ is \textit{trend stable} on an interval $\mathcal{I} \subseteq \mathcal{T}$ if it remains either increasing or decreasing so that its trend maintains its sign. As a quantification of the trend instability of a function $f$ we propose to use the expected number of times that the function changes monotonicity on the interval. This is equivalent to counting the number of zero crossings by $df$ on $\mathcal{I}$. Informally at this point, we define the Expected Trend Instability as
 \begin{align}
   \text{ETI}(\mathcal{I}) = \E\left[\#\left\{t \in \mathcal{I} : df(t) = 0\right\} \mid \mathcal{F}\right]\label{eq:ETIdef}
 \end{align}
@@ -114,7 +114,7 @@ where $d^k\!\mu_\beta$ is the $k$'th derivative of $\mu_\beta$ and $\partial_j$ 
 \begin{proposition}
 Let the data generating model be defined as in Equation (\ref{eq:generatingProcess}) and $\mathbf{t}^\ast$ any finite vector of time points. The posterior distribution of $(f, df)$ evaluated at $\mathbf{t}^\ast$ is then given by
 \begin{align*}
-\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\begin{bmatrix}\mu_f(\mathbf{t}^\ast)\\ \mu_{df}(\mathbf{t}^\ast)\\ \mu_{d^2\!f}(\mathbf{t}^\ast)\end{bmatrix}, \begin{bmatrix}\Sigma_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{f,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\\  & \Sigma_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{df,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\\  &  & \Sigma_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) \end{bmatrix}\right)
+\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\bm{\mu}(\mathbf{t}^\ast), \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) \right)
 \end{align*}
 where
 \begin{align*}
@@ -158,7 +158,20 @@ We make the dependence of the Trend Direction Index on the model parameters $\Th
 To illustrate the Trend Direction Index we show an example in the noise free case with known model parameters in Figure \ref{fig:probabilisticExample}. The first and second rows of the plot show 150 random realizations from the posterior distribution of $f$ and $df$ with the expected functions in bold lines, and the third row shows the Trend Direction Index. In this example we simulate using known model parameters and therefore the Trend Direction Index in Proposition \ref{prop:TDIposterior} is a deterministic function. The three columns of the plot show how the posterior of $f$ and $df$ and the Trend Direction Index are updated after one, two or four observed data points. It is seen how updating the Gaussian Process prior with observed data results in a continuous change in the posterior distribution of $f$ and its derivative $df$. The posterior knowledge about the sign of the derivative is correspondingly reflected in the Trend Direction Index. Going further and further away from the last observed data point it is seen that the posterior of $f$ becomes dominated by its prior distribution. In the same sense $df$ converges to a point-wise symmetric distribution around zero and therefore the Trend Direction Index stabilizes around $50\%$. This is clearly seen in the second column of the figure. [\textbf{TODO}: More explaining]
 
 ## Expected Trend Instability 
-The general form of the Expected Trend Instability index was defined in Equation (\ref{eq:ETIdef}).
+The Expected Trend Instability was informally defined in Equation (\ref{eq:ETIdef}) as the expected number of roots of the trend on an interval. [\textbf{TODO}: Something about tangents and way it's the number of crossings]. Now we make this concept more precise and frame it in the context of the latent Gaussian Process model. Let $\mathcal{I}$ be a compact subset of the real line. We consider the random càdlàg function
+\begin{align*}
+  N_\mathcal{I}(t) = \#\left\{s \leq t : df(s) = 0, s \in \mathcal{I}\right\}
+\end{align*}
+counting the cumulative number of points in $\mathcal{I}$ up to time $t$ where the trend is equal to zero. We then define the local Expected Trend Instability as 
+\begin{align}
+  d\mathrm{ETI}_\mathcal{I}(t \mid \Theta) &= \E[dN_\mathcal{I}(t) \mid \mathcal{F}, \Theta], \quad t \in \mathcal{I}\label{eq:localETI}
+\end{align}
+where $dN_\mathcal{I}$ is the derivative of the counting process, $\Theta$ is the parameters of the latent Gaussian Process, and $\mathcal{F}$ is a $\sigma$-algebra generated by observed data. The value of $d\mathrm{ETI}$ is then the expected number of zero-crossings by $df$ between $t$ and $t + \mathrm{d}t$. The Expected Trend Instability on $\mathcal{I}$ is now defined as the expected cumulative number of zero-crossings on $\mathcal{I}$ which is equal to
+\begin{align*}
+  \mathrm{ETI}(\mathcal{I} \mid \Theta) &= \int_\mathcal{I}d\mathrm{ETI}_\mathcal{I}(t \mid \Theta)
+\end{align*}
+Usually, $\mathcal{F}$ will be the $\sigma$-algebra generated by all the available data $\left\{\mathbf{Y}, \mathbf{t}\right\}$ and $\mathcal{I}$ will be equal to $\mathcal{T}$ or some compact subset of it.
+
 
 \vspace{0.2cm}
 
@@ -172,16 +185,12 @@ where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the st
   \omega(t) = \frac{\Sigma_{df,d^2\!f}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}}, \quad \zeta(t) = \frac{\mu_{d^2\!f}(t) - \mu_{df}(t)\Sigma_{d^2\!f}(t,t)^{1/2}\omega(t) \Sigma_{df}(t,t)^{-1/2}}{\Sigma_{d^2\!f}(t,t)^{1/2}(1-\omega(t)^2)^{1/2}}
 \end{align*}
 where $\mu_{df}$, $\mu_{d^2\!f}$, $\Sigma_{df}$, $\Sigma_{d^2\!f}$ and $\Sigma_{df,d^2\!f}$ are the posterior moments given in ???.
-The Expected Trend Instability is then given by integrating the local Expected Trend Instability over the interval
-\begin{align*}
-  \mathrm{ETI}(\mathcal{I} \mid \Theta) = \int_\mathcal{I} \mathrm{dETI}(s, \mathcal{I} \mid \Theta)\mathrm{d}s
-\end{align*}
 \label{prop:ETIposterior}
 \end{proposition}
 
 The value of $\text{ETI}$ is a finite [\textbf{TODO:} finite because of assumptions] real positive value.
 
-Figure \ref{fig:ETIexample} shows that Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vitae vulputate tellus. Cras vitae tempor nibh. Donec dignissim ex ex, nec dignissim magna hendrerit in. Aenean orci nunc, rhoncus quis dictum vitae, tristique non lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nulla facilisi. Vivamus eget ante consectetur, bibendum nulla non, ultrices risus. Nulla neque mauris, tempus quis dui eu, eleifend gravida sem. Nulla blandit non tortor pellentesque varius.
+Figure \ref{fig:ETIexample} shows an example of $25$ random Gaussian Processes on the unit interval simulated under three different values of Expected Trend Instability. The sample paths are paired so that for each function in the first row, there is an associated derivative in the second row. The different values of $\mathrm{ETI}$ are set to $0.25$, $0.5$ and $1$ meaning that these are the expected number of times that the function change monotonicity or equivalently that the trend crosses zero on that interval in each scenario. Sample paths that are \textit{trend stable}, i.e always increasing/decreasing, are shown by solid blue lines, and sample paths that are \textit{trend ustable}, i.e. the derivative crosses zero, are shown by dashed gold colored lines. We the that for low values of $\mathrm{ETI}$ most of the sample paths are either always increasing or decreasing and their associated deviatives are either always postive or negative. For larger values of $\mathrm{ETI}$, more of the derivatives start crossing zero implying that the functions start changing monotonicity. We note that even though we are only modeling a single curve, the Expected Trend Instability is calculated from a posterior distribution which is what the figure illustrates.
 
 \begin{figure}[htb]
 \center\includegraphics{../figures/ETIexample}
@@ -191,21 +200,25 @@ Figure \ref{fig:ETIexample} shows that Lorem ipsum dolor sit amet, consectetur a
 
 
 ## Estimation {#sec:estimation}
-The latent Gaussian Process model defined in Equation (\ref{eq:generatingProcess}) requires estimates of the parameter vector $\Theta$ in order to calculate the joint posterior distribution required for the trend indices. Different methods for fitting models with latent Gaussian Processes such as maximum likelihood (also called Empirical Bayes), fully Bayesian estimation and variational Bayes have been considered in the litterature [\textbf{TODO:} ref]. 
+The latent Gaussian Process model defined in Equation (\ref{eq:generatingProcess}) requires estimates of the parameter vector $\Theta$ in order to calculate the joint posterior distribution required for the trend indices. These parameters must be estimated from data $(Y_i, t_i)_{i=1}^n$. We consider two different estimation procedures: maximum likelihood estimation and a fully Bayesian estimator.  
 
-Maximum marginal likelihood:
+Since our model normal. Maximum likelihood estimation is possible through the marginal likelihood of the observed data obtained by integrating out the distribution of the Gaussian Process. The marginal likelihood function is equal to
 \begin{align}
 L(\Theta \mid \mathbf{Y}, \mathbf{t}) &=  \frac{1}{2}\log |C_{\theta}(\mathbf{t}, \mathbf{t})| - \frac{1}{2}(\mathbf{Y} - \mu_\beta(\mathbf{t}))C_{\theta}(\mathbf{t}, \mathbf{t})^{-1}(\mathbf{Y} - \mu_\beta(\mathbf{t}))^T\label{eq:margloglik}
 \end{align}
-
-Bayesian general prior:
+and the maximum likelihood estimate of the parameters is therefore $\widehat{\Theta^\text{ML}} = \argsup_{\Theta} L(\Theta \mid \mathbf{Y}, \mathbf{t})$. This estimate can then be plugged into the expressions for the Trend Direction Index and the Expected Trend Instability as
 \begin{align*}
-  \Theta_k \sim \text{Half-T}\left(\widehat{\Theta_k^\text{ML}}, \tau_k^2, \kappa_k\right)
+  \mathrm{TDI}\left(t, \delta \mid \widehat{\Theta^\text{ML}}\right) \quad \text{and} \quad \mathrm{ETI}\left(\mathcal{I} \mid \widehat{\Theta^\text{ML}}\right)
 \end{align*}
-We have implemented both our model in Stan [@carpenter2017stan]. Stan is a probabilistic programming language that enables full Bayesian statistical inference using Markov chain Monte Carlo sampling and can be used together with R through the \texttt{rstan} package [@rstan]. The Stan programs are available at the first author's Github repository [@gptrendStan].
+
+For the Bayesian estimation, the generating model in Equation (\ref{eq:generatingProcess}) must be augmented with a prior distribution of the model parameters
+\begin{align*}
+  \Theta = (\beta, \theta, \sigma) \sim G(\Psi)
+\end{align*}
+where $G$ is some family of distribution functions index by a vector of hyper-parameters $\Psi$. We have implemented the Bayesian estimator in Stan [@carpenter2017stan]. Stan is a probabilistic programming language that enables full Bayesian statistical inference using Markov chain Monte Carlo sampling and can be used through R by the \texttt{rstan} package [@rstan]. The Stan programs are available at the first author's Github repository [@gptrendStan].
 
 
-Given observed data $(Y_i, t_i)_{i=1}^n$ there are different approach for estimating models with latent Gaussian Processes. We believe that when doing a probabilistic assessment of a latent variable, such as the Trend Direction Index, it is important to account for all the uncertainty in the model. This is best achieved by using a fully Bayesian estimation. This requires placing prior distributions on the model parameters $\Theta$. These will then be updated based on the observed data and the Trend Direction Index in Proposition \ref{prop:TDIposterior} is then conditional on these posterior distributions. 
+it is important to account for all the uncertainty in the model. These will then be updated based on the observed data and the Trend Direction Index in Proposition \ref{prop:TDIposterior} is then conditional on these posterior distributions. 
 
 
 # Application {#sec:application}
@@ -218,7 +231,7 @@ This data set provides an instrumental way of examplifying our two proposed tren
 \item[Q3:]{Is it the first time during the last 20 years that the trend in the proportion of smokers has changed?}
 \end{itemize}
 
-A simple approach for trying to answer questions Q1 and Q2 would be to apply a $\chi^2$-test in a $2\times 2$ table. Table \ref{tab:chisqtests} shows the p-values for the $\chi^2$-test of independence between the proportion of smokers in 2018 and each of the five previous years. Using a significance level of $5\%$ the conclusion is ambiguous. Compared to the previous year, there was no significant change in the proportion in 2018. Three out of these five comparisons fail to show a significant change in proportions. It is therefore clear that such point-wise testing is not sufficienly perceptive to catch the underlying continuous development.
+A simple approach for trying to answer questions Q1 and Q2 would be to apply a $\chi^2$-test in a $2\times 2$ table. Table \ref{tab:chisqtests} shows the p-values for the $\chi^2$-test (with Yates' continuity correction) of independence between the proportion of smokers in 2018 and each of the five previous years. Using a significance level of $5\%$ the conclusion is ambiguous. Compared to the previous year, there was no significant change in the proportion in 2018. Three out of these five comparisons fail to show a significant change in proportions. It is therefore clear that such point-wise testing is not sufficienly perceptive to catch the underlying continuous development.
 
 \begin{table}[htbp]
 \center
@@ -389,11 +402,11 @@ In order to calculate the Expected Trend Instability index in Proposition \ref{p
 This completes the proof.
 
 ## Proof of Proposition \ref{prop:ETIposterior}
-The generalized Rice formula for the expected number of zero crossings of a Gaussian process $X$ [\textbf{TODO:} Conditions] on an interval $\mathcal{I}$ is 
+@rice1944mathematical showed that the local expected number of zero-crossings of a Gaussian process $X$ at time $t$ is given by
 \begin{align*}
-\mathrm{ETI}(\mathcal{I}) &= \int_{\mathcal{I}}\int_{-\infty}^\infty |v|f_{X(t), dX(t)}(0, v)\mathrm{d}v\mathrm{d}t
+\int_{-\infty}^\infty |v|f_{X(t), dX(t)}(0, v)\mathrm{d}v
 \end{align*}
-where $f_{X(t), dX(t)}$ is the joint density function of $X$ and its derivative $dX$ at time $t$ [@rice1944mathematical]. The Expected Trend Instability is defined as the expected number of zero-crossings of $df$ on an interval which implies that the Rice formula must be applied to the joint distribution of $df$ and $d^2\!f$. From Proposition \ref{prop:GPposterior} it follows that the distribution of $(df, d^2\!f) \mid \Theta$ is bivariate normal for each $t$. Its joint density function evaluated at $(0, v)$ can be factorized as
+where $f_{X(t), dX(t)}$ is the joint density function of $X$ and its derivative $dX$ at time $t$. [\textbf{TODO:} Conditions] By the definition of the local Expected Trend Instability in Equation (\ref{eq:localETI}) we must therefore calculate the Rice formula for the joint posterior distribution of $(df, d^2\!f)$. From Proposition \ref{prop:GPposterior} it follows that the distribution of $(df, d^2\!f) \mid \mathbf{Y}, \mathbf{t}, \Theta$ is bivariate normal for each $t$ where we assume that the $\sigma$-algebra is generated by all observed data. The joint posterior density function evaluated at $(0, v)$ can be factorized as
 \begin{align*}
 f_{df(t), d^2\!f(t)}(0, v \mid \Theta) = c_1(t) e^{c_2(t)} e^{-c_3(t) v^2 - 2c_4(t) v}
 \end{align*}
@@ -402,11 +415,9 @@ where $c_1(t), \ldots, c_4(t)$ are functions of time, independent of $v$ and giv
  c_1(t) &= \frac{1}{2\pi \gamma \sigma (1-\rho^2)^{1/2}} &\quad c_2(t) &= \frac{\mu_{df}(t)^2\gamma^2 -2\mu_{df}(t)\mu_{d^2\!f}(t)\gamma\rho\sigma+\mu_{d^2\!f}(t)^2\sigma^2}{2\gamma^2(\rho^2-1)\sigma^2}\\	
  c_3(t) &= -\frac{1}{2\gamma^2(\rho^2-1)} & c_4(t) &= -\frac{\mu_{df}(t) \gamma \rho - \mu_{d^2\!f}(t) \sigma}{2\gamma^2(\rho^2-1)\sigma}
 \end{alignat*}
-where  $\mu_{df}$, $\mu_{d^2\!f}$, $\Sigma_{df}$, $\Sigma_{d^2\!f}$ and $\Sigma_{df,d^2\!f}$ are defined in Equations (\ref{eq:appendixPost1}) and (\ref{eq:appendixPost2})
-
-The local Expected Trend Instability can then be written as
+where  $\mu_{df}$, $\mu_{d^2\!f}$, $\Sigma_{df}$, $\Sigma_{d^2\!f}$ and $\Sigma_{df,d^2\!f}$ are defined in Equations (\ref{eq:appendixPost1}) and (\ref{eq:appendixPost2}). The local Expected Trend Instability can then be written as
 \begin{align*}
-d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) &= \int_{-\infty}^\infty |v| f_{df(t), d^2\!f(t)}(0, v)\mathrm{d}v \\
+d\mathrm{ETI}_\mathcal{I}(t, \mid \Theta) &= \int_{-\infty}^\infty |v| f_{df(t), d^2\!f(t)}(0, v)\mathrm{d}v \\
  &= c_1(t) e^{c_2(t)}\int_{-\infty}^\infty |v| e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\\
  &= c_1(t) e^{c_2(t)}\left(\int_0^\infty v e^{-c_3(t) v^2 + 2c_4(t) v}\mathrm{d}v + \int_0^\infty v e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\right)
 \end{align*}
@@ -429,6 +440,14 @@ d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) &= c_1(t) e^{c_2(t)}\left(\frac{1}{c_3
 \end{align}
 
 Defining $\mathrm{ETI}(\mathcal{I} \mid \Theta) = \int_\mathcal{I} d\mathrm{ETI}(s, \mathcal{T} \mid \Theta)\mathrm{d}s$ completes the proof.
+
+Also prove that
+\begin{align}
+  \mathrm{ETI}(\mathcal{I} \mid \Theta) &= \int_\mathcal{I}d\mathrm{ETI}_\mathcal{I}(t \mid \Theta)\\
+   &= \int_\mathcal{I}\E[dN_\mathcal{I}(t) \mid \mathcal{F}, \Theta]\\
+   &= \E[\int_\mathcal{I}dN_\mathcal{I}(t) \mid \mathcal{F}, \Theta]\\
+   &= \E[N_\mathcal{I}(\max \mathcal{I}) \mid \mathcal{F}, \Theta)
+\end{align}
 
 #Buuh
 Under the conditions of [\textbf{TODO:} ??] we may insert the posterior moments of $(df, d^2\!f) \mid \Theta$ and through a direct integration of the expression in the previous display we obtain that the Expected Trend Instability index generally defined in Equation (\ref{eq:ETIdef}) is given by
