@@ -7,6 +7,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 fontsize: 11pt  
 header-includes:
   - \usepackage{bm}
+  - \usepackage{amssymb}
   - \usepackage[labelfont=bf]{caption}
   - \DeclareMathOperator*{\argsup}{arg\,sup}  
   - \DeclareMathOperator*{\argmin}{arg\,min}  
@@ -60,37 +61,40 @@ This manuscript is concerned with the fundamental problem of estimating an under
 
 [\textbf{TODO:} Reference some previous work]. @gottlieb2012stickiness define a stickiness coefficient for longitudinal data. Our $\text{ETI}$ has some similarities to the tracking index of @foulkes1981index.
 
-The manuscript is structured as follows: In section \ref{sec:method} we present our statistical model based on a latent Gaussian Process formulation giving rise to analytic expressions for the Trend Direction Index and the Expected Trend Instability index conditional on observed data. We then extend this basic model to enable a data-driven adaptation to non-stationarity in the underlying dynamics. Section \ref{sec:estimation} is concerned with estimating the models parameters, and we give an application to the proportion of smokers in Denmark during the last 20 years in section \ref{sec:application}, and we conclude with a discussion.
+The manuscript is structured as follows: In section \ref{sec:method} we present our statistical model based on a latent Gaussian process formulation giving rise to analytic expressions for the Trend Direction Index and the Expected Trend Instability index conditional on observed data. We then extend this basic model to enable a data-driven adaptation to non-stationarity in the underlying dynamics. Section \ref{sec:estimation} is concerned with estimating the models parameters, and we give an application to the proportion of smokers in Denmark during the last 20 years in section \ref{sec:application}, and we conclude with a discussion.
 
 
 
 # Methods {#sec:method}
-We assume that reality evolves in continuous time $t \in \mathcal{T} \subset \mathbb{R}$ and that there exists a latent, random function $f = \left\{f(t) : t \in \mathcal{T}\right\}$ that governs the underlying evolution of some observable characteristic in a population. We are able to observe a noisy version of this latent characteristic by sampling $f$ at discrete time points according to the additive model $Y_i = f(t_i) + \varepsilon_i$ where $Y_i$ is the $i$'th observation at time $t_i \in \mathcal{T}$ and $\varepsilon_i$ is a random variable with $\E[\varepsilon_i \mid t_i] = 0$ [\textbf{TODO}: Explain why?]. Given observations of the form $(Y_i, t_i)_{i=1}^n$ we are interested in estimating the dynamical properties of the latent $f$.
+We start by defining the underlying assumptions for our method. We assume that reality evolves in continuous time $t \in \mathcal{T} \subset \mathbb{R}$ and that there exists a random, latent function $f = \left\{f(t) : t \in \mathcal{T}\right\}$ defined on a compact subset of the real line, $\mathcal{T}$, that governs the underlying evolution of some observable characteristic in a population. We can observe this latent characteristic with noise by sampling $f$ at discrete time points according to the additive model $Y_i = f(t_i) + \varepsilon_i$ where $\varepsilon_i$ is a zero mean random variable independent of both $Y_i$ and $f(t_i)$. Given observations of the form $(Y_i, t_i)_{i=1}^n$ we are interested in estimating the dynamical properties of $f$.
 
-The trend of $f$ is defined as its instantaneous slope given by the function $df(t) = \left(\frac{\mathrm{d}f(s)}{\mathrm{d}s}\right)(t)$, and we say that $f$ exhibits a positive trend at $t$ if $df(t) > 0$ and a negative trend at $t$ if $df(t) < 0$. A change in trend is defined as a point in time where $df$ changes sign, i.e., a positive trend becomes a negative trend meaning that $f$ goes from being increasing to becoming decreasing or vice versa. As $f$ is a random function there are no exact points in time where $df$ changes sign. This is instead a gradual and continuous concept and the assessment must be defined in terms of the probability that a change in trend is occurring. This stands in contrast to traditional change-point models which assume that there are one or more exact time points where sudden a change in a regression parameter occurs [@picard1985testing].
+The trend of $f$ is defined as its instantaneous slope given by the function $df(t) = \left(\frac{\mathrm{d}f(s)}{\mathrm{d}s}\right)(t)$, and $f$ is increasing and has a positive trend at $t$ if $df(t) > 0$, and $f$ is decreasing with a negative trend at $t$ if $df(t) < 0$. A change in trend is defined as a change in the sign of $df$, i.e., when $f$ goes from increasing to decreasing or vice versa. As $f$ is a random function there are no exact points in time where $df$ changes sign. There is instead a gradual and continuous change in the local monotonicity of $f$, and an assessment of a change in trend is defined by the probability of the sign of $df$. This stands in contrast to traditional change-point models which assume that there are one or more exact time points where sudden a change in deterministic function occurs [@picard1985testing].
 
-To quantify the probability that a trend is changing we introduce the following local probabilistic Trend Direction Index
+To quantify the probability that a trend is changing we introduce the local probabilistic Trend Direction Index
 \begin{align}
-  \mathrm{TDI}(t, \delta) = P(df(t + \delta ) > 0 \mid \mathcal{F}_t)\label{eq:TCIdef}
+  \mathrm{TDI}(t, \delta) = P(df(t + \delta ) > 0 \mid \mathcal{F}_t), \quad t \in \mathcal{T}\label{eq:TCIdef}
 \end{align}
-where $\mathcal{F}_t$ is the $\sigma$-algebra of all available information observed up until time $t$. The value of $\mathrm{TDI}(t, \delta)$ is equal to the probability that $f$ is increasing at time $t + \delta$ given all we know about the data generating process up until time $t$. A similar definition could be given for a negative trend but that is equal to $1 - \mathrm{TDI}(t, \delta)$ and therefore redundant. The sign of $\delta$ determines whether we wish to estimate the past ($\delta \leq 0$) or forecast into the future ($\delta > 0$). Most of the examples seen in the news concerning public health outcomes is concerned with $t$ being equal to the current calendar time and $\delta = 0$. This excludes using both change-point or segmented regression models [@quandt1958estimation] as there are no observations beyond the stipulated change-point. A useful parametrization of the Trend Direction Index is $\mathrm{TDI}(\max \mathcal{T}, t - \max \mathcal{T})$ with $t \leq \max \mathcal{T}$ which conditions on the full observation period and looks back in time. In this parametrization $t = \max \mathcal{T}$ corresponds to the Trend Direction Index at the end of the observation period. A natural threshold for trendiness is $\mathrm{TDI} = 0.5$ corresponding to a situation where the trend is symmetrically distributed around zero. Depending on the application, different thresholds can be used based on external loss or utility functions.
+where $\mathcal{F}_t$ is a $\sigma$-algebra of available information observed up until time $t$. The value of $\mathrm{TDI}(t, \delta)$ is equal to the probability that $f$ is increasing at time $t + \delta$ given everything know about the data generating process up until and including time $t$. A similar definition can be given for a negative trend but that is equal to $1 - \mathrm{TDI}(t, \delta)$ and therefore redundant. The sign of $\delta$ determines whether the Trend Direction Index estimates the past ($\delta \leq 0$) or forecast into the future ($\delta > 0$). Most of the examples seen in the news concerning public health outcomes is concerned with $t$ being equal to the current calendar time and $\delta = 0$. This excludes the usage of both change-point and segmented regression models [@quandt1958estimation] as there are no observations available beyond the stipulated change-point. A useful parametrization of the Trend Direction Index is $\mathrm{TDI}(\max \mathcal{T}, t - \max \mathcal{T})$ with $t \leq \max \mathcal{T}$. In this formulation we condition on the full observation period and looks back in time, and $t = \max \mathcal{T}$ corresponds to the Trend Direction Index at the end of the observation period.
 
-In addition to the Trend Direction Index we also define a global index of trend instability. We say that a function $f$ is \textit{trend stable} on an interval $\mathcal{I} \subseteq \mathcal{T}$ if it remains either increasing or decreasing so that its trend maintains its sign. As a quantification of the trend instability of a function $f$ we propose to use the expected number of times that the function changes monotonicity on the interval. This is equivalent to counting the number of zero crossings by $df$ on $\mathcal{I}$. Informally at this point, we define the Expected Trend Instability as
+In addition to the Trend Direction Index we also define a global measure of trend instability. Informally we say that a function $f$ is \textit{trend stable} on an interval $\mathcal{I} \subseteq \mathcal{T}$ if it maintains it monotonicity so that its trend does not change on the interval. To quantify the trend instability of a random function $f$ we propose to use the expected number of zero-crossings by $df$ on $\mathcal{I}$. Informally at this point, we define the Expected Trend Instability as
 \begin{align}
   \text{ETI}(\mathcal{I}) = \E\left[\#\left\{t \in \mathcal{I} : df(t) = 0\right\} \mid \mathcal{F}\right]\label{eq:ETIdef}
 \end{align}
-which is the expected value of the size of the random point set of zero crossings by $df$ on $\mathcal{I}$ conditional on a suitable $\sigma$-algebra $\mathcal{F}$. An Expected Trend Instability of zero implies that $f$... The lower $\text{ETI}(\mathcal{I})$ is, the more trend stable $f$ is on $\mathcal{I}$ and vice versa.
+which is the expected value of the size of the random point set of zero crossings by $df$ on $\mathcal{I}$ conditional on a suitable $\sigma$-algebra $\mathcal{F}$. The usual case is when $\mathcal{F}$ is generated by all observed data on $\mathcal{T}$ and $\mathcal{I} \subseteq \mathcal{T}$. The lower $\text{ETI}(\mathcal{I})$ is, the more trend stable $f$ is on $\mathcal{I}$ and vice versa.
 
+These general definitions of trendiness will be evaluated in light of a concrete statistical model in the next section leading up to expressions of their estimates.
 
 ## Latent Gaussian Process Model
-The definitions in the previous section impose the existence of an infinite dimensional latent variable $f$ and its derivative $df$. In the following we assume that $f$ is a latent Gaussian Process which is equivalent to imposing a functional prior distribution on the latent characteristic [\textbf{TODO: something about flexible}]. Our knowledge about $f$ and $df$ will then be updated based on the observed data giving rise to a joint posterior distribution over $f$ and $df$.
+The definitions in the previous section impose the existence of an latent function $f$. We shall assume that $f$ is a Gaussian process on $\mathcal{T}$. From a Bayesian perspective this is equivalent to imposing an infinite dimensional prior distribution on the latent function. Statistical models with Gaussian process priors are a flexible approach for non-parametric regression [@neal1999regression]. Further, it presents an analytically tractable way for performing statistical inference on its derivatives. The general idea of our model is to apply the properties of the Gaussian process prior on $f$ to update its the finite dimensional distributions by conditioning on the observed data. This results in a posterior Gaussian process from which estimates of the trendiness indices are derived.
 
-A random function $f$ is a Gaussian Process if and only if the vector $(f(t_1), \ldots, f(t_n))$ has a multivariate normal distribution for every set of evaluation points $(t_1, \ldots, t_n) \subset \mathcal{T}$ with $n < \infty$, and we write $f \sim \mathcal{GP}(\mu(\cdot), C(\cdot, \cdot))$ where $\mu\colon\, \mathcal{T} \mapsto \mathbb{R}$ is the mean function and $C\colon\, \mathcal{T} \times \mathcal{T} \mapsto \mathbb{R}$ is a symmetric, positive definite covariance function [@cramer1967stationary]. We let $\mu(\mathbf{t}) \in \mathbb{R}^p$ and $C(\mathbf{t}, \mathbf{t}) \in \mathbb{R}\times\mathbb{R}$ denote the mean vector and covariance matrix obtained by evaluating $\mu$ and $C$ at a finite vector of time points $\mathbf{t}$. Given observed data of the form $(Y_i, t_i)_{i=1}^n$ we lay out the data generating process by the following hierarchical model 
+A random function $f$ on is a Gaussian process if and only if the vector $(f(t_1), \ldots, f(t_n))$ has a multivariate normal distribution for every finite set of evaluation points $(t_1, \ldots, t_n)$, and we write $f \sim \mathcal{GP}(\mu(\cdot), C(\cdot, \cdot))$ where $\mu$ is the mean function and $C$ is a symmetric, positive definite covariance function [@cramer1967stationary]. We have observed data of the form $(Y_i, t_i)_{i=1}^n$ and assume that the observations are generating model by the following hierarchical model 
 \begin{align}
   f \mid \beta, \theta &\sim \mathcal{GP}(\mu_\beta(\cdot), C_\theta(\cdot,\cdot))\label{eq:generatingProcess}\\
   Y_i \mid t_i, f(t_i), \Theta &\overset{iid}{\sim} N(f(t_i), \sigma^2)\nonumber, \quad \Theta = (\beta, \theta, \sigma)\nonumber
 \end{align}
-where $\beta$ is a vector of parameters for the mean function of $f$, $\theta$ is a vector of parameters governing the covariance of $f$, and $\sigma^2$ is the observation variance. We assume the following regularity conditions.
+where $\beta$ is a vector of parameters for the mean function of $f$, $\theta$ is a vector of parameters governing the covariance of $f$, and $\sigma$ is the conditional standard deviation of the observations. We assume the following regularity conditions holds for $f$.
+
+\vspace{0.2cm}
 
 \begin{assumption}
 We assume that $f$ is a separable Gaussian process and that
@@ -98,35 +102,37 @@ We assume that $f$ is a separable Gaussian process and that
   \item[A1:]{?}
   \item[A2:]{?}
 \end{enumerate}
-This ensures that the sample paths of $f$ are in $C^r(\mathcal{T})$. We require that $r \geq 1$ for the Trend Direction Index and $r \geq 2$ for the index of Expected Trend Instability.
-
-[@scheuerer2010regularity]
+This ensures that the sample paths of $f$ are in $C^r(\mathcal{T})$. We require that $r \geq 1$ for the Trend Direction Index and $r \geq 2$ for the index of Expected Trend Instability. [@scheuerer2010regularity]
 \end{assumption}
 
-Under the above assumptions, an important property of a Gaussian process is that it together with its derivative functions are multivariate Gaussian Process [@cramer1967stationary]. This implies that the joint distribution of $f$ and $df$ is given by the bivariate Gaussian Process
+Under the above assumptions, an important property of a Gaussian process is that it together with its first and second derivative functions are multivariate Gaussian process with explicit expressions for the mean, covariance and cross-covariance functions. Specifically, the joint distribution of the latent function and its first and second derivative is the multivariate Gaussian process
 \begin{align}
   \begin{bmatrix}f(s)\\ df(t)\\ d^2\!f(u)\end{bmatrix} \mid \beta, \theta &\sim \mathcal{GP}\left(\begin{bmatrix}\mu_\beta(s)\\ d\mu_\beta(t)\\ d^2\!\mu_\beta(u)\end{bmatrix}, \begin{bmatrix}C_\theta(s, s^\prime) & \partial_2 C_\theta(s, t) & \partial_2^2 C_\theta(s, u)\\ \partial_1 C_\theta(t, s) & \partial_1 \partial_2 C_\theta(t, t^\prime) & \partial_1 \partial_2^2 C_\theta(t, u)\\ \partial_1^2 C_\theta(u, s) & \partial_1^2\partial_2 C_\theta(u, t) & \partial_1^2 \partial_2^2 C_\theta(u, u^\prime)\end{bmatrix}\right)\label{eq:latentJoint}
 \end{align}
-where $d^k\!\mu_\beta$ is the $k$'th derivative of $\mu_\beta$ and $\partial_j$ denotes the partial derivatives with respect to the $k$'th variable. Let $\mathbf{Y} = (Y_1, \ldots, Y_n)$ be the vector of outcomes observed at times $\mathbf{t} = (t_1,\ldots,t_n) \subset \mathbf{T}$ and $\mathbf{t}^\ast$ any finite dimensional vector of time points not necessarily equal to $\mathbf{t}$. Formulas (\ref{eq:generatingProcess}) and (\ref{eq:latentJoint}) imply that joint distribution of $(f(\mathbf{t}^\ast),df(\mathbf{t}^\ast), \mathbf{Y}) \mid \mathbf{t}, \Theta$ is multivariate normal, and that the marginal distribution of the observed data is $\mathbf{Y} \mid \mathbf{t}, \Theta = N(\mu_\beta(\mathbf{t}), C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I)$ where $I$ is an identity matrix of appropriate dimensions.  Predictions of the latent function and its derivative at $\mathbf{t}^\ast$ are given by the posterior distribution $(f(\mathbf{t}^\ast),df(\mathbf{t}^\ast)) \mid \mathbf{Y}, \mathbf{t}, \Theta$. This distribution is also multivariate normal and its moments are given in Proposition \ref{prop:GPposterior}.
+where $d^k\!\mu_\beta$ is the $k$'th derivative of $\mu_\beta$ and $\partial_j^k$ denotes the $k$'th order partial derivatives with respect to the $j$'th variable [@cramer1967stationary]. Propostion \ref{prop:GPposterior} gives the joint posterior distribution of $(f, df, d^2\!f)$ condition on observed data $(Y_i, t_i)_{i=1}^n$.
 
 \vspace{0.2cm}
 
 \begin{proposition}
-Let the data generating model be defined as in Equation (\ref{eq:generatingProcess}) and $\mathbf{t}^\ast$ any finite vector of time points. The posterior distribution of $(f, df, d^2\!f)$ evaluated at $\mathbf{t}^\ast$ is then given by
+Let the data generating model be defined as in Equation (\ref{eq:generatingProcess}) and $\mathbf{Y} = (Y_1, \ldots, Y_n)$ the vector of observed outcomes together with its sampling times $\mathbf{t} = (t_1, \ldots, t_n)$. Then under Assumptions ??? the posterior distribution of $(f, df, d^2\!f)$ evaluated at the vector $\mathbf{t}^\ast$ of $p$ time points is
 \begin{align*}
-\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\begin{bmatrix}\mu_{f}(\mathbf{t^\ast})\\ \mu_{df}(\mathbf{t^\ast})\\ \mu_{d^2\!f}(\mathbf{t^\ast})\end{bmatrix},   \begin{bmatrix}\Sigma_{f}(\mathbf{t^\ast},\mathbf{t^\ast}) &  \Sigma_{f,df}(\mathbf{t^\ast},\mathbf{t^\ast}) & \Sigma_{f,d^2\!f}(\mathbf{t^\ast},\mathbf{t^\ast})\\  \Sigma_{f,df}(\mathbf{t^\ast},\mathbf{t^\ast})^T & \Sigma_{df}(\mathbf{t^\ast},\mathbf{t^\ast}) & \Sigma_{df,d^2\!f}(\mathbf{t^\ast},\mathbf{t^\ast})\\ \Sigma_{f,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast})^T & \Sigma_{df,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast})^T & \Sigma_{d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast})\end{bmatrix}\right)
+\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\bm{\mu},  \bm{\Sigma}\right)
 \end{align*}
-where
+where $\bm{\mu} \in \mathbb{R}^{3p}$ is the column vector of posterior expectations and $\bm{\Sigma} \in \mathbb{R}^{3p \times 3p}$ is the joint posterior covariance matrix. Partitioning these as
 \begin{align*}
-\mu_{f}(\mathbf{t^\ast}) &= \\
-\mu_{df}(\mathbf{t^\ast}) &= \\
-\mu_{d^2\!f}(\mathbf{t^\ast}) &= \\
-\Sigma_{f}(\mathbf{t^\ast}, \mathbf{t^\ast}) &= \\
-\Sigma_{df}(\mathbf{t^\ast}, \mathbf{t^\ast}) &= \\
-\Sigma_{d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast}) &= \\
-\Sigma_{f,df}(\mathbf{t^\ast}, \mathbf{t^\ast}) &= \\
-\Sigma_{f,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast}) &= \\
-\Sigma_{df,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast}) &=
+  \bm{\mu} = \begin{bmatrix}\mu_{f}(\mathbf{t^\ast} \mid \Theta)\\ \mu_{df}(\mathbf{t^\ast} \mid \Theta)\\ \mu_{d^2\!f}(\mathbf{t^\ast} \mid \Theta)\end{bmatrix}, \quad \bm{\Sigma} = \begin{bmatrix}\Sigma_{f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \Theta) &  \Sigma_{f,df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \Theta) & \Sigma_{f,d^2\!f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \Theta)\\  \Sigma_{f,df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \Theta)^T & \Sigma_{df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \Theta) & \Sigma_{df,d^2\!f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \Theta)\\ \Sigma_{f,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \Theta)^T & \Sigma_{df,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \Theta)^T & \Sigma_{d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \Theta)\end{bmatrix} 
+\end{align*}
+the individual components are given by
+\begin{align*}
+  \mu_{f}(\mathbf{t}^\ast \mid \Theta) &= \mu_\beta(\mathbf{t}^\ast) + C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right)\\
+  \mu_{df}(\mathbf{t}^\ast \mid \Theta) &= d\mu_\beta(\mathbf{t}^\ast) + \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right) \\
+  \mu_{d^2\!f}(\mathbf{t}^\ast \mid \Theta) &= d^2\!\mu_\beta(\mathbf{t}^\ast) + \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right)\\
+  \Sigma_{f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \Theta) &= C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{df}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \Theta) &= \partial_1\partial_2C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \Theta) &= \partial_1^2\partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{f, df}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \Theta) &= \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{f, d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \Theta) &= \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{df, d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \Theta) &= \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)
 \end{align*}
 \label{prop:GPposterior}
 \end{proposition}
@@ -134,23 +140,22 @@ where
 [\textbf{TODO:} Something something section closer here.]
 
 ## Trend Direction Index
-The Trend Direction Index was defined generally in Equation (\ref{eq:TCIdef}). Letting the filtration be the sigma algebra of the observed data and their sampling times, we may express the Trend Direction Index through the posterior distribution of $df$. The following proposition states this result.
+The Trend Direction Index was defined generally in Equation (\ref{eq:TCIdef}). Letting the filtration be the sigma algebra generated by the observed data and their sampling times, we may express the Trend Direction Index through the posterior distribution of $df$. The following proposition states this result.
 
 \vspace{0.2cm}
 
 \begin{proposition}
-Let $\mathcal{F}_t$ be the $\sigma$-algebra generated by $\left\{\mathbf{Y}, \mathbf{t}\right\}$. The Trend Direction Index defined in Equation (\ref{eq:TCIdef}) can then be written in terms of the posterior distribution of $df$ as
+Let $\mathcal{F}_t$ be the $\sigma$-algebra generated by $(\mathbf{Y}, \mathbf{t})$. The Trend Direction Index defined in Equation (\ref{eq:TCIdef}) can then be written in terms of the posterior distribution of $df$ as
 \begin{align*}
   \mathrm{TDI}(t, \delta \mid \Theta) &= P(df(t + \delta ) > 0 \mid \mathbf{Y}, \mathbf{t}, \Theta)\\
-  &= \int_0^\infty N\left(u \mid \mu_{df}(t + \delta), \Sigma_{df}(t + \delta, t + \delta)^{1/2}\right)\mathrm{d}u\nonumber\\
-  &= \frac{1}{2} + \frac{1}{2}\Erf\left(\frac{\mu_{df}(t + \delta)}{2^{1/2}\Sigma_{df}(t + \delta, t + \delta)^{1/2}}\right)
+  &= \frac{1}{2} + \frac{1}{2}\Erf\left(\frac{\mu_{df}(t + \delta \mid \Theta)}{2^{1/2}\Sigma_{df}(t + \delta, t + \delta \mid \Theta)^{1/2}}\right)
 \end{align*}
 where $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function and $\mu_{df}$ and $\Sigma_{df}$ are the posterior mean and covariance of the trend defined in Proposition \ref{prop:GPposterior}.
 \label{prop:TDIposterior}
 \end{proposition}
 
-We make the dependence of the Trend Direction Index on the model parameters $\Theta$ explicit in the notation in Proposition \ref{prop:TDIposterior} as they enter through the expressions of posterior moments $\mu_{df}$ and $\Sigma_{df}$ in Proposition \ref{prop:GPposterior} and must be estimated from data. From the expression we see that for $\mu_{df}(t + \delta) = 0$, implying that the posterior of $f$ is constant on average at time $t + \delta$, the Trend Direction Index is equal to $\frac{1}{2} = 50\%$.
- 
+From Proposition \ref{prop:TDIposterior} we see that $\mathrm{TDI}$ is equal to $\frac{1}{2}$ when $\mu_{df}(t + \delta \mid \Theta) = 0$. This corresponds to the case where the expected value of the posterior of $f$ is constant at time $t + \delta$. A decision rule based on $\mathrm{TDI}(t, \delta \mid \Theta) \lessgtr 50\%$ is therefore a natural choice for assessing the trendiness of $f$. However, different thresholds based on external loss or utility functions can be used depending on the application.
+
 
 \begin{figure}[htb]
 \center\includegraphics{probabilisticExample}
@@ -158,10 +163,10 @@ We make the dependence of the Trend Direction Index on the model parameters $\Th
 \label{fig:probabilisticExample}
 \end{figure}
 
-To illustrate the Trend Direction Index we show an example in the noise free case with known model parameters in Figure \ref{fig:probabilisticExample}. The first and second rows of the plot show 150 random realizations from the posterior distribution of $f$ and $df$ with the expected functions in bold lines, and the third row shows the Trend Direction Index. In this example we simulate using known model parameters and therefore the Trend Direction Index in Proposition \ref{prop:TDIposterior} is a deterministic function. The three columns of the plot show how the posterior of $f$ and $df$ and the Trend Direction Index are updated after one, two or four observed data points. It is seen how updating the Gaussian Process prior with observed data results in a continuous change in the posterior distribution of $f$ and its derivative $df$. The posterior knowledge about the sign of the derivative is correspondingly reflected in the Trend Direction Index. Going further and further away from the last observed data point it is seen that the posterior of $f$ becomes dominated by its prior distribution. In the same sense $df$ converges to a point-wise symmetric distribution around zero and therefore the Trend Direction Index stabilizes around $50\%$. This is clearly seen in the second column of the figure. [\textbf{TODO}: More explaining]
+To illustrate the Trend Direction Index we show an example in the noise free case with known model parameters in Figure \ref{fig:probabilisticExample}. The first and second rows of the plot show 150 random realizations from the posterior distribution of $f$ and $df$ with the expected functions in bold lines, and the third row shows the Trend Direction Index. In this example we simulate using known model parameters and therefore the Trend Direction Index in Proposition \ref{prop:TDIposterior} is a deterministic function. The three columns of the plot show how the posterior of $f$ and $df$ and the Trend Direction Index are updated after one, two or four observed data points. It is seen how updating the Gaussian process prior with observed data results in a continuous change in the posterior distribution of $f$ and its derivative $df$. The posterior knowledge about the sign of the derivative is correspondingly reflected in the Trend Direction Index. Going further and further away from the last observed data point it is seen that the posterior of $f$ becomes dominated by its prior distribution. In the same sense $df$ converges to a point-wise symmetric distribution around zero and therefore the Trend Direction Index stabilizes around $50\%$. This is clearly seen in the second column of the figure. [\textbf{TODO}: More explaining]
 
 ## Expected Trend Instability 
-The Expected Trend Instability was informally defined in Equation (\ref{eq:ETIdef}) as the expected number of roots of the trend on an interval. [\textbf{TODO}: Something about tangents and way it's the number of crossings]. Now we make this concept more precise and frame it in the context of the latent Gaussian Process model. Let $\mathcal{I}$ be a compact subset of the real line. We consider the random càdlàg function
+The Expected Trend Instability was informally defined in Equation (\ref{eq:ETIdef}) as the expected number of roots of the trend on an interval. [\textbf{TODO}: Something about tangents and way it's the number of crossings]. Now we make this concept more precise and frame it in the context of the latent Gaussian process model. Let $\mathcal{I}$ be a compact subset of the real line. We consider the random càdlàg function
 \begin{align*}
   N_\mathcal{I}(t) = \#\left\{s \leq t : df(s) = 0, s \in \mathcal{I}\right\}
 \end{align*}
@@ -169,7 +174,7 @@ counting the cumulative number of points in $\mathcal{I}$ up to time $t$ where t
 \begin{align}
   d\mathrm{ETI}_\mathcal{I}(t \mid \Theta) &= \E[dN_\mathcal{I}(t) \mid \mathcal{F}, \Theta], \quad t \in \mathcal{I}\label{eq:localETI}
 \end{align}
-where $dN_\mathcal{I}$ is the derivative of the counting process, $\Theta$ is the parameters of the latent Gaussian Process, and $\mathcal{F}$ is a $\sigma$-algebra generated by observed data. The value of $d\mathrm{ETI}$ is then the expected number of zero-crossings by $df$ between $t$ and $t + \mathrm{d}t$. The Expected Trend Instability on $\mathcal{I}$ is now defined as the expected cumulative number of zero-crossings on $\mathcal{I}$ which is equal to
+where $dN_\mathcal{I}$ is the derivative of the counting process, $\Theta$ is the parameters of the latent Gaussian process, and $\mathcal{F}$ is a $\sigma$-algebra generated by observed data. The value of $d\mathrm{ETI}$ is then the expected number of zero-crossings by $df$ between $t$ and $t + \mathrm{d}t$. The Expected Trend Instability on $\mathcal{I}$ is now defined as the expected cumulative number of zero-crossings on $\mathcal{I}$ which is equal to
 \begin{align*}
   \mathrm{ETI}(\mathcal{I} \mid \Theta) &= \int_\mathcal{I}d\mathrm{ETI}_\mathcal{I}(t \mid \Theta)
 \end{align*}
@@ -181,11 +186,13 @@ Usually, $\mathcal{F}$ will be the $\sigma$-algebra generated by all the availab
 \begin{proposition}
 Let $\mu_{df}$, $\mu_{d^2\!f}$, $\Sigma_{df}$, $\Sigma_{d^2\!f}$ and $\Sigma_{df,d^2\!f}$ be the moments of the joint posterior distribution of $(df, d^2\!f)$ as stated in Proposition \ref{prop:GPposterior}. [\textbf{TODO}: Assumptions.] The local Expected Trend Instability is then given by
 \begin{align*}
-d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) = \frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}}\left(1-\omega(t)^2\right)^{1/2}\phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left(2\phi(\zeta(t)) + \zeta(t)\Erf\left(\frac{\zeta(t)}{2^{1/2}}\right)\right)
+d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) = \lambda(t \mid \Theta)\phi\left(\frac{\mu_{df}(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\right)\left(2\phi(\zeta(t\mid \Theta)) + \zeta(t\mid \Theta)\Erf\left(\frac{\zeta(t\mid \Theta)}{2^{1/2}}\right)\right)
 \end{align*}
-where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function, and $\omega$ and $\zeta$ are given by
+where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function, and $\lambda$, $\omega$ and $\zeta$ are given by
 \begin{align*}
-  \omega(t) = \frac{\Sigma_{df,d^2\!f}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}},\quad \zeta(t) = \frac{\mu_{df}(t)\Sigma_{d^2\!f}(t,t)^{1/2}\omega(t)\Sigma_{df}(t,t)^{-1/2} - \mu_{d^2\!f}(t)}{\Sigma_{d^2\!f}(t,t)^{1/2}\left(1 - \omega(t)^2\right)^{1/2}}
+  \lambda(t \mid \Theta) &= \frac{\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\left(1-\omega(t \mid \Theta)^2\right)^{1/2}\\
+  \omega(t \mid \Theta) &= \frac{\Sigma_{df,d^2\!f}(t,t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}}\\
+  \zeta(t\mid \Theta) &= \frac{\mu_{df}(t\mid \Theta)\Sigma_{d^2\!f}(t,t\mid \Theta)^{1/2}\omega(t)\Sigma_{df}(t,t\mid \Theta)^{-1/2} - \mu_{d^2\!f}(t\mid \Theta)}{\Sigma_{d^2\!f}(t,t\mid \Theta)^{1/2}\left(1 - \omega(t\mid \Theta)^2\right)^{1/2}}
 \end{align*}
 and 
 \begin{align*}
@@ -197,7 +204,7 @@ something something.
 
 The value of $\text{ETI}$ is a finite [\textbf{TODO:} finite because of assumptions] real positive value.
 
-Figure \ref{fig:ETIexample} shows an example of $25$ random Gaussian Processes on the unit interval simulated under three different values of Expected Trend Instability. The sample paths are paired so that for each function in the first row, there is an associated derivative in the second row. The different values of $\mathrm{ETI}$ are set to $0.25$, $0.5$ and $1$ meaning that these are the expected number of times that the function change monotonicity or equivalently that the trend crosses zero on that interval in each scenario. Sample paths that are \textit{trend stable}, i.e always increasing/decreasing, are shown by solid blue lines, and sample paths that are \textit{trend ustable}, i.e. the derivative crosses zero, are shown by dashed gold colored lines. We the that for low values of $\mathrm{ETI}$ most of the sample paths are either always increasing or decreasing and their associated deviatives are either always postive or negative. For larger values of $\mathrm{ETI}$, more of the derivatives start crossing zero implying that the functions start changing monotonicity. We note that even though we are only modeling a single curve, the Expected Trend Instability is calculated from a posterior distribution which is what the figure illustrates.
+Figure \ref{fig:ETIexample} shows an example of $25$ random Gaussian processes on the unit interval simulated under three different values of Expected Trend Instability. The sample paths are paired so that for each function in the first row, there is an associated derivative in the second row. The different values of $\mathrm{ETI}$ are set to $0.25$, $0.5$ and $1$ meaning that these are the expected number of times that the function change monotonicity or equivalently that the trend crosses zero on that interval in each scenario. Sample paths that are \textit{trend stable}, i.e always increasing/decreasing, are shown by solid blue lines, and sample paths that are \textit{trend ustable}, i.e. the derivative crosses zero, are shown by dashed gold colored lines. We the that for low values of $\mathrm{ETI}$ most of the sample paths are either always increasing or decreasing and their associated deviatives are either always postive or negative. For larger values of $\mathrm{ETI}$, more of the derivatives start crossing zero implying that the functions start changing monotonicity. We note that even though we are only modeling a single curve, the Expected Trend Instability is calculated from a posterior distribution which is what the figure illustrates.
 
 \begin{figure}[htb]
 \center\includegraphics{../figures/ETIexample}
@@ -207,9 +214,9 @@ Figure \ref{fig:ETIexample} shows an example of $25$ random Gaussian Processes o
 
 
 ## Estimation {#sec:estimation}
-The latent Gaussian Process model defined in Equation (\ref{eq:generatingProcess}) requires estimates of the parameter vector $\Theta$ in order to calculate the joint posterior distribution required for the trend indices. These parameters must be estimated from data $(Y_i, t_i)_{i=1}^n$. We consider two different estimation procedures: maximum likelihood estimation and a fully Bayesian estimator.  
+The latent Gaussian process model defined in Equation (\ref{eq:generatingProcess}) requires estimates of the parameter vector $\Theta$ in order to calculate the joint posterior distribution required for the trend indices. These parameters must be estimated from data $(Y_i, t_i)_{i=1}^n$. We consider two different estimation procedures: maximum likelihood estimation and a fully Bayesian estimator.  
 
-The maximum likelihood estimator for our model consists of finding the values of the parameters that maximize the marginal likelihood of the observed data and plugging these into the expressions. The marginal distribution of $\mathbf{Y}$ is found by integrating out the distribution of the latent Gaussian Process in the conditional observation model $\mathbf{Y} \mid f(\mathbf{t}), \mathbf{t}, \Theta$. Since the observation model consists of normal distributed random variables conditional on the latent Gaussian Process, the marginal distribution is multivariate normal with expectation $\mu_\beta(\mathbf{t})$ and $n \times n$ covariance matrix $C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I$. The marginal log likelihood function is therefore
+The maximum likelihood estimator for our model consists of finding the values of the parameters that maximize the marginal likelihood of the observed data and plugging these into the expressions. The marginal distribution of $\mathbf{Y}$ is found by integrating out the distribution of the latent Gaussian process in the conditional observation model $\mathbf{Y} \mid f(\mathbf{t}), \mathbf{t}, \Theta$. Since the observation model consists of normal distributed random variables conditional on the latent Gaussian process, the marginal distribution is multivariate normal with expectation $\mu_\beta(\mathbf{t})$ and $n \times n$ covariance matrix $C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I$. The marginal log likelihood function is therefore
 \begin{align}
 \log L(\Theta \mid \mathbf{Y}, \mathbf{t}) &\propto - \frac{1}{2}\log |C_{\theta}(\mathbf{t}, \mathbf{t}) + \sigma^2 I| - \frac{1}{2}(\mathbf{Y} - \mu_\beta(\mathbf{t}))^T\left[C_{\theta}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}(\mathbf{Y} - \mu_\beta(\mathbf{t}))\label{eq:margloglik}
 \end{align}
@@ -265,7 +272,7 @@ p-value & 0.074 & \textbf{0.020} & 0.495 & \textbf{0.012} & 0.576
 Similarly, a simple approach for trying to answer question Q3 would be to look at the cumulative number of times that the difference in proportion between consecutive years changes sign. In the data set there were nine changes in the sign of the difference between the proportion in each year and the proportion in the previous year giving this very curde estimate of the number of times, that the trend has changed. This approach suffers from the facts that it is based on a finite difference approximation at the observed time points to the continous derivative, and that it uses the noisy measurements instead of the values of the latent function.
 
 
-We now present an analysis of the data set using our proposed model. To complete the model specification in Equation (\ref{eq:generatingProcess}) we must decide on the functional forms of the mean and covariance functions of the latent Gaussian Process. We considered three different mean functions: a constant mean, $\mu_\beta(t) = \beta_0$, a linear mean, $\mu_\beta(t) = \beta_0 + \beta_1 t$, and a quadratic mean function, $\mu_\beta(t) = \beta_0 + \beta_1 t + \beta_2 t^2$. For the covariance function we consider the Squared Exponential (SE), the Rational Quadratic (RQ), the Matern 3/2 (M3/2), and the Matern 5/2 (M5/2) covariance functions. The expressions for these covariance functions are given by
+We now present an analysis of the data set using our proposed model. To complete the model specification in Equation (\ref{eq:generatingProcess}) we must decide on the functional forms of the mean and covariance functions of the latent Gaussian process. We considered three different mean functions: a constant mean, $\mu_\beta(t) = \beta_0$, a linear mean, $\mu_\beta(t) = \beta_0 + \beta_1 t$, and a quadratic mean function, $\mu_\beta(t) = \beta_0 + \beta_1 t + \beta_2 t^2$. For the covariance function we consider the Squared Exponential (SE), the Rational Quadratic (RQ), the Matern 3/2 (M3/2), and the Matern 5/2 (M5/2) covariance functions. The expressions for these covariance functions are given by
 \begin{align}
   C_\theta^\text{SE}(s, t) &= \alpha^2\exp\left(-\frac{(s-t)^2}{2\rho^2}\right), \quad \theta = (\alpha, \rho)\label{eq:covariancefunctions}\\ 
   C_\theta^\text{RQ}(s, t) &= \alpha^2\left(1 + \frac{(s-t)^2}{2\rho^2\nu}\right)^{-\nu}, \quad \theta = (\alpha, \rho, \nu)\nonumber\\
@@ -274,7 +281,7 @@ We now present an analysis of the data set using our proposed model. To complete
 \end{align}
 and we note that the Rational Quadractic covariance function converges to the Squared Exponential covariance function for $\nu \rightarrow \infty$, $\lim_{\nu \rightarrow \infty} C_\theta^\text{RQ}(s,t) = C_\theta^\text{SE}(s,t)$. [\textbf{TODO:} Something about the sample path regularity for these covariance functions. M3/2 cannot be used for ETI but okay for TDI]. 
 
-The total combination of mean and covariance functions results in 12 candidate models, and to select the model providing the best fit to data we used leave-one-out cross-validation based on maximum likelihood estimation. For each model, $\mathcal{M}$, we turn by turn excluded a single observation $(t_i, Y_i)$ from the vectors of observed outcomes and time points, and we let the leave-one-out data be denoted by $(\mathbf{Y}_{-i}, \mathbf{t}_{-i})$. Based on the leave-one-out data sets we estimated the parameters,  $\Theta_{-i}^{\mathcal{M}} = (\beta, \theta, \sigma^2)$, of the latent Gaussian Process for each model by maximizing the marginal log-likelihood function of the model in Equation (\ref{eq:generatingProcess}). These estimates were given by
+The total combination of mean and covariance functions results in 12 candidate models, and to select the model providing the best fit to data we used leave-one-out cross-validation based on maximum likelihood estimation. For each model, $\mathcal{M}$, we turn by turn excluded a single observation $(t_i, Y_i)$ from the vectors of observed outcomes and time points, and we let the leave-one-out data be denoted by $(\mathbf{Y}_{-i}, \mathbf{t}_{-i})$. Based on the leave-one-out data sets we estimated the parameters,  $\Theta_{-i}^{\mathcal{M}} = (\beta, \theta, \sigma^2)$, of the latent Gaussian process for each model by maximizing the marginal log-likelihood function of the model in Equation (\ref{eq:generatingProcess}). These estimates were given by
 \begin{align*}
 \widehat{\Theta}_{-i}^\mathcal{M} = \argsup_{\Theta} \log L(\Theta \mid \mathbf{Y}_{-i}, \mathbf{t}_{-i}) 
 \end{align*}
@@ -305,7 +312,7 @@ Figure \ref{fig:likFitPlot} shows the fit of the model by plugging in the values
 
 \begin{figure}[htb]
 \center\includegraphics{../figures/likFitPlot}
-\caption{Results from fitting the latent Gaussian Process model by maximum likelihood. The first row shows the posterior distributions of $f$ (left) and $df$ (right) with the posterior means in bold and gray areas showing point-wise probability intervals for the posterior distribution. The second row shows the estimated Trend Direction Index (left) and the local Expected Trend Instability (right).}
+\caption{Results from fitting the latent Gaussian process model by maximum likelihood. The first row shows the posterior distributions of $f$ (left) and $df$ (right) with the posterior means in bold and gray areas showing point-wise probability intervals for the posterior distribution. The second row shows the estimated Trend Direction Index (left) and the local Expected Trend Instability (right).}
 \label{fig:likFitPlot}
 \end{figure}
 
@@ -352,7 +359,7 @@ Note for Bayesian: The first bump drowns in undercainty. This cannot be seen fro
 
 Figures \ref{fig:likFitPlot} and \ref{fig:bayesFitPlot} and the summary statistics in Table \ref{tab:summaries} indicate that the Bayesian estimates generally produce a high degree of smoothness in the model fit. This can be seen from the plot of the median local Expected Trend Instability in Figure \ref{fig:bayesFitPlot} which is generally lower than its corresponding maximum likelihood point estimates in Figure \ref{fig:likFitPlot}. This is similarly reflected in the median ETI estimates which are lower than their values under maximum likelihood in Table \ref{tab:summaries}. Looking at the posterior distributions of the covariance parameters $\theta$ (not shown), we see that this is mainly a result of not restricting the parameter $\nu$ to its maximum likelihood value. The 95\% probability interval of the posterior distribution of $\nu$ was $[0.328; 10.743]$ which is highly right-skewed compared to the maximum likelihood estimate of $\widehat{\nu^\text{ML}} = 1.020$. 
 
-To understand the effect of $\nu$ on the smoothness of the fitted models can compare the local expected number of crossings by a Gaussian Process and its derivative at their mean values in the simple case with a zero mean and either the Rational Quadratic or the Squared Exponential covariance function. In this case the formula in Proposition \ref{prop:ETIposterior} simplifies immensely so that the local expected number of mean-crossing by $f$ is equal to $\pi^{-1}(\frac{\partial_1 \partial_2 C_\theta(t, t)}{ C_\theta(t,t)})^{1/2}$ and for $df$ it is equal to $\pi^{-1}(\frac{\partial_1^2 \partial_2^2 C_\theta(t, t)}{ \partial_1\partial_2 C_\theta(t,t)})^{1/2}$. From the expressions in Equation (\ref{eq:covariancefunctions}) we see that the local expected number of mean-crossings by $f$ is the same for both the Squared Exponential and the Rational Quadratic covariance functions and is equal to $\pi^{-1}\rho^{-1}$. However, for $df$ we see that its local expected number of mean-crossings is equal to $3^{1/2}\pi^{-1}\rho^{-1}$ for the Squared Exponential covariance function and $3^{1/2}\pi^{-1}\rho^{-1}(1 + \nu^{-1})^{1/2}$ for the Rational Quadratic covariance function. As $1 < \left(1 + v^{-1}\right)^{1/2} < \infty$ for $0 < \nu < \infty$ and monotonically decreasing for $\nu \rightarrow \infty$ with a limit of one, we see that the local expected number of mean-crossings by $df$ is always larger for the Rational Quadratic covariance functions compared to the Squared Exponential covariance function with equality in the limit. A right-skewed posterior distribution of $\nu$ therefore generally favors fewer crossings of the trend leading to a more stable trend and a smaller value of the Expected Trend Instability.
+To understand the effect of $\nu$ on the smoothness of the fitted models can compare the local expected number of crossings by a Gaussian process and its derivative at their mean values in the simple case with a zero mean and either the Rational Quadratic or the Squared Exponential covariance function. In this case the formula in Proposition \ref{prop:ETIposterior} simplifies immensely so that the local expected number of mean-crossing by $f$ is equal to $\pi^{-1}(\frac{\partial_1 \partial_2 C_\theta(t, t)}{ C_\theta(t,t)})^{1/2}$ and for $df$ it is equal to $\pi^{-1}(\frac{\partial_1^2 \partial_2^2 C_\theta(t, t)}{ \partial_1\partial_2 C_\theta(t,t)})^{1/2}$. From the expressions in Equation (\ref{eq:covariancefunctions}) we see that the local expected number of mean-crossings by $f$ is the same for both the Squared Exponential and the Rational Quadratic covariance functions and is equal to $\pi^{-1}\rho^{-1}$. However, for $df$ we see that its local expected number of mean-crossings is equal to $3^{1/2}\pi^{-1}\rho^{-1}$ for the Squared Exponential covariance function and $3^{1/2}\pi^{-1}\rho^{-1}(1 + \nu^{-1})^{1/2}$ for the Rational Quadratic covariance function. As $1 < \left(1 + v^{-1}\right)^{1/2} < \infty$ for $0 < \nu < \infty$ and monotonically decreasing for $\nu \rightarrow \infty$ with a limit of one, we see that the local expected number of mean-crossings by $df$ is always larger for the Rational Quadratic covariance functions compared to the Squared Exponential covariance function with equality in the limit. A right-skewed posterior distribution of $\nu$ therefore generally favors fewer crossings of the trend leading to a more stable trend and a smaller value of the Expected Trend Instability.
 
 
 # Discussion {#sec:discussion}
@@ -382,45 +389,31 @@ Everything including implementations and supplementary material is available at 
 #Appendix
 
 ## Proof of Proposition \ref{prop:GPposterior}
-We derive the joint posterior distribution of the latent process $(f, df, d^2\!f)$ under the model in Equation (\ref{eq:generatingProcess}). We start by noting that $\mathbf{Y} \mid \mathbf{t}, \Theta$ is jointly normal distributed with the latent processes with marginal mean  $\mu_\beta(\mathbf{t})$ and covariance matrix
+Let $\mathbf{Y} = (Y_1, \ldots, Y_n)$ and $\mathbf{t} = (t_1, \ldots, t_n)$ be the vectors of observed outcomes and associated sampling times. From the data generating model in Equation (\ref{eq:generatingProcess}) we observe that the marginal distribution of the vector of observed outcomes $\mathbf{Y} \mid \mathbf{t}, \Theta$ is
 \begin{align*}
-  K(\mathbf{t}, \mathbf{t}) = C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I
+P(\mathbf{Y} \mid \mathbf{t}, \Theta) &= \int P(\mathbf{Y} \mid f(\mathbf{t}), \mathbf{t}, \Theta)dP(f(\mathbf{t}) \mid \mathbf{t}, \Theta)\\
+  &= N(\mu_\beta(\mathbf{t}), C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I)
 \end{align*}
-where $C_\theta(\mathbf{t}, \mathbf{t})$ denotes a matrix consisting of the values of the covariance function at $\left\{(s,t) \in \mathbf{t} \times \mathbf{t} \right\}$, and $I$ is an identity matrix of appropriate dimensions. Combining this with the result from Equation (\ref{eq:latentJoint}) generalized to also include the second-order derivative of $f$ we obtain the following joint distribution for the latent processes and the observed data
+where $\mu_\beta(\mathbf{t}) = (\mu_\beta(t_1), \ldots \mu_\beta(t_n))$, $C_\theta(\mathbf{t}, \mathbf{t})$ is the $n \times n$ covariance matrix obtained by evaluating $C_\theta(s,t)$ at $\{(s,t) \in \mathbf{t} \times \mathbf{t}\}$ and $I$ is an $n \times n$ identity matrix. This implies that the joint distribution of $\mathbf{Y}$ and the latent functions $(f, df, d^2\!f)$ evaluated at an arbitrary vector of time points $\mathbf{t}^\ast$ is
 \begin{align*}
   \begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\\ \mathbf{Y}\end{bmatrix} \mid \mathbf{t}, \Theta \sim N\left(\begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\\ \mu_\beta(\mathbf{t})\end{bmatrix}, \begin{bmatrix}C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) &  \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2\partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2\partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ C_\theta(\mathbf{t}, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)  & C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\end{bmatrix}\right)
 \end{align*}
-where $\partial_j^k$ denotes the $k$'th derivative of the $j$'th variable. By the joint normality, the joint posterior distribution of $(f, df, d^2\!f)$ conditional on the parameters and the sampling times is equal to the following multivariate normal distribution
-\begin{align*}
-\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\bm{\mu}(\mathbf{t}^\ast), \bm{\Sigma}(\mathbf{t}^\ast, \mathbf{t}^\ast)\right)
-\end{align*}
-where the moments are partitioned as
-\begin{align*}
-  \bm{\mu}(\mathbf{t}^\ast) = \begin{bmatrix}\mu_f(\mathbf{t}^\ast)\\ \mu_{df}(\mathbf{t}^\ast)\\ \mu_{d^2\!f}(\mathbf{t}^\ast)\end{bmatrix}, \quad \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) = \begin{bmatrix}\Sigma_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{f,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\\ \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{df,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\\ \Sigma_{d^2\!f,f}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{d^2\!f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \Sigma_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix}
-\end{align*}
-Using the standard formulas for conditional distributions in a multivariate normal model we obtain the following expressions for the joint posterior moments
-\begin{align*}
-  \bm{\mu}(\mathbf{t}^\ast) &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K(\mathbf{t}, \mathbf{t})^{-1} (\mathbf{Y} - \mu_\beta(\mathbf{t}))\\
-  \bm{\Sigma}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2^2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix} - \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\\partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K(\mathbf{t}, \mathbf{t})^{-1}\begin{bmatrix}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\\partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}
-\end{align*}
+where $\partial_j^k$ denotes the $k$'th order partial derivative with respect to the $j$'th variable.
 
-The posterior moments of $f$ are useful for assessing the fit of the model. By completing the expressions in the previous display we obtain these as
+By the standard formula for deriving conditional distributions in a multivariate normal model, the posterior distribution of $(f, df, d^2\!f)$ evaluated at the $p$ time points in $\mathbf{t}^\ast$ is
 \begin{align*}
-  \mu_{f}(\mathbf{t}^\ast) &= \mu_\beta(\mathbf{t}^\ast) + C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right)\\
-  \Sigma_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}C_\theta(\mathbf{t}, \mathbf{t}^\ast)
+\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\bm{\mu}, \bm{\Sigma}\right)
 \end{align*}
-The posterior moments of $df$ are required in order to calculate the Trend Direction Index in Proposition \ref{prop:TDIposterior}, and these are given by
-\begin{align}
-  \mu_{df}(\mathbf{t}^\ast) &= d\mu_\beta(\mathbf{t}^\ast) + \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right) \label{eq:appendixPost1}\\
-  \Sigma_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\partial_2 C_\theta( \mathbf{t}, \mathbf{t}^\ast) \nonumber
-\end{align}
-In order to calculate the Expected Trend Instability index in Proposition \ref{prop:ETIposterior} we in addition require the posterior moments of $d^2\!f$ and its cross-covariance with $df$. These are given by
-\begin{align}
-  \mu_{d^2\!f}(\mathbf{t}^\ast) &= d^2\mu_\beta(\mathbf{t}^\ast) + \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_\beta(\mathbf{t})\right) \label{eq:appendixPost2}\\
-  \Sigma_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \partial_1^2 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast) \nonumber \\ 
-  \Sigma_{df, d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast) &= \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\left(C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast) \nonumber
-\end{align}
-This completes the proof.
+where $\bm{\mu} \in \mathbb{R}^{3p}$ is the column vector of posterior expectations and $\bm{\Sigma} \in \mathbb{R}^{3p \times 3p}$ is the joint posterior covariance matrix, and these are given by
+\begin{align*}
+  \bm{\mu} &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K_{\theta,\sigma}(\mathbf{t}, \mathbf{t})^{-1} (\mathbf{Y} - \mu_\beta(\mathbf{t}))\\
+  \bm{\Sigma} &= \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2^2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix} - \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\\partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K_{\theta,\sigma}(\mathbf{t}, \mathbf{t})^{-1}\begin{bmatrix}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\\partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}^T
+\end{align*}
+where $K_{\theta,\sigma}(\mathbf{t}, \mathbf{t}) = C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I$. Partitioning $\bm{\mu}$ and $\bm{\Sigma}$ as 
+\begin{align*}
+  \bm{\mu} = \begin{bmatrix}\mu_f(\mathbf{t}^\ast \mid \Theta)\\ \mu_{df}(\mathbf{t}^\ast \mid \Theta)\\ \mu_{d^2\!f}(\mathbf{t}^\ast \mid \Theta)\end{bmatrix}, \quad \bm{\Sigma} = \begin{bmatrix}\Sigma_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{f,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta)\\ \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{df,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta)\\ \Sigma_{d^2\!f,f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{d^2\!f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta)\end{bmatrix}
+\end{align*}
+and completing the matrix algebra, we obtain the expressions of the individual components given in Proporition \ref{prop:GPposterior}. This completes the proof.
 
 ## Proof of Proposition \ref{prop:ETIposterior}
 Rice showed in section 3.3. of @rice1945mathematical that the local expected number of zero-crossings of a Gaussian process $X$ at time $t$ is given by
@@ -429,9 +422,9 @@ Rice showed in section 3.3. of @rice1945mathematical that the local expected num
 \end{align*}
 where $f_{X(t), dX(t)}$ is the joint density function of $X$ and its derivative $dX$ at time $t$. [\textbf{TODO:} Conditions] To derive the expression for the local Expected Trend Instability in Equation (\ref{eq:localETI}) we must apply the Rice formula to the joint posterior distribution of $(df, d^2\!f)$. From Proposition \ref{prop:GPposterior} the distribution of $(df, d^2\!f) \mid \mathbf{Y}, \mathbf{t}, \Theta$ is bivariate normal for each $t$. 
 
-Let $\mu_{df}(t)$, $\mu_{d^2\!f}(t)$, $\Sigma_{df}(s,t)$ and $\Sigma_{d^2\!f}(s,t)$ be defined as in Proposition \ref{prop:GPposterior} and define further
+Let $\mu_{df}$, $\mu_{d^2\!f}$, $\Sigma_{df}$ and $\Sigma_{d^2\!f}$ be defined as in Proposition \ref{prop:GPposterior} and define further
 \begin{align*}
-  \omega(t) = \frac{\Sigma_{df, d^2\!f}(t,t)}{\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}}
+  \omega(t \mid \Theta) = \frac{\Sigma_{df, d^2\!f}(t,t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}}
 \end{align*}
 as the posterior point-wise cross-correlation function between $df$ and $d^2\!f$. The joint posterior density function of $(df, d^2\!f)$ at any time $t$ evaluated at $(0, v)$ can be factorized as
 \begin{align*}
@@ -439,50 +432,51 @@ f_{df(t), d^2\!f(t)}(0, v) = c_1(t) e^{c_2(t)} e^{-c_3(t) v^2 - 2c_4(t) v}
 \end{align*}
 where $c_1, \ldots, c_4$ are functions of time given by
 \begin{align*}
- c_1(t) &= \frac{1}{2\pi \Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2} (1-\omega(t)^2)^{1/2}}\\
+ c_1(t) &= (2\pi)^{-1} \Sigma_{df}(t,t \mid \Theta)^{-1/2}\Sigma_{d^2\!f}(t,t \mid \Theta)^{-1/2} (1-\omega(t \mid \Theta)^2)^{-1/2}\\
  c_2(t) &= \frac{\mu_{df}(t)^2\Sigma_{d^2\!f}(t,t) -2\mu_{df}(t)\mu_{d^2\!f}(t)\Sigma_{df}(t,t)^{1/2}\Sigma_{d^2\!f}(t,t)^{1/2}\omega(t) + \mu_{d^2\!f}(t)^2\Sigma_{df}(t,t)}{2\Sigma_{d^2\!f}(t,t)(\omega(t)^2-1)\Sigma_{df}(t,t)}\\	
- c_3(t) &= -\frac{1}{2\Sigma_{d^2\!f}(t,t)(\omega(t)^2-1)}\\
- c_4(t) &= -\frac{\mu_{df}(t) \Sigma_{d^2\!f}(t,t)^{1/2} \omega(t) - \mu_{d^2\!f}(t) \Sigma_{df}(t,t)^{1/2}}{2\Sigma_{d^2\!f}(t,t)(\omega(t)^2-1)\Sigma_{df}(t,t)^{1/2}}
+ c_3(t) &= -\frac{1}{2}\Sigma_{d^2\!f}(t,t \mid \Theta)^{-1}(\omega(t \mid \Theta)^2-1)^{-1}\\
+ c_4(t) &= -\frac{\mu_{df}(t \mid \Theta) \Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2} \omega(t \mid \Theta) - \mu_{d^2\!f}(t \mid \Theta) \Sigma_{df}(t,t \mid \Theta)^{1/2}}{2\Sigma_{d^2\!f}(t,t \mid \Theta)(\omega(t \mid \Theta)^2-1)\Sigma_{df}(t,t \mid \Theta)^{1/2}}
 \end{align*}
 By Rice's formula, the local Expected Trend Instability can then be written as
-\begin{align*}
-d\mathrm{ETI}_\mathcal{I}(t, \mid \Theta) &= \int_{-\infty}^\infty |v| f_{df(t), d^2\!f(t)}(0, v)\mathrm{d}v\\
+\begin{align}
+d\mathrm{ETI}_\mathcal{I}(t, \mid \Theta) &= \int_{-\infty}^\infty |v| f_{df(t), d^2\!f(t)}(0, v)\mathrm{d}v\nonumber\\
  &= c_1(t) e^{c_2(t)}\int_{-\infty}^\infty |v| e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\nonumber\\
- &= c_1(t) e^{c_2(t)}\left(\int_0^\infty v e^{-c_3(t) v^2 + 2c_4(t) v}\mathrm{d}v + \int_0^\infty v e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\right)\nonumber
-\end{align*}
-As $c_3(t) > 0$ for $\Sigma_{d^2\!f}(t,t) > 0$ and $|\omega(t)| < 1$ for all $t$ by Assumption [\textbf{TODO}:???] we obtain the following solution for the type of integral in the previous display by using formula 5 in section 3.462 on page 365 of @gradshteyn2014table 
-\begin{align*}
-\int_{0}^\infty v e^{-c_3(t) v^2 \pm 2c_4(t) v}\mathrm{d}v = \frac{1}{2c_3(t)} \pm \frac{c_4(t)}{2c_3(t)}\frac{\pi^{1/2}}{c_3(t)^{1/2}}e^{\frac{c_4(t)^2}{c_3(t)}}\left(1 \pm \Erf\left(\frac{c_4(t)}{\sqrt{c_3(t)}}\right)\right)
-\end{align*}
-where $\Erf\colon\, x \mapsto 2\pi^{-1}\int_0^x e^{-u^2}\mathrm{d}u$ is the error function. Combining the equations in the two previous displays we may write the local Expected Trend Instability as
+ &= c_1(t) e^{c_2(t)}\left(\int_0^\infty v e^{-c_3(t) v^2 + 2c_4(t) v}\mathrm{d}v + \int_0^\infty v e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\right)\label{dETIintegral1}
+\end{align}
+Because $c_3(t) > 0$ for all t since $\Sigma_{d^2\!f}(t,t \mid \Theta) > 0$ and $|\omega(t \mid \Theta)| < 1$ by Assumption [\textbf{TODO}:???] we obtain the following solution for the type of integral in the previous display by using formula 5 in section 3.462 on page 365 of @gradshteyn2014table 
+\begin{align}
+\int_{0}^\infty v e^{-c_3(t) v^2 \pm 2c_4(t) v}\mathrm{d}v = \frac{1}{2c_3(t)} \pm \frac{c_4(t)}{2c_3(t)}\frac{\pi^{1/2}}{c_3(t)^{1/2}}e^{\frac{c_4(t)^2}{c_3(t)}}\left(1 \pm \Erf\left(\frac{c_4(t)}{\sqrt{c_3(t)}}\right)\right)\label{dETIintegral2}
+\end{align}
+where $\Erf\colon\, x \mapsto 2\pi^{-1}\int_0^x e^{-u^2}\mathrm{d}u$ is the error function. Combining Equations (\ref{dETIintegral1}) and (\ref{dETIintegral2}) we may express the local Expected Trend Instability as
 \begin{align*}
 d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) &= c_1(t) e^{c_2(t)}\left(\frac{1}{c_3(t)} + \frac{c_4(t)}{c_3(t)}\frac{\pi^{1/2}}{c_3(t)^{1/2}}e^{\frac{c_4(t)^2}{c_3(t)}}\Erf\left(\frac{c_4(t)}{\sqrt{c_3(t)}}\right)\right)
 \end{align*}
-
-Defining $\zeta(t) = \sqrt{2}c_4(t)c_3(t)^{-1/2}$ we may rewrite the expression as
+Defining $\zeta(t \mid \Theta) = \sqrt{2}c_4(t)c_3(t)^{-1/2}$ and collecting some terms, the index can be rewritten as
 \begin{align*}
-d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) &= \frac{c_1(t)}{c_3(t)}\left(e^{c_2(t)} + \frac{\pi^{1/2}}{2^{1/2}} e^{\frac{c_4(t)^2}{c_3(t)} + c_2(t)} \zeta(t) \Erf\left(\frac{\zeta(t)}{2^{1/2}}\right)\right)
+d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) &= \frac{c_1(t)}{c_3(t)}\left(e^{c_2(t)} + \frac{\pi^{1/2}}{2^{1/2}} e^{\frac{c_4(t)^2}{c_3(t)} + c_2(t)} \zeta(t) \Erf\left(\frac{\zeta(t \mid \Theta)}{2^{1/2}}\right)\right)
 \end{align*}
-and by simple arithmetics we note that
+Straightforward arithmetic calculations show that
 \begin{align*}
-  \frac{c_4(t)^2}{c_3(t)} + c_2(t) = -\frac{\mu_{df}(t)^2}{2\Sigma_{df}(t,t)}, \quad \frac{c_1(t)}{c_3(t)} =  \frac{1}{\pi}\frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}}\left(1-\omega(t)^2\right)^{1/2}
+  \frac{c_4(t)^2}{c_3(t)} + c_2(t) = -\frac{\mu_{df}(t \mid \Theta)^2}{2\Sigma_{df}(t,t \mid \Theta)}, \quad c_2(t) = - \frac{1}{2}\left(\zeta(t \mid \Theta)^2 + \frac{\mu_{df}(t \mid \Theta)^2}{\Sigma_{df}(t,t \mid \Theta)}\right)
 \end{align*}
-which provides the following result
+and by defining $\phi\colon\, x \mapsto (2\pi)^{-1/2}e^{-x^2}$ as the density function of the standard normal distribution we may write the two exponentials in the previous display in terms of $\phi$ and obtain 
 \begin{align*}
-d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) = \frac{1}{\pi}\frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}}\left(1-\omega(t)^2\right)^{1/2}\left(e^{c_2(t)} + \pi \phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right) \zeta(t) \Erf\left(\frac{\zeta(t)}{2^{1/2}}\right)\right)
+d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) = \frac{c_1(t)}{c_3(t)}\pi\phi\left(\frac{\mu_{df}(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\right)\left(2\phi(\zeta(t \mid \Theta)) + \zeta(t \mid \Theta)\Erf\left(\frac{\zeta(t\mid \Theta)}{2^{1/2}}\right)\right)
 \end{align*}
-where $\phi\colon\, x \mapsto (2\pi)^{-1/2}e^{-x^2}$ is the density function of the standard normal distribution. Again by ordinary arithmetics we observe that 
+Standard arithmetics show that
 \begin{align*}
-  c_2(t) = - \frac{1}{2}\left(\zeta(t)^2 + \frac{\mu_{df}(t)^2}{\Sigma_{df}(t,t)}\right)
+\frac{c_1(t)}{c_3(t)} =  \frac{1}{\pi}\frac{\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\left(1-\omega(t \mid \Theta)^2\right)^{1/2}
 \end{align*}
-so by rewriting $e^{c_2(t)}$ in terms of $\zeta(t)$ and the normal density function and collecting the terms we arrive at the following expression for local Expected Trend Instability
+and we finally obtain the expression
 \begin{align*}
-d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) = \frac{\Sigma_{d^2\!f}(t,t)^{1/2}}{\Sigma_{df}(t,t)^{1/2}}\left(1-\omega(t)^2\right)^{1/2}\phi\left(\frac{\mu_{df}(t)}{\Sigma_{df}(t,t)^{1/2}}\right)\left(2\phi(\zeta(t)) + \zeta(t)\Erf\left(\frac{\zeta(t)}{2^{1/2}}\right)\right)
+d\mathrm{ETI}(t, \mathcal{T} \mid \Theta) = \lambda(t \mid \Theta)\phi\left(\frac{\mu_{df}(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\right)\left(2\phi(\zeta(t \mid \Theta)) + \zeta(t \mid \Theta)\Erf\left(\frac{\zeta(t \mid \Theta)}{2^{1/2}}\right)\right)
 \end{align*}
-where
+where $\lambda$ and $\zeta$ are given by
 \begin{align*}
-  \zeta(t) = \frac{\mu_{df}(t)\Sigma_{d^2\!f}(t,t)^{1/2}\omega(t)\Sigma_{df}(t,t)^{-1/2} - \mu_{d^2\!f}(t)}{\Sigma_{d^2\!f}(t,t)^{1/2}\left(1 - \omega(t)^2\right)^{1/2}}
+\lambda(t \mid \Theta) &= \frac{\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\left(1-\omega(t \mid \Theta)^2\right)^{1/2}\\
+  \zeta(t \mid \Theta) &= \frac{\mu_{df}(t \mid \Theta)\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}\omega(t)\Sigma_{df}(t,t \mid \Theta)^{-1/2} - \mu_{d^2\!f}(t \mid \Theta)}{\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}\left(1 - \omega(t \mid \Theta)^2\right)^{1/2}}
 \end{align*}
+This completes the proof of the local Expected Trend Instability.
 
 [\textbf{TODO}:] Also show that
 \begin{align}
