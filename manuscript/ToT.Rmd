@@ -149,7 +149,7 @@ where $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the 
 \label{prop:TDIposterior}
 \end{proposition}
 
-We make the dependence of the Trend Direction Index on the model parameters $\Theta$ explicit in the notation in Proposition \ref{prop:TDIposterior} as they enter through the expressions of posterior moments $\mu_{df}$ and $\Sigma_{df}$ in Proposition \ref{prop:GPposterior}. The Trend Direction Index is a deterministic function for fixed values of $\Theta$, but in the case where $\Theta$ is estimated from data with its uncertainty taken into account, the index becomes a time-dependent distribution over probabilities.
+We make the dependence of the Trend Direction Index on the model parameters $\Theta$ explicit in the notation in Proposition \ref{prop:TDIposterior} as they enter through the expressions of posterior moments $\mu_{df}$ and $\Sigma_{df}$ in Proposition \ref{prop:GPposterior} and must be estimated from data. From the expression we see that for $\mu_{df}(t + \delta) = 0$, implying that the posterior of $f$ is constant on average at time $t + \delta$, the Trend Direction Index is equal to $\frac{1}{2} = 50\%$.
  
 
 \begin{figure}[htb]
@@ -215,33 +215,28 @@ The maximum likelihood estimator for our model consists of finding the values of
 \end{align}
 and the maximum likelihood estimate $\widehat{\Theta^\text{ML}} = \argsup_{\Theta = (\beta, \theta, \sigma)} \log L(\Theta \mid \mathbf{Y}, \mathbf{t})$ can be obtained by numerical optimization or found as the roots to the score equations $\nabla_\theta \log L(\Theta \mid \mathbf{Y}, \mathbf{t}) = 0$. This estimate can then be plugged in to the expressions for the posterior distributions of $(f, df, d^2\!f)$ in Proposition \ref{prop:GPposterior} which enables simulation of the posterior distributions at any vector of time points. Point estimates of the Trend Direction Index and the Expected Trend Instability are then given by $\mathrm{TDI}(t, \delta \mid \widehat{\Theta^\text{ML}})$ and $\mathrm{ETI}(\mathcal{I} \mid \widehat{\Theta^\text{ML}})$ according to Propositions \ref{prop:TDIposterior} and \ref{prop:ETIposterior} respectively.
 
-The maximum likelihood estimator is easy to implement and fast to compute, but it is difficult to propagate the uncertainties of the estimated parameter estimate through to the posterior distributions and the trend indices. This is disadvantageous since in order to conduct a qualified assessment of trendiness we are not only interested in point estimates but also the associated uncertainties. A Baysian estimator, while slower to compute, fascilitates a straightforward way to encompass all uncertainties in the final estimates. To specify a Bayesian estimator we must augment the generating model in Equation (\ref{eq:generatingProcess}) with another hierarchical level specifying prior distributions of the model parameters. We therefore add a prior model
+The maximum likelihood estimator is easy to implement and fast to compute, but it is difficult to propagate the uncertainties of the estimated parameter estimate through to the posterior distributions and the trend indices. This is disadvantageous since in order to conduct a qualified assessment of trendiness we are not only interested in point estimates but also the associated uncertainties. A Baysian estimator, while slower to compute, fascilitates a straightforward way to encompass all uncertainties in the final estimates. To specify a Bayesian estimator we must augment the data generating model in Equation (\ref{eq:generatingProcess}) with another hierarchical level specifying a prior distribution of the model parameters. We therefore add the following level
 \begin{align*}
-  \Theta = (\beta, \theta, \sigma) \mid \mathbf{t} \sim G(\Psi)
+  (\beta, \theta, \sigma) \sim G(\Theta \mid \Psi, \mathbf{t})
 \end{align*}
-to the specification where $G$ is some family of distribution functions indexed by a vector of hyper-parameters $\Psi$. Both $G$ and the value of $\Psi$ must be chosen based from prior knowledge or other subject matter considerations.
-
+to the specification where $G$ is some family of distribution functions indexed by a vector of hyper-parameters $\Psi$.  The joint distribution of the model can be factorized as
 \begin{align*}
-  P(\mathbf{Y}, f(\mathbf{t}), \Theta \mid \mathbf{t}) &= P(\mathbf{Y} \mid f(\mathbf{t}), \Theta, \mathbf{t})P(f(\mathbf{t}), \Theta \mid \mathbf{t})\\
-  &= P(\mathbf{Y} \mid f(\mathbf{t}), \Theta, \mathbf{t})P(f(\mathbf{t}) \mid \Theta, \mathbf{t})P(\Theta)
+  P(\mathbf{Y}, f(\mathbf{t}), \Theta \mid \Psi, \mathbf{t}) = P(\mathbf{Y} \mid f(\mathbf{t}), \Theta, \Psi, \mathbf{t})P(f(\mathbf{t}) \mid \Theta, \Psi, \mathbf{t})G(\Theta \mid \Psi, \mathbf{t})
 \end{align*}
-
+and each conditional probability is specificed by a sub-model in the augmented hierarchy. We always condition on $\Psi$ and $\mathbf{t}$ as they are considered fixed data. The posterior distribution of $\Theta$ given the observed outcomes is then
 \begin{align*}
-  P(\mathbf{Y}, \Theta \mid \mathbf{t}) &= P(\Theta) \int P(\mathbf{Y} \mid f(\mathbf{t}), \Theta, \mathbf{t})dP(f(\mathbf{t}) \mid \Theta, \mathbf{t})\\
-  &= P(\mathbf{Y} \mid \Theta, \mathbf{t})P(\Theta)
+  P(\Theta \mid \mathbf{Y}, \Psi, \mathbf{t}) & = \frac{G(\Theta \mid \Psi, \mathbf{t})P(\mathbf{Y} \mid \Theta, \Psi, \mathbf{t})}{P(\mathbf{Y} \mid \Psi, \mathbf{t})}\\
+   &= \frac{G(\Theta \mid \Psi, \mathbf{t}) \int P(\mathbf{Y} \mid f(\mathbf{t}), \Theta, \Psi, \mathbf{t})dP(f(\mathbf{t}) \mid \Theta, \Psi, \mathbf{t})}{\iint P(\mathbf{Y} \mid f(\mathbf{t}), \Theta, \Psi, \mathbf{t})dP(f(\mathbf{t}) \mid \Theta, \Psi, \mathbf{t})dG(\Theta \mid \Psi, \mathbf{t})}
 \end{align*}
 
-\begin{align*}
-  P(\Theta \mid \mathbf{Y}) = \frac{P(\mathbf{Y} \mid \Theta)dG(\Theta)}{\int P(\mathbf{Y} \mid \Theta)dG(\Theta)}
-\end{align*}
-
-Let $\widetilde{\Theta}$ be a random variable distributed according to $P(\Theta \mid \mathbf{Y})$. The posterior distribution of the trend indices can then be summarized through their $\tau$ quantiles $Q_\tau$ such as
+Let $\widetilde{\Theta} \sim P(\Theta \mid \mathbf{Y}, \Psi, \mathbf{t})$. The posterior distribution of $\Theta$ induces corresponding distributions over the trend indices according to $\mathrm{TDI}(t, \delta \mid \widetilde{\Theta})$, $d\mathrm{EDI}(t, \mathcal{T}, \mid \widetilde{\Theta})$ and $\mathrm{EDI}(\mathcal{I} \mid \widetilde{\Theta})$. For example, the Trend Direction Index in the Bayesian formulation is a surface in $(t, \delta)$ where each value is a distribution over probability values. This implies that we in addition to quantify trendiness by a point estimate, we can also provide probability intervals for the trendiness. We suggest to summarize the trend indices by their posterior quantiles. For example, for the Trend Direction Index we summarize its posterior distribution by functions $Q_\tau$ defined by
 \begin{align*}
   P\left(\mathrm{TDI}\left(t, \delta \mid \widetilde{\Theta}\right) \leq \tau\right) = Q_\tau(t, \delta)
 \end{align*}
-which can be estimated from the MCMC samples by their empirical counterparts.
+with for example $\tau \in \left\{0.025, 0.5, 0.975\right\}$. 
 
-We have implemented both the maximum likelihood and the Bayesian estimator in Stan [@carpenter2017stan] which is a probabilistic programming language enabling full Bayesian inference using Markov chain Monte Carlo sampling and can be used through R by the \texttt{rstan} package [@rstan]. 
+We have implemented both the maximum likelihood and the Bayesian estimator in Stan [@carpenter2017stan] and R [@R-Core-Team:2018aa] in combination with the \texttt{rstan} package [@rstan]. Stan is a probabilistic programming language enabling full Bayesian inference using Markov chain Monte Carlo sampling. The Stan implementation of the maximum likelihood estimator requires the marginal maximum likelihood estimates of the parameters supplied as data, and from these it will simulate random functions from the posterior distribution of $(f, df, d^2\!f)$ on a user-supplied grid of time points as well as return point estimates of $\mathrm{TDI}$ and $d\mathrm{ETI}$. The latter can then be integrated numerically to obtain the Expected Trend Instability on an interval. The Bayesian estimator requires values of the hyper-parameters $\Psi$ supplied as data and from these it will generate random samples $\{\widetilde{\Theta}_1, \ldots, \widetilde{\Theta}_K\}$ from $P(\Theta \mid \mathbf{Y}, \Psi, \mathbf{t})$ by Markov chain Monto Carlo. These samples are then used to approximate the posterior distribution of the Trend Direction Index by $\{\mathrm{TDI}(t, \delta \mid \widetilde{\Theta}_1), \ldots, \mathrm{TDI}(t, \delta \mid \widetilde{\Theta}_K)\}$ and similarly for $d\mathrm{ETI}$. Both implementations are available at @gptrendStan.
+
 
 
 
@@ -357,7 +352,7 @@ Note for Bayesian: The first bump drowns in undercainty. This cannot be seen fro
 
 Figures \ref{fig:likFitPlot} and \ref{fig:bayesFitPlot} and the summary statistics in Table \ref{tab:summaries} indicate that the Bayesian estimates generally produce a high degree of smoothness in the model fit. This can be seen from the plot of the median local Expected Trend Instability in Figure \ref{fig:bayesFitPlot} which is generally lower than its corresponding maximum likelihood point estimates in Figure \ref{fig:likFitPlot}. This is similarly reflected in the median ETI estimates which are lower than their values under maximum likelihood in Table \ref{tab:summaries}. Looking at the posterior distributions of the covariance parameters $\theta$ (not shown), we see that this is mainly a result of not restricting the parameter $\nu$ to its maximum likelihood value. The 95\% probability interval of the posterior distribution of $\nu$ was $[0.328; 10.743]$ which is highly right-skewed compared to the maximum likelihood estimate of $\widehat{\nu^\text{ML}} = 1.020$. 
 
-To understand the effect of $\nu$ on the smoothness of the fitted models can compare the local expected number of crossings by a Gaussian Process and its derivative at their mean values in the simple case with a zero mean and either the Rational Quadratic or the Squared Exponential covariance function. In this case the formula in Proposition \ref{prop:ETIposterior} simplifies immensely so that the local expected number of mean-crossing by $f$ is equal to $\pi^{-1}(\frac{\partial_1 \partial_2 C_\theta(t, t)}{ C_\theta(t,t)})^{1/2}$ and for $df$ it is equal to $\pi^{-1}(\frac{\partial_1^2 \partial_2^2 C_\theta(t, t)}{ \partial_1\partial_2 C_\theta(t,t)})^{1/2}$. From the expressions in Equation (\ref{eq:covariancefunctions}) we see that the local expected number of mean-crossings by $f$ is the same for both the Squared Exponential and the Rational Quadratic covariance functions and is equal to $\pi^{-1}\rho^{-1}$. However, for $df$ we see that its local expected number of mean-crossings is equal to $3^{1/2}\pi^{-1}\rho^{-1}$ for the Squared Exponential covariance function and $3^{1/2}\pi^{-1}\rho^{-1}(1 + \nu^{-1})^{1/2}$ for the Rational Quadratic covariance function. As $1 < \left(1 + v^{-1}\right)^{1/2} < \infty$ for $0 < \nu < \infty$ and monotonically decreasing for $\nu \rightarrow \infty$ with a limit value of one, we see that the local expected number of mean-crossings by $df$ is always larger for the Rational Quadratic covariance functions compared to the Squared Exponential covariance function with equality in the limit. A right-skewed posterior distribution of $\nu$ therefore generally favors fewer crossings of the trend leading to a more stable trend and a smaller value of the Expected Trend Instability.
+To understand the effect of $\nu$ on the smoothness of the fitted models can compare the local expected number of crossings by a Gaussian Process and its derivative at their mean values in the simple case with a zero mean and either the Rational Quadratic or the Squared Exponential covariance function. In this case the formula in Proposition \ref{prop:ETIposterior} simplifies immensely so that the local expected number of mean-crossing by $f$ is equal to $\pi^{-1}(\frac{\partial_1 \partial_2 C_\theta(t, t)}{ C_\theta(t,t)})^{1/2}$ and for $df$ it is equal to $\pi^{-1}(\frac{\partial_1^2 \partial_2^2 C_\theta(t, t)}{ \partial_1\partial_2 C_\theta(t,t)})^{1/2}$. From the expressions in Equation (\ref{eq:covariancefunctions}) we see that the local expected number of mean-crossings by $f$ is the same for both the Squared Exponential and the Rational Quadratic covariance functions and is equal to $\pi^{-1}\rho^{-1}$. However, for $df$ we see that its local expected number of mean-crossings is equal to $3^{1/2}\pi^{-1}\rho^{-1}$ for the Squared Exponential covariance function and $3^{1/2}\pi^{-1}\rho^{-1}(1 + \nu^{-1})^{1/2}$ for the Rational Quadratic covariance function. As $1 < \left(1 + v^{-1}\right)^{1/2} < \infty$ for $0 < \nu < \infty$ and monotonically decreasing for $\nu \rightarrow \infty$ with a limit of one, we see that the local expected number of mean-crossings by $df$ is always larger for the Rational Quadratic covariance functions compared to the Squared Exponential covariance function with equality in the limit. A right-skewed posterior distribution of $\nu$ therefore generally favors fewer crossings of the trend leading to a more stable trend and a smaller value of the Expected Trend Instability.
 
 
 # Discussion {#sec:discussion}
@@ -376,8 +371,6 @@ We could also have defined
 counting the expected number of up-crossings at zero by $df$ (the number of times $f$ has gone from being decreasing to increasing) on $\mathcal{T}$.
 
 Also something about stationarity of $C_\theta$.
-
-Different distributions of $Y \mid f$ could be used (e.g. binary outcomes) but then maximum likelihood estimation is not analytically tractable. 
 
 Everything including implementations and supplementary material is available at @gptrendStan.
 
