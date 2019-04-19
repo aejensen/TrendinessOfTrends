@@ -74,7 +74,7 @@ legend("topleft", c("Median", "50%", "95%", "99%"), col = c("black", "gray45", "
        lwd = 2, bty="n", cex=0.9, lty = c(1, NA, NA, NA), pch = c(NA, 15, 15, 15), pt.cex=1.5, seg.len=1.3)
   
 plot(0, 0, type="n", xlim=c(0,6), ylim=c(0,0.8), xlab="Expected Trend Instability", 
-     ylab="Posterior density", xaxt="n", yaxt="n")
+     ylab="Density", xaxt="n", yaxt="n")
 axis(1, seq(0, 6, 1), cex.axis = 0.7)
 axis(2, cex.axis = 0.7)
 band(ETI1_seq1, rep(0, length(ETI1_seq1)), ETI1_d_f(ETI1_seq1), col="gray80")
@@ -87,7 +87,7 @@ legend("topleft", c("Median", "50%", "95%"), col = c("black", "gray65", "gray80"
        lwd = 2, bty="n", cex=0.9, lty=c(1,NA, NA), pch = c(NA, 15, 15), pt.cex=1.5, seg.len=1.3)
   
 plot(0, 0, type="n", xlim=c(0,3), ylim=c(0,2.5), xlab="Expected Trend Instability", 
-     ylab="Posterior density", xaxt="n", yaxt="n")
+     ylab="Density", xaxt="n", yaxt="n")
 axis(1, seq(0, 3, 0.5), cex.axis = 0.7)
 axis(2, cex.axis = 0.7)
 band(ETI2_seq1, rep(0, length(ETI2_seq1)), ETI2_d_f(ETI2_seq1), col="gray80")

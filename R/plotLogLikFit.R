@@ -21,7 +21,7 @@ band <- function(t, l, u, col) {
 }
 
 pdf("../figures/likFitPlot.pdf", width = 8, height = 6)
-par(mfrow=c(2,2), bty="n", mar = c(2.3, 2.6, 1.5, 0), mgp=c(1.3,0.4,0))
+par(mfrow=c(2,2), bty="n", mar = c(2.3, 3, 1.6, 0), mgp=c(1.3,0.4,0))
 plot(dat$t, dat$y, pch = 19, xaxt="n", ylim=c(20,40), xlab="Year", 
      ylab=expression(f ~ "|" ~ Y~","~widehat(Theta^ML)), type="n", yaxt="n")
 title("Latent function", font.main=1)
