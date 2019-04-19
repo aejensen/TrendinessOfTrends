@@ -45,7 +45,7 @@ getPostD <- function(tObs, yObs, tPred, alpha, l, sigmaResid = 1e-9, k = k) {
 }
 
 
-n <- 125
+n <- 251
 k <- 150
 tPred <- seq(0, 1, length.out = n)
 
@@ -54,9 +54,9 @@ doPlotF <- function(obsT, obsY, ...) {
     afterT <- which(tPred > max(obsT))
   
   set.seed(12345)
-  postDat <- getPost(obsT, obsY, tPred, alpha = 2, l = 0.1)
+  postDat <- getPost(obsT, obsY, tPred, alpha = 1.5, l = 0.1)
   
-  matplot(tPred, postDat$sim, type="n", lty=1, ylim = c(-7, 7),
+  matplot(tPred, postDat$sim, type="n", lty=1, ylim = c(-6, 6),
           xlab = "t", ylab="f(t)", col = add.alpha(1:6, 0.3), xaxt="n", yaxt="n", ...)
   
   matplot(tPred[beforeT], postDat$sim[beforeT,], type="l", lty=1, col = add.alpha(1:6, 0.6), add=TRUE)  
@@ -70,8 +70,8 @@ doPlotF <- function(obsT, obsY, ...) {
   }
   
   points(obsT, obsY, pch=19, cex=1.5)
-  axis(1, cex.axis = 0.69)
-  axis(2, cex.axis = 0.69)
+  axis(1, cex.axis = 0.9)
+  axis(2, cex.axis = 0.9)
   
   if(length(afterT) > 0) {
     lines(rep(obsT[length(obsT)], 2), c(-6, 6), lty = 3)
@@ -83,9 +83,9 @@ doPlotDF <- function(obsT, obsY) {
   afterT <- which(tPred > max(obsT))
   
   set.seed(12345)
-  postDat <- getPostD(obsT, obsY, tPred, alpha = 2, l = 0.1, k = 150)
+  postDat <- getPostD(obsT, obsY, tPred, alpha = 1.5, l = 0.1, k = 150)
   
-  matplot(tPred, postDat$sim, type="n", lty=1, ylim = c(-100, 100),
+  matplot(tPred, postDat$sim, type="n", lty=1, ylim = c(-60, 60),
           xlab = "t", ylab="df(t)", col = add.alpha(1:6, 0.3), xaxt="n", yaxt="n")
 
   matplot(tPred[beforeT], postDat$sim[beforeT,], type="l", lty=1, col = add.alpha(1:6, 0.6), add=TRUE)  
@@ -99,10 +99,10 @@ doPlotDF <- function(obsT, obsY) {
   }
   
   lines(c(0,1), c(0, 0), lty=3)
-  axis(1, cex.axis = 0.69)
-  axis(2, cex.axis = 0.69)
+  axis(1, cex.axis = 0.9)
+  axis(2, seq(-60, 60, length.out=5), cex.axis = 0.9)
   if(length(afterT) > 0) {
-    lines(rep(obsT[length(obsT)], 2), c(-100, 100), lty = 3)
+    lines(rep(obsT[length(obsT)], 2), c(-60, 60), lty = 3)
   }
 }
 
@@ -111,36 +111,36 @@ doPlotTCI <- function(obsT, obsY) {
   afterT <- which(tPred > max(obsT))
   
   set.seed(12345)
-  dfSim <- getPostD(obsT, obsY, tPred, alpha = 2, l = 0.1, k = 100)$sim
-  prob <- apply(dfSim > 0, 1, mean)
+  dfSim <- getPostD(obsT, obsY, tPred, alpha = 1.5, l = 0.1, k = 500000)$sim
+  prob <- apply(dfSim > 0, 1, mean)*100
   
-  plot(tPred, prob, type="n", ylim=c(0,1), xaxt="n", yaxt="n", lwd=2, xlab="t", ylab="TDI")
+  plot(tPred, prob, type="n", ylim=c(0,100), xaxt="n", yaxt="n", lwd=2, xlab="t", ylab="Trend Direction Index [%]")
 
   lines(tPred[beforeT], prob[beforeT], lwd = 2)
   if(length(afterT) > 0) {
     lines(tPred[afterT], prob[afterT], lwd = 2, col = add.alpha("black", 0.6))
   }
   
-  lines(c(0,1), c(0.5, 0.5), lty=3)
-  axis(1, cex.axis = 0.69)
-  axis(2, cex.axis = 0.69)
+  lines(c(0,1), c(50, 50), lty=3)
+  axis(1, cex.axis = 0.9)
+  axis(2, cex.axis = 0.9)
   if(length(afterT) > 0) {
-    lines(rep(obsT[length(obsT)], 2), c(0, 1), lty = 3)
+    lines(rep(obsT[length(obsT)], 2), c(0, 100), lty = 3)
   }
 }
 
-pdf("probabilisticExample.pdf", width = 8, height = 5)
-par(mfrow=c(3,3), bty="n", mar =  c(2.3, 2.3, 1, 0), mgp=c(1.3,0.4,0))
+pdf("../figures/TDIexample.pdf", width = 8, height = 5)
+par(mfrow=c(3,3), bty="n", mar =  c(2.3, 2.3, 0.8, 0), mgp=c(1.3,0.4,0))
 doPlotF(c(0.1), c(0), main = "One observation", font.main = 1)
 doPlotF(c(0.1, 0.3), c(0, 2), main = "Two observations", font.main = 1)
-doPlotF(c(0.1, 0.3, 0.5, 1), c(0, 2, -3, 2),  main = "Four observations", font.main = 1)
+doPlotF(c(0.1, 0.3, 0.5, 0.9), c(0, 2, -3, 2),  main = "Four observations", font.main = 1)
 
 doPlotDF(c(0.1), c(0))
 doPlotDF(c(0.1, 0.3), c(0, 2))
-doPlotDF(c(0.1, 0.3, 0.5, 1), c(0, 2, -3, 2))
+doPlotDF(c(0.1, 0.3, 0.5, 0.9), c(0, 2, -3, 2))
 
 doPlotTCI(c(0.1), c(0))
 doPlotTCI(c(0.1, 0.3), c(0, 2))
-doPlotTCI(c(0.1, 0.3, 0.5, 1), c(0, 2, -3, 2))
+doPlotTCI(c(0.1, 0.3, 0.5, 0.9), c(0, 2, -3, 2))
 dev.off()
 
