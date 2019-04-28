@@ -65,7 +65,7 @@ Another common approach to analyse trends in time series is to apply a low-pass 
 
 @gottlieb2012stickiness define a stickiness coefficient for longitudinal data and use the stickiness coefficient to summarize the extent to which deviations from the mean trajectory tend to co-vary over time. While the stickness coefficient determines changes from the expected trend it is a measure that is not easily interpreted.
 
-We propose a new method for evaluating changes in the latent trend, $f$,  which starts by a clear specification of the problem and relevant measures of the trend: The Trend Direction Index gives a local probability of the monotonicity of $f$ and provides an answer to the research question ,,What is the probability that the latent trend is increasing?''. The Expected Rrend Instability index gives the expected number of changes in the monotonicity of $f$ on an interval and answers research questions about the rate of changes in direction of $f$ and can be used to evaluate the statement in the new paper that ,,It is the first time in 20 years that $f$ has stoped decreasing and started to increase''. Besides providing exact answers to specific and relevant research questions, our proposed method estimates the actual probability that the trend is changing. 
+We propose a new method for evaluating changes in the latent trend, $f$,  which starts by a clear specification of the problem and relevant measures of the trend: The Trend Direction Index gives a local probability of the monotonicity of $f$ and provides an answer to the research question ,,What is the probability that the latent trend is increasing?''. The Expected Trend Instability index gives the expected number of changes in the monotonicity of $f$ on an interval and answers research questions about the rate of changes in direction of $f$ and can be used to evaluate the statement in the new paper that ,,It is the first time in 20 years that $f$ has stoped decreasing and started to increase''. Besides providing exact answers to specific and relevant research questions, our proposed method estimates the actual probability that the trend is changing. 
 
 The manuscript is structured as follows: In Section \ref{sec:method} we present our statistical model based on a latent Gaussian process formulation giving rise to analytic expressions for the Trend Direction Index and the Expected Trend Instability index conditional on observed data. Section \ref{sec:estimation} is concerned with estimating the models parameters, and we give an extended application to the development of the proportion of smokers in Denmark during the last 20 years in Section \ref{sec:application}. We conclude with a discussion.
 
@@ -381,35 +381,36 @@ To understand the effect of $\nu$ on the smoothness of the fitted models we can 
 
 
 # Discussion {#sec:discussion}
-[\textbf{TODO:} Her må der båttes løs]
 
-We are computing a different (but more interpretable) probability than what can be obtained from e.g., a $\chi^2$ test. So it's fundamentally different. Also, we are able to exploit the underlying assumed continuity.
+In this article, we have proposed two new measures - the Trend Direction Index and the Expected Trend Instability - in order to quantify the behaviour of the underlying trend. Using a Gaussian process model for the latent structure we show how the TDI and the ETI can be estimated from data in a Bayesian framework and provide probabilistic statements about the monotonicity of the latent trend. 
 
-Something about that the indices are scale-free hence TDI should be interpreted along with $df \mid Y$ at the same time point. We could also define
+Both indices have an intuitive interpretation that directly refers to properties of the latent trend and the proposed approach exploits the underlying assumed continuity to circumvent discretisation and allows us to compute a different (and more relevant) probability than what can be obtained from e.g., a $\chi^2$ test.
+
+It is worth noting that the indices are scale-free and thus they do not tell anything about the magnitude of a trend. Consequently, the two indices should therefore always be accompanied by plots of the posterior of $df$. If a prespecified size of a trend change, $u$, is desired then the threshold in the definition of the TDI is easily modified to accommodate this in the definition of the TDI:
+
 \begin{align*}
-  \mathrm{TDI}_u(t, \delta) = P(df(t + \delta ) > u \mid \mathcal{F}_t)
+  \mathrm{TDI}_u(t, \delta) = P(df(t + \delta) > u \mid \mathcal{F}_t), \quad t \in \mathcal{T}.
 \end{align*}
-where $u$ is some trend value.
 
-
-[\textbf{TODO:} Assert that both TDI and EDI are scale free. They don't tell anything about the magnitude of a trend. They should therefore always be accompanied by plots of the posterior of $df$]. 
-
-
-We could also have defined
+The Expected Trend Instability (\ref{eq:generatingProcess}) counts the number of times the latent trend has a derivative which becomes zero. Theoretically, the value would become infinite if the underlying process was constant over any time interval. While this occurrence will happen with probability zero for a latent Gaussian process, we could instead have defined the ETI as 
 \begin{align*}
-  \text{ETI}^\uparrow(\mathcal{I}) &= \E\left[\#\left\{t \in \mathcal{I} : df(t) = 0, d^2\!f(t) > 0\right\} \mid \mathcal{F}\right]
+  \text{ETI}^\uparrow(\mathcal{I}) &= \E\left[\#\left\{t \in \mathcal{I} : df(t) = 0, d^2\!f(t) > 0\right\} \mid \mathcal{F}\right],
 \end{align*}
-counting the expected number of up-crossings at zero by $df$ (the number of times $f$ has gone from being decreasing to increasing) on $\mathcal{T}$.
+where we are counting the expected number of up-crossings at zero by $df$ (the number of times $f$ has gone from being decreasing to increasing) on $\mathcal{T}$. This would circumvent the problem for any latent process.
+
+
+In conclusion, we have introduced a method for evaluation of trends that specifically address questions such as "Has the trend changed?". Our approach is based on two intuitive measures that are easily interpreted, provide well-defined measures of trend behaviour and which can be applied to a large number of situations. The flexibility of the model is further improved by the minimum of assumptions necessary to provide about the underlying latent trend.
 
 Reproducible code and Stan implementations are available at @gptrendStan.
 
 
-#Bibliography
+# Bibliography
+
 <div id="refs"></div>
 
 \appendix
 
-#Appendix
+# Appendix
 
 \subsection{Proof of Proposition \ref{prop:GPposterior}}\label{sec:appendix1}
 Let $\mathbf{Y} = (Y_1, \ldots, Y_n)$ and $\mathbf{t} = (t_1, \ldots, t_n)$ be the vectors of observed outcomes and associated sampling times. From the data generating model in Equation (\ref{eq:generatingProcess}) we observe that the marginal distribution of the vector of observed outcomes $\mathbf{Y} \mid \mathbf{t}, \Theta$ is
