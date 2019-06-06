@@ -13,6 +13,7 @@ header-includes:
   - \DeclareMathOperator*{\argmin}{arg\,min}  
   - \DeclareMathOperator*{\E}{E}
   - \DeclareMathOperator*{\Cov}{Cov}
+  - \DeclareMathOperator*{\Cor}{Cor}
   - \DeclareMathOperator*{\Var}{Var}
   - \DeclareMathOperator*{\Erf}{Erf}
   - \DeclareMathOperator*{\Erfc}{Erfc}
@@ -101,17 +102,21 @@ A random function $f$ on is a Gaussian process if and only if the vector $(f(t_1
 \end{split}
 \label{eq:generatingProcess}
 \end{align}
-where $\beta$ is a vector of parameters for the mean function of $f$, $\theta$ is a vector of parameters governing the covariance of $f$, and $\sigma$ is the conditional standard deviation of the observations. We assume the following regularity conditions.
+where $\beta$ is a vector of parameters for the mean function of $f$, $\theta$ is a vector of parameters governing the covariance of $f$, and $\sigma$ is the conditional standard deviation of the observations. 
 
 \vspace{0.2cm}
 
 \begin{assumption}
-\textbf{TODO} We assume that $f$ is a separable Gaussian process and that
+We assume the following regularity conditions.
 \begin{enumerate}
-  \item[A1:]{?}
-  \item[A2:]{?}
+  \item[A1:]{$f$ is a separable Gaussian process.}
+  \item[A2:]{$\E[f(t) \mid \beta, \theta] = \mu_{\beta}(t)$ is a twice continiously differentiable function.}
+  \item[A3:]{$\Cov[f(s), f(t) \mid \beta, \theta] = C_\theta(s,t)$ has mixed third-order partial derivatives continuous at the diagonal.}
+  \item[A4:]{The joint distribution of $(df(t), d^2\!f(t) \mid \beta, \theta)$ is non-degenerate at any $t$ i.e., $\Cov[df(t), df(t) \mid \beta, \theta] > 0$ and $-1 < \Cor[df(t), d^2\!f(t) \mid \beta, \theta] < 1$.}
+  \item[A5:]{$f \mid \beta, \theta$ has almost surely continuous second-order sample derivatives. This can be imposed by assuming that ...}  
 \end{enumerate}
-This ensures that the sample paths of $f$ are in $C^r(\mathcal{T})$. We require that $r \geq 1$ for the Trend Direction Index and $r \geq 2$ for the index of Expected Trend Instability. [@scheuerer2010regularity]
+This ensures that the sample paths of $f$ are in $C^r(\mathcal{T})$. We require that $r \geq 1$ for the Trend Direction Index and $r \geq 2$ for the index of Expected Trend Instability.
+\label{assumptions}
 \end{assumption}
 
 Under the above assumptions, an important property of a Gaussian process is that it together with its first and second derivatives is a multivariate Gaussian process with explicit expressions for the joint mean, covariance and cross-covariance functions. Specifically, the joint distribution of the latent function, $f$, and its first and second derivatives, $df$ and $d^2\!f$, is the multivariate Gaussian process
@@ -123,7 +128,7 @@ where $d^k\!\mu_\beta$ is the $k$'th derivative of $\mu_\beta$ and $\partial_j^k
 \vspace{0.2cm}
 
 \begin{proposition}
-Let the data generating model be defined as in Equation (\ref{eq:generatingProcess}) and $\mathbf{Y} = (Y_1, \ldots, Y_n)$ the vector of observed outcomes together with its sampling times $\mathbf{t} = (t_1, \ldots, t_n)$. Then under [\textbf{TODO}: Assumptions ???] the joint distribution of $(f, df, d^2\!f)$ conditional on $\mathbf{Y}$ and $\mathbf{t}$ evaluated at the vector $\mathbf{t}^\ast$ of $p$ time points is
+Let the data generating model be defined as in Equation (\ref{eq:generatingProcess}) and $\mathbf{Y} = (Y_1, \ldots, Y_n)$ the vector of observed outcomes together with its sampling times $\mathbf{t} = (t_1, \ldots, t_n)$. Then by the conditions in Assumption \ref{assumptions} the joint distribution of $(f, df, d^2\!f)$ conditional on $\mathbf{Y}$ and $\mathbf{t}$ evaluated at the vector $\mathbf{t}^\ast$ of $p$ time points is
 \begin{align*}
 \begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\bm{\mu},  \bm{\Sigma}\right)
 \end{align*}
