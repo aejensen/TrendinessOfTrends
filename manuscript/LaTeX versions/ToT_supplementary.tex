@@ -1,0 +1,348 @@
+\documentclass[11pt,]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Supplementary Material for\\
+Quantifying the Trendiness of Trends}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Andreas Kryger Jensen and Claus Thorn Ekstrøm\\
+Biostatistics, Institute of Public Health, University of Copenhagen\\
+\href{mailto:aeje@sund.ku.dk}{\nolinkurl{aeje@sund.ku.dk}},
+\href{mailto:ekstrom@sund.ku.dk}{\nolinkurl{ekstrom@sund.ku.dk}}}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{26 December, 2019}
+
+\usepackage{bm}
+\usepackage{amssymb}
+\usepackage[labelfont=bf]{caption}
+\DeclareMathOperator*{\argsup}{arg\,sup}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\E}{E}
+\DeclareMathOperator*{\Cov}{Cov}
+\DeclareMathOperator*{\Cor}{Cor}
+\DeclareMathOperator*{\Var}{Var}
+\DeclareMathOperator*{\Erf}{Erf}
+\DeclareMathOperator*{\Erfc}{Erfc}
+\usepackage{multirow}
+\usepackage[amsthm,thmmarks]{ntheorem}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\theoremsymbol{\ensuremath{\blacksquare}}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{nonumberplain}
+\newtheorem{Proof}{Proof}
+
+\begin{document}
+\maketitle
+
+\appendix
+
+\section{Proof of Proposition 1}\label{sec:appendix1}
+
+Let \(\mathbf{Y} = (Y_1, \ldots, Y_n)\) and
+\(\mathbf{t} = (t_1, \ldots, t_n)\) be the vectors of observed outcomes
+and associated sampling times. From the data generating model we observe
+that the marginal distribution of the vector of observed outcomes
+\(\mathbf{Y} \mid \mathbf{t}, \Theta\) is
+
+\begin{align*}
+P(\mathbf{Y} \mid \mathbf{t}, \Theta) &= \int P(\mathbf{Y} \mid f(\mathbf{t}), \mathbf{t}, \Theta)dP(f(\mathbf{t}) \mid \mathbf{t}, \Theta)\\
+  &= N(\mu_\beta(\mathbf{t}), C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I)
+\end{align*}
+
+where
+\(\mu_\beta(\mathbf{t}) = (\mu_\beta(t_1), \ldots \mu_\beta(t_n))\),
+\(C_\theta(\mathbf{t}, \mathbf{t})\) is the \(n \times n\) covariance
+matrix obtained by evaluating \(C_\theta(s,t)\) at
+\(\{(s,t) \in \mathbf{t} \times \mathbf{t}\}\) and \(I\) is an
+\(n \times n\) identity matrix. This implies that the joint distribution
+of \(\mathbf{Y}\) and the latent functions \((f, df, d^2\!f)\) evaluated
+at an arbitrary vector of time points \(\mathbf{t}^\ast\) is
+
+\begin{align*}
+  \begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\\ \mathbf{Y}\end{bmatrix} \mid \mathbf{t}, \Theta \sim N\left(\begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\\ \mu_\beta(\mathbf{t})\end{bmatrix}, \begin{bmatrix}C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) &  \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2\partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2\partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ C_\theta(\mathbf{t}, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)  & C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\end{bmatrix}\right)
+\end{align*}
+
+where \(\partial_j^k\) denotes the \(k\)'th order partial derivative
+with respect to the \(j\)'th variable.
+
+By the standard formula for deriving conditional distributions in a
+multivariate normal model, the posterior distribution of
+\((f, df, d^2\!f)\) evaluated at the \(p\) time points in
+\(\mathbf{t}^\ast\) is
+
+\begin{align*}
+\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\bm{\mu}, \bm{\Sigma}\right)
+\end{align*}
+
+where \(\bm{\mu} \in \mathbb{R}^{3p}\) is the column vector of posterior
+expectations and \(\bm{\Sigma} \in \mathbb{R}^{3p \times 3p}\) is the
+joint posterior covariance matrix, and these are given by
+
+\begin{align*}
+  \bm{\mu} &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K_{\theta,\sigma}(\mathbf{t}, \mathbf{t})^{-1} (\mathbf{Y} - \mu_\beta(\mathbf{t}))\\
+  \bm{\Sigma} &= \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2^2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix} - \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\\partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K_{\theta,\sigma}(\mathbf{t}, \mathbf{t})^{-1}\begin{bmatrix}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\\partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}^T
+\end{align*}
+
+where
+\(K_{\theta,\sigma}(\mathbf{t}, \mathbf{t}) = C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\).
+Partitioning \(\bm{\mu}\) and \(\bm{\Sigma}\) as
+
+\begin{align*}
+  \bm{\mu} = \begin{bmatrix}\mu_f(\mathbf{t}^\ast \mid \Theta)\\ \mu_{df}(\mathbf{t}^\ast \mid \Theta)\\ \mu_{d^2\!f}(\mathbf{t}^\ast \mid \Theta)\end{bmatrix}, \quad \bm{\Sigma} = \begin{bmatrix}\Sigma_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{f,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta)\\ \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{df,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta)\\ \Sigma_{d^2\!f,f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{d^2\!f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta)\end{bmatrix}
+\end{align*}
+
+and completing the matrix algebra, we obtain the expressions of the
+individual components given in the Proposition.
+
+\section{Proof of Proposition 3}\label{sec:appendix2}
+
+Rice showed in section 3.3. of Rice (1945) that the expected number of
+zero-crossings of a Gaussian process \(X\) on an interval
+\(\mathcal{I}\) is given by
+
+\begin{align}
+\int_{\mathcal{I}} \int_{-\infty}^\infty |v|f_{X(t), dX(t)}(0, v)\mathrm{d}v\mathrm{d}t\label{eq:rice}
+\end{align}
+
+where \(f_{X(t), dX(t)}\) is the joint density function of \(X\) and its
+derivative \(dX\) at time \(t\). To derive the expression for the
+Expected Trend Instability we must apply the Rice formula to the joint
+posterior distribution of \((df, d^2\!f)\). From Proposition 1 the
+distribution of \((df, d^2\!f) \mid \mathbf{Y}, \mathbf{t}, \Theta\) is
+bivariate normal for each \(t\).
+
+Let \(\mu_{df}\), \(\mu_{d^2\!f}\), \(\Sigma_{df}\) and
+\(\Sigma_{d^2\!f}\) be defined as in Proposition 1 and define further
+
+\begin{align*}
+  \omega(t \mid \Theta) = \frac{\Sigma_{df, d^2\!f}(t,t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}}
+\end{align*}
+
+as the posterior point-wise cross-correlation function between \(df\)
+and \(d^2\!f\). The joint posterior density function of \((df, d^2\!f)\)
+at any time \(t\) evaluated at \((0, v)\) can be factorized as
+
+\begin{align*}
+f_{df(t), d^2\!f(t)}(0, v) = c_1(t) e^{c_2(t)} e^{-c_3(t) v^2 - 2c_4(t) v}
+\end{align*}
+
+where \(c_1, \ldots, c_4\) are functions of time given by
+
+\begin{align*}
+ c_1(t) &= (2\pi)^{-1} \Sigma_{df}(t,t \mid \Theta)^{-1/2}\Sigma_{d^2\!f}(t,t \mid \Theta)^{-1/2} (1-\omega(t \mid \Theta)^2)^{-1/2}\\
+ c_2(t) &= \frac{\mu_{df}(t \mid \Theta)^2}{2\Sigma_{df}(t,t \mid \Theta)(\omega(t \mid \Theta)^2 - 1)} + \frac{\mu_{d^2\!f}(t \mid \Theta)^2}{2\Sigma_{d^2\!f}(t,t \mid \Theta)(\omega(t \mid \Theta)^2 - 1)}\\
+        &- \frac{\mu_{df}(t \mid \Theta)\mu_{d^2\!f}(t \mid \Theta)\omega(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}(\omega(t \mid \Theta)^2 - 1)}\\
+ c_3(t) &= -\frac{1}{2}\Sigma_{d^2\!f}(t,t \mid \Theta)^{-1}(\omega(t \mid \Theta)^2-1)^{-1}\\
+ c_4(t) &= -\frac{\mu_{df}(t \mid \Theta) \Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2} \omega(t \mid \Theta) - \mu_{d^2\!f}(t \mid \Theta) \Sigma_{df}(t,t \mid \Theta)^{1/2}}{2\Sigma_{d^2\!f}(t,t \mid \Theta)(\omega(t \mid \Theta)^2-1)\Sigma_{df}(t,t \mid \Theta)^{1/2}}
+\end{align*}
+
+Let \(d\mathrm{ETI}(t \mid \Theta)\) denote the inner integral in
+Equation (\ref{eq:rice}). Using the factorization of the joint posterior
+density we may write it was
+
+\begin{align}
+\begin{split}
+d\mathrm{ETI}(t \mid \Theta) &= \int_{-\infty}^\infty |v| f_{df(t), d^2\!f(t)}(0, v)\mathrm{d}v\\
+ &= c_1(t) e^{c_2(t)}\int_{-\infty}^\infty |v| e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\\
+ &= c_1(t) e^{c_2(t)}\left(\int_0^\infty v e^{-c_3(t) v^2 + 2c_4(t) v}\mathrm{d}v + \int_0^\infty v e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\right)
+\end{split}
+\label{dETIintegral1}
+\end{align}
+
+Because \(c_3(t) > 0\) for all t since
+\(\Sigma_{d^2\!f}(t,t \mid \Theta) > 0\) and
+\(|\omega(t \mid \Theta)| < 1\) by Assumption A4 we obtain the following
+solution for the type of integral in the previous display by using
+formula 5 in section 3.462 on page 365 of Gradshteyn and Ryzhik (2014)
+
+\begin{align}
+\int_{0}^\infty v e^{-c_3(t) v^2 \pm 2c_4(t) v}\mathrm{d}v = \frac{1}{2c_3(t)} \pm \frac{c_4(t)}{2c_3(t)}\frac{\pi^{1/2}}{c_3(t)^{1/2}}e^{\frac{c_4(t)^2}{c_3(t)}}\left(1 \pm \Erf\left(\frac{c_4(t)}{\sqrt{c_3(t)}}\right)\right)\label{dETIintegral2}
+\end{align}
+
+where \(\Erf\colon\, x \mapsto 2\pi^{-1}\int_0^x e^{-u^2}\mathrm{d}u\)
+is the error function. Combining Equations (\ref{dETIintegral1}) and
+(\ref{dETIintegral2}) we may express \(d\mathrm{ETI}\) as
+
+\begin{align*}
+d\mathrm{ETI}(t \mid \Theta) &= c_1(t) e^{c_2(t)}\left(\frac{1}{c_3(t)} + \frac{c_4(t)}{c_3(t)}\frac{\pi^{1/2}}{c_3(t)^{1/2}}e^{\frac{c_4(t)^2}{c_3(t)}}\Erf\left(\frac{c_4(t)}{\sqrt{c_3(t)}}\right)\right)
+\end{align*}
+
+Defining \(\zeta(t \mid \Theta) = \sqrt{2}c_4(t)c_3(t)^{-1/2}\) and
+collecting some terms, the index can be rewritten as
+
+\begin{align*}
+d\mathrm{ETI}(t \mid \Theta) &= \frac{c_1(t)}{c_3(t)}\left(e^{c_2(t)} + \frac{\pi^{1/2}}{2^{1/2}} e^{\frac{c_4(t)^2}{c_3(t)} + c_2(t)} \zeta(t) \Erf\left(\frac{\zeta(t \mid \Theta)}{2^{1/2}}\right)\right)
+\end{align*}
+
+Straightforward arithmetic calculations show that
+
+\begin{align*}
+  \frac{c_4(t)^2}{c_3(t)} + c_2(t) = -\frac{\mu_{df}(t \mid \Theta)^2}{2\Sigma_{df}(t,t \mid \Theta)}, \quad c_2(t) = - \frac{1}{2}\left(\zeta(t \mid \Theta)^2 + \frac{\mu_{df}(t \mid \Theta)^2}{\Sigma_{df}(t,t \mid \Theta)}\right)
+\end{align*}
+
+and by defining \(\phi\colon\, x \mapsto (2\pi)^{-1/2}e^{-x^2}\) as the
+density function of the standard normal distribution we may write
+\(e^{\frac{c_4(t)^2}{c_3(t)} + c_2(t)} = (2\pi)^{1/2}\phi\left(\frac{\mu_{df}(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\right)\)
+and
+\(e^{c_2(t)} = 2\pi\phi(\zeta(t))\phi\left(\frac{\mu_{df}(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\right)\)
+which leads to
+
+\begin{align*}
+d\mathrm{ETI}(t \mid \Theta) = \frac{c_1(t)}{c_3(t)}\pi\phi\left(\frac{\mu_{df}(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\right)\left(2\phi(\zeta(t \mid \Theta)) + \zeta(t \mid \Theta)\Erf\left(\frac{\zeta(t\mid \Theta)}{2^{1/2}}\right)\right)
+\end{align*}
+
+Standard arithmetics show that
+
+\begin{align*}
+\frac{c_1(t)}{c_3(t)} =  \frac{1}{\pi}\frac{\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\left(1-\omega(t \mid \Theta)^2\right)^{1/2}
+\end{align*}
+
+and we finally obtain the expression
+
+\begin{align*}
+d\mathrm{ETI}(t \mid \Theta) = \lambda(t \mid \Theta)\phi\left(\frac{\mu_{df}(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\right)\left(2\phi(\zeta(t \mid \Theta)) + \zeta(t \mid \Theta)\Erf\left(\frac{\zeta(t \mid \Theta)}{2^{1/2}}\right)\right)
+\end{align*}
+
+where \(\lambda\) and \(\zeta\) are given by
+
+\begin{align*}
+\lambda(t \mid \Theta) &= \frac{\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\left(1-\omega(t \mid \Theta)^2\right)^{1/2}\\
+  \zeta(t \mid \Theta) &= \frac{\mu_{df}(t \mid \Theta)\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}\omega(t)\Sigma_{df}(t,t \mid \Theta)^{-1/2} - \mu_{d^2\!f}(t \mid \Theta)}{\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}\left(1 - \omega(t \mid \Theta)^2\right)^{1/2}}
+\end{align*}
+
+By definition
+
+\begin{align*}
+  \mathrm{ETI}(\mathcal{I} \mid \Theta) = \int_{\mathcal{I}} d\mathrm{ETI}(t \mid \Theta)\mathrm{d}t
+\end{align*}
+
+which completes the proof.
+
+\section{Zero-crossings of $f$ and $df$ in the zero-mean stationary case}\label{sec:appendix3}
+
+Let \(f \sim \mathcal{GP}\left(0, C_\theta(\cdot, \cdot)\right)\) where
+the \(C_\theta\) is either the Squared Exponential or Rational Quadratic
+covariance function. We look at the expected number of zero-crossings on
+an interval by either \(f\) and \(df\) as given by the Rice formula in
+Equation (\ref{eq:rice}) with either \(X(t) = f(t)\) or
+\(X(t) = df(t)\). In this case the expressions simplifies immensely due
+to the zero means of both \(f\), \(df\), and \(d^2\!f\) and because
+\(\Cov[f(t), df(t)] = 0\) and \(\Cov[df(t), d^2\!f(t)] = 0\). The latter
+is a result of using a stationary covariance function for the prior
+distribution of \(f\) (Cramer and Leadbetter 1967). In this stationary
+case local expected number of zero-crossing of \(f\) and \(df\) are
+given by
+
+\begin{align*}
+  \frac{\partial_1 \partial_2 C_\theta(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi C_\theta(t,t)^{1/2}} \quad \text{and} \quad   \frac{\partial_1^2 \partial_2^2 C_\theta(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi \partial_1 \partial_2 C_\theta(s,t)\Bigr|_{\substack{s=t}}^{1/2}}
+\end{align*}
+
+respectively. It then follows that
+
+\begin{alignat*}{3}
+ C_\theta^\text{SE}(t,t) &= \sigma^2, &\quad \partial_1\partial_2 C_\theta^\text{SE}(s,t)\Bigr|_{\substack{s=t}} &= \frac{\sigma^2}{\rho^2}, &\quad \partial_1^2\partial_2^2 C_\theta^\text{SE}(s,t)\Bigr|_{\substack{s=t}} &= \frac{3\sigma^2}{\rho^4}\\   
+ C_\theta^\text{RQ}(t,t) &= \sigma^2, & \partial_1\partial_2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}} &= \frac{\sigma^2}{\rho^2}, & \partial_1^2\partial_2^2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}} &= \frac{2\sigma^2 (1+\nu)}{\nu \rho^4}
+\end{alignat*}
+
+and the local expected number of zero-crossings of \(f\) and \(df\) for
+either the Squared Exponential and the Rational Quadratic covariance
+functions are
+
+\begin{alignat*}{2}
+ \frac{\partial_1 \partial_2 C_\theta^\text{SE}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi C_\theta^\text{SE}(t,t)^{1/2}} &= \frac{1}{\pi\rho}, &\qquad \frac{\partial_1^2 \partial_2^2 C_\theta^\text{SE}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi \partial_1 \partial_2 C_\theta^\text{SE}(s,t)\Bigr|_{\substack{s=t}}^{1/2}} &= \frac{3^{1/2}}{\pi\rho}\\  
+ \frac{\partial_1 \partial_2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi C_\theta^\text{RQ}(t,t)^{1/2}} &= \frac{1}{\pi\rho}, & \frac{\partial_1^2 \partial_2^2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi \partial_1 \partial_2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}} &= \frac{3^{1/2}}{\pi\rho}\left(1 + v^{-1}\right)^{1/2}
+\end{alignat*}
+
+\section*{Bibliography}\label{bibliography}
+\addcontentsline{toc}{section}{Bibliography}
+
+\hypertarget{refs}{}
+\hypertarget{ref-cramer1967stationary}{}
+Cramer, Harald, and M. R. Leadbetter. 1967. \emph{Stationary and Related
+Stochastic Processes -- Sample Function Properties and Their
+Applications.} John Wiley \& Sons, Inc.
+
+\hypertarget{ref-gradshteyn2014table}{}
+Gradshteyn, Izrail Solomonovich, and Iosif Moiseevich Ryzhik. 2014.
+\emph{Table of Integrals, Series, and Products}. Academic Press.
+
+\hypertarget{ref-rice1945mathematical}{}
+Rice, Stephen O. 1945. ``Mathematical Analysis of Random Noise, II.''
+\emph{Bell System Technical Journal} 24 (1): 46--156.
+
+
+\end{document}
