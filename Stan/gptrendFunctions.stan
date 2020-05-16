@@ -2,9 +2,43 @@
   Stan implementation of the Trendiness of Trends
   This file contains functions doing most of the work
   AKJ, 2019
+  
+  Addendum 2020: Adding SE covariance functions
 */
 
 functions{
+  real cov_se(real s, real t, real alpha, real rho) {
+    //Squared Exponential (SE) covariance function
+    return square(alpha) * exp(-square(s - t) / (2 * square(rho)));
+  }
+  
+  real cov_se_D2(real s, real t, real alpha, real rho) {
+    //d_2 C(s,t)
+    return cov_se(s, t, alpha, rho) * (s - t) / square(rho);
+  }
+
+  real cov_se_D2_D2(real s, real t, real alpha, real rho) {
+    //d_2^2 C(s,t)
+    return cov_se(s, t, alpha, rho) * (square(s-t) - square(rho)) / pow(rho, 4);
+  }
+
+  real cov_se_D1_D2(real s, real t, real alpha, real rho) {
+    //d_1 d_2 C(s,t)
+    return cov_se(s, t, alpha, rho) * (square(rho) - square(s - t)) / pow(rho, 4);
+  }
+
+  real cov_se_D1_D2_D2(real s, real t, real alpha, real rho) {
+    //d_1 d_2^2 C(s,t)
+    real k = 3 * (s - t) * square(rho) - pow(s - t, 3);
+    return cov_se(s, t, alpha, rho) * k / pow(rho, 6);
+  }
+
+  real cov_se_D1_D1_D2_D2(real s, real t, real alpha, real rho) {
+    //d_1^2 d_2^2 C(s,t)
+    real k = pow(s - t, 4) - 6 * square(s - t) * square(rho) + 3 * pow(rho, 4);
+    return cov_se(s, t, alpha, rho) * k / pow(rho, 8);
+  }
+
   real cov_rq(real s, real t, real alpha, real rho, real nu) {
     //Rational Quadratic (RQ) covariance function
     return square(alpha) * pow(1 + square(s - t) / (2*nu*square(rho)), -nu);
