@@ -10,7 +10,7 @@ options(mc.cores = parallel::detectCores())
 ########################################################
 # Load data
 ########################################################
-#Data downloaded May 15th from 
+#Data downloaded May 16th from 
 #https://github.com/pcm-dpc/COVID-19/tree/master/dati-andamento-nazionale
 d <- read.csv("dpc-covid19-ita-andamento-nazionale.csv")
 
@@ -67,23 +67,23 @@ band <- function(t, l, u, col) {
 pdf("../../figures/covid19_gpFit.pdf", width = 8, height = 3)
 par(mfrow=c(1,3), bty="n", mar = c(2.3, 2.3, 1, 0), mgp=c(1.3,0.4,0))
 plot(dat$t, dat$y, pch = 19, xlab="Number of days since Feb 24th", ylab="f | Y", 
-     type="n", ylim=c(0, 8000), xaxt="n", xlim=c(0, 81))
-axis(1, seq(0, 80, 10))
+     type="n", ylim=c(0, 8000), xaxt="n", xlim=c(0, 90))
+axis(1, seq(0, 90, 10))
 band(tPred, apply(pred[,,2]*max(dat$y), 2, quantile, prob = 0.025), 
      apply(pred[,,2]*max(dat$y), 2, quantile, prob = 0.975), col = "gray85")
 band(tPred, apply(pred[,,1]*max(dat$y), 2, quantile, prob = 0.025), 
      apply(pred[,,1]*max(dat$y), 2, quantile, prob = 0.975), col = "gray65")
 lines(tPred, apply(pred[,,1]*max(dat$y), 2, mean), lwd = 2)
-points(dat$t, dat$y, pch = 19, cex=0.7)
+points(dat$t, dat$y, pch = 19, cex=0.6)
 legend("topleft", 
        c("Mean", "95% credible interval", "95% posterior predictive interval"), 
        col = c("black", "gray65", "gray85"), lwd = 2, bty="n", cex=0.7, 
        lty = c(1, NA, NA), pch = c(NA, 15, 15), pt.cex=1.5)
 
-plot(tPred, apply(pred[,,3]*max(dat$y), 2, mean), lwd = 2, type="n", yaxt="n",
+plot(tPred, apply(pred[,,3]*max(dat$y), 2, mean), lwd = 2, type="n", yaxt="n", xlim=c(0,90),
      ylim=c(-500, 500), xlab="Number of days since Feb 24th", ylab="df | Y", xaxt="n")
 axis(2, seq(-500, 500, length.out=5))
-axis(1, seq(0, 80, 10))
+axis(1, seq(0, 90, 10))
 band(tPred, apply(pred[,,3]*max(dat$y), 2, quantile, prob = 0.025), 
      apply(pred[,,3]*max(dat$y), 2, quantile, prob = 0.975), col = "gray65")
 lines(tPred, apply(pred[,,3]*max(dat$y), 2, mean), lwd = 2)
@@ -93,7 +93,7 @@ legend("topleft",
        lwd = 2, bty="n", cex=0.7, lty = c(1, NA), pch = c(NA, 15), pt.cex=1.5)
 
 plot(tPred, t(pred[1,,5])*100, type="l", lty = 1, lwd = 2, xlab="Number of days since Feb 24th", 
-     ylab="Trend Direction Index [%]", ylim=c(0,100), xaxt="n")
-axis(1, seq(0, 80, 10))
+     ylab="Trend Direction Index [%]", ylim=c(0,100), xaxt="n", xlim=c(0,90))
+axis(1, seq(0, 90, 10))
 abline(h = 50, lty = 2)
 dev.off()
