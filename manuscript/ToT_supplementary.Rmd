@@ -152,4 +152,10 @@ and the local expected number of zero-crossings of $f$ and $df$ for either the S
  \frac{\partial_1 \partial_2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi C_\theta^\text{RQ}(t,t)^{1/2}} &= \frac{1}{\pi\rho}, & \frac{\partial_1^2 \partial_2^2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi \partial_1 \partial_2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}} &= \frac{3^{1/2}}{\pi\rho}\left(1 + v^{-1}\right)^{1/2}
 \end{alignat*}
 
+\newpage
+
+# Trace plot for hyper-parameters for smoking application
+\includegraphics{../figures/smoking_traceplot.pdf}
+
+
 # Bibliography
