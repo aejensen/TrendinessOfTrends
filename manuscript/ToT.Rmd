@@ -25,12 +25,16 @@ header-includes:
   - \newtheorem{proposition}{Proposition}
   - \theoremstyle{nonumberplain}
   - \newtheorem{Proof}{Proof}
+  - \usepackage{xcolor}
+  - \newcommand{\revision}[1]{\textcolor{red}{#1}}
 output:
   pdf_document: 
     keep_tex: yes
     number_sections: yes
 bibliography: bibliography.bib
 ---
+
+Text formatted \revision{like this} denotes a revision. Comments to the revisions can be found in the associated reply letter.
 
 \begin{abstract}
 A statement often seen in the news concerning some public health outcome is that some trend has changed or been broken. Such statements are often based on longitudinal data from surveys, and the change in trend is claimed to have occurred at the time of the latest data collection. These types of statistical assessments are very important as they may potentially influence public health decisions on a national level.
