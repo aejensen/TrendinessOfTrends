@@ -10,7 +10,7 @@ options(mc.cores = parallel::detectCores())
 ########################################################
 # Load data
 ########################################################
-load("../Data/smoking.RData")
+load("smoking.RData")
 dat <- data.frame(t = smoking$year, y = smoking$p)
 tPred <- seq(1998, 2018, length.out = 200) #length = 500 used for manuscript
 
@@ -44,11 +44,21 @@ sDat$sigma_mu <- par.rq[5]
 iter <- 10000 #25000 used for manuscript
 seed <- 12345
 
-m <- stan_model("gptrend.stan")
+m <- stan_model("../../Stan/gptrend.stan")
 fit <- sampling(m, data = sDat, iter = iter, seed = seed)
 summary(fit, c("mu", "alpha", "rho", "nu", "sigma"))$summary
 pred <- extract(fit, "pred")$pred
 save(tPred, dat, pred, file="pred.RData")
+
+########################################################
+# Trace plots
+########################################################
+pdf("../../figures/smoking_traceplot.pdf", width = 8, height = 6)
+traceplot(fit, pars=c("mu", "alpha", "rho", "nu", "sigma")) + theme(legend.position = "top")
+dev.off()
+
+#color_scheme_set("viridis")
+#mcmc_trace(posterior, pars = "mu")
 
 ########################################################
 # Get some summary statistics
