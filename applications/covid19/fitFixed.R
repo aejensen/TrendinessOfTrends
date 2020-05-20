@@ -76,7 +76,7 @@ band(tPred, apply(pred[,,1]*max(dat$y), 2, quantile, prob = 0.025),
 lines(tPred, apply(pred[,,1]*max(dat$y), 2, mean), lwd = 2)
 points(dat$t, dat$y, pch = 19, cex=0.6)
 legend("topleft", 
-       c("Mean", "95% credible interval", "95% posterior predictive interval"), 
+       c("Mean", "95% credible interval", "95% posterior prediction interval"), 
        col = c("black", "gray65", "gray85"), lwd = 2, bty="n", cex=0.7, 
        lty = c(1, NA, NA), pch = c(NA, 15, 15), pt.cex=1.5)
 
