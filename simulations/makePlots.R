@@ -37,7 +37,6 @@ plotSamps(samps_50_1, samps_50_2, samps_50_3, samps_50_4)
 plotSamps(samps_100_1, samps_100_2, samps_100_3, samps_100_4)
 
 ################################
-
 par(mfrow=c(2,2), bty="n", mgp=c(2,0.5,0), mar=c(2,2,2,0.5))
 plot(0, 0, type="n", xlim=c(0, 16), ylim=c(-0.2, 0.2), xaxt="n",
      xlab="", ylab="", main="Integrated residual of E[f | Y]")
@@ -109,7 +108,7 @@ axis(1, c(0, 2, 6, 10, 14, 16),
      c("", expression(sigma == 0.025), expression(sigma == 0.5), 
        expression(sigma == 0.1), expression(sigma == 0.15), ""))
 
-plot(0, 0, type="n", xlim=c(0, 16), ylim=c(-30, 30), xaxt="n",
+plot(0, 0, type="n", xlim=c(0, 16), ylim=c(-20, 20), xaxt="n",
      xlab="", ylab="", main="Integrated residual of ETI")
 abline(h = 0, lty=2)
 vioplot(stat_25_1$ETI, at = 1, add = TRUE, col="gray80")
@@ -124,9 +123,19 @@ vioplot(stat_25_3$ETI, at = 9, add = TRUE, col="gray80")
 vioplot(stat_50_3$ETI, at = 10, add = TRUE, col="gray60")
 vioplot(stat_100_3$ETI, at = 11, add = TRUE, col="gray40")
 
-vioplot(stat_25_4$ETI, at = 13, add = TRUE, col="gray80")
-vioplot(stat_50_4$ETI, at = 14, add = TRUE, col="gray60")
+#vioplot(stat_25_4$ETI, at = 13, add = TRUE, col="gray80")
+vioplot(stat_25_4$ETI[stat_25_4$ETI > - 20], at = 13, add = TRUE, col="gray80")
+#vioplot(stat_50_4$ETI, at = 14, add = TRUE, col="gray60")
+vioplot(stat_50_4$ETI[stat_50_4$ETI > -20], at = 14, add = TRUE, col="gray60")
 vioplot(stat_100_4$ETI, at = 15, add = TRUE, col="gray40")
 axis(1, c(0, 2, 6, 10, 14, 16),
      c("", expression(sigma == 0.025), expression(sigma == 0.5), 
        expression(sigma == 0.1), expression(sigma == 0.15), ""))
+
+
+sort(stat_25_4$ETI)[1:10]
+sort(stat_50_4$ETI)[1:10]
+
+mean(stat_25_1$ETI)
+quantile(stat_25_3$ETI)
+

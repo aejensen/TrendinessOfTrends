@@ -27,7 +27,7 @@ seCov <- function(s, t, alpha, rho) {
 optPar <- function(t, y) {
   op <- JDEoptim(function(par) {
     mu <- rep(par[1], length(t))
-    cMat <- outer(t, t, seCov, par[2], par[3]) + diag(par[4] ,length(t))
+    cMat <- outer(t, t, seCov, par[2], par[3]) + diag(par[4]^2 ,length(t))
     -mvtnorm::dmvnorm(y, mu, cMat, log=TRUE)
   }, lower = c(-10, 0, 0, 0), upper = c(10, 2, 2, 1), 
   trace=TRUE, triter = 1000, maxiter = 500 * 10^3, tol = 1e-10)
