@@ -107,6 +107,8 @@ The Expected Trend Instability
   &= P(\# \{t \in \mathcal{I} : df(t) \geq 0\} \geq 1)
 \end{align*}
 
+Thus, the Expected Trend Instability over $\mathcal{I}$ is an upper bound for the probability of observing at least on zero-crossing event, $df() = 0$ 
+
 These two general definitions of trendiness will be evaluated in the light of a particular statistical model in the next sections leading to expressions of their estimates.
 
 ## Latent Gaussian Process Model
