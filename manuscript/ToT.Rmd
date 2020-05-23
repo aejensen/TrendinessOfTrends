@@ -520,7 +520,7 @@ In conclusion, we have introduced a method for evaluation of trends that specifi
 
 ## Acknowledgements {-}
 
-\revision{The authors would like to thank two anonymous reviewers and the associate editor for providing thoughtful comments that substnatially have improved the manuscript.}
+\revision{The authors would like to thank two anonymous reviewers and the associate editor for providing thoughtful comments that substantially improved the manuscript.}
 
 # Bibliography
 
