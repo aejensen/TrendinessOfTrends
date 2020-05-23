@@ -10,7 +10,7 @@ options(mc.cores = parallel::detectCores())
 ########################################################
 # Load data
 ########################################################
-#Data downloaded May 16th from 
+#Data downloaded May 23th from 
 #https://github.com/pcm-dpc/COVID-19/tree/master/dati-andamento-nazionale
 d <- read.csv("dpc-covid19-ita-andamento-nazionale.csv")
 
@@ -97,3 +97,8 @@ plot(tPred, t(pred[1,,5])*100, type="l", lty = 1, lwd = 2, xlab="Number of days 
 axis(1, seq(0, 90, 10))
 abline(h = 50, lty = 2)
 dev.off()
+
+#Summaries
+max(pred[1,,5]*100)
+rootSolve::uniroot.all(function(x) approxfun(tPred, t(pred[1,,5])*100)(x) - 95, c(0, 90))
+rootSolve::uniroot.all(function(x) approxfun(tPred, t(pred[1,,5])*100)(x) - 50, c(0, 90))

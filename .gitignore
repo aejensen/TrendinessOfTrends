@@ -19,3 +19,4 @@ Stan/.Rhistory
 *.gz
 *.toc
 simulations/.Rhistory
+manuscript/.Rhistory

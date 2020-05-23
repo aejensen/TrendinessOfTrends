@@ -10,7 +10,7 @@ options(mc.cores = parallel::detectCores())
 ########################################################
 # Load data
 ########################################################
-load("../Data/smoking.RData")
+load("smoking.RData")
 dat <- data.frame(t = smoking$year, y = smoking$p)
 tPred <- seq(1998, 2018, length.out = 200) #length = 500 used for manuscript
 
