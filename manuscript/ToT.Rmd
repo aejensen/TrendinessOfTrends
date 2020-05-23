@@ -254,7 +254,7 @@ One possibility for altering the model is to retain the model structure but appl
 \begin{align*}
   g(Y_i) \mid t_i, f(t_i), \Theta &\overset{iid}{\sim} N(f(t_i), \sigma^2)
 \end{align*}
-where $g$ is a known, monotone function. Commonly used transformations for proportions are the isometric log ratio or the arcsine-square-root or logit functions. Our model could directly be fitted to the transformed outcomes, but the posterior estimates will also be on the transformed scale and may therefore be difficult to interpret.
+where $g$ is a known, monotone function. Our model could directly be fitted to the transformed outcomes, but the posterior estimates will also be on the transformed scale and may therefore be difficult to interpret.
 
 Another possibility is to consider both the outcome and the latent function on the same transformed scale. This alters Equation (\ref{eq:generatingProcess}) to
 \begin{align*}
@@ -483,7 +483,7 @@ The second difference is that the Bayesian model seems to generally induce more 
 
 To understand the effect of $\nu$ on the smoothness of the fitted models we can compare the local expected number of crossings by a Gaussian process and its derivative at their mean values in the simple case of a zero-mean process with either the Rational Quadratic or the Squared Exponential covariance function. In this case the formula in Proposition \ref{prop:ETIposterior} simplifies immensely, and as shown in the supplementary material the local expected number of mean-crossings by $f$ is equal to $\pi\rho^{-1}$ for both covariance functions. However, for $df$ the local expected number of mean-crossings is equal to $3^{1/2}\pi^{-1}\rho^{-1}$ for the Squared Exponential covariance function and $3^{1/2}\pi^{-1}\rho^{-1}(1 + \nu^{-1})^{1/2}$ for the Rational Quadratic covariance function. We note that $1 < (1 + v^{-1})^{1/2} < \infty$ for $0 < \nu < \infty$ and monotonically decreasing for $\nu \rightarrow \infty$ with a limit of one. Therefore, the value of $\nu$ has no effect on the crossing intensity of the process itself, but its derivative is always larger under a Rational Quadratic covariance function compared to the Squared Exponential covariance function with equality in the limit. A right-skewed posterior distribution of $\nu$ therefore favors fewer crossings of the trend leading to a more stable trend and a smaller value of the Expected Trend Instability.
 
-\revision{As a final remark on this application we note that the observed data are proportions and therefore not normal distributed. In accordance with the comments in Section \ref{sec:gaussianassumptions} we also performed the trend analysis on the logit transformed outcomes. These results are included in the Supplementary Material and did not give rise to different interpretations.}
+\revision{As a final remark on this application we note that the observed data are proportions and therefore not normal distributed. Commonly used transformations for proportions towards normality are the isometric log ratio or the arcsine-square-root or logit functions. In accordance with the comments in Section \ref{sec:gaussianassumptions} we also performed the trend analysis on the logit transformed outcomes. These results are included in the Supplementary Material and did not give rise to different interpretations.}
 
 ## Number of new COVID-19 positives in Italy {-}
 
