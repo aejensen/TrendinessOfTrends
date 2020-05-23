@@ -20,3 +20,4 @@ Stan/.Rhistory
 *.toc
 simulations/.Rhistory
 manuscript/.Rhistory
+*.tex
