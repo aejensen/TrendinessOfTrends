@@ -70,6 +70,12 @@ Another common approach to analyse trends in time series is to apply a low-pass 
 
 @gottlieb2012stickiness define a stickiness coefficient for longitudinal data and use the stickiness coefficient to summarize the extent to which deviations from the mean trajectory tend to co-vary over time. While the stickiness coefficient determines changes from the expected trend it is a measure that is not easily interpreted.
 
+\revision{
+@kim2009trendfiltering proposed an $\ell_1$ trend filtering approach
+based on an idea by @hodrick1997trendfiltering
+that imposes sparsity on the 1st order differences of the conditional mean. This produces trend estimates that are piecewise linear with the inherent assumption that changes to the time series are abrupt. The trend filtering approach has been further extended to sparsity of $k$th order differences [@ramdas2016trendfiltering] and to a Bayesian framework, where the flexibility of the difference of the conditional mean is controlled through the prior distribitions [@kowal2019dynamicshrinkage]
+} 
+
 We propose a new method for evaluating changes in the latent trend, $f$,  which starts by a clear specification of the problem and relevant measures of the trend: The Trend Direction Index gives a local probability of the monotonicity of $f$ and provides an answer to the research question "What is the probability that the latent trend is increasing?". The Expected Trend Instability index gives the expected number of changes in the monotonicity of $f$ on an interval and answers research questions about the rate of changes in direction of $f$ and can be used to evaluate the statement in the news paper that ,,It is the first time in 20 years that $f$ has stopped decreasing and started to increase''. Besides providing exact answers to specific and relevant research questions, our proposed method estimates the actual probability that the trend is changing. 
 
 The manuscript is structured as follows: In Section \ref{sec:method} we present our statistical model based on a latent Gaussian process formulation giving rise to analytic expressions for the Trend Direction Index and the Expected Trend Instability index conditional on observed data. Section \ref{sec:estimation} is concerned with estimating the models parameters, and we give an extended application to the development of the proportion of smokers in Denmark during the last 20 years in Section \ref{sec:application}. We conclude with a discussion.
@@ -80,7 +86,9 @@ Proofs of propositions are given in the supplmentary material, and reproducible 
 # Methods {#sec:method}
 In the following we assume that reality evolves in continuous time $t \in \mathcal{T} \subset \mathbb{R}$ and that there exists a random, latent function $f = \left\{f(t) : t \in \mathcal{T}\right\}$ sufficiently smooth on a compact subset of the real line, $\mathcal{T}$, that governs the underlying evolution of some observable characteristic in a population. We can observe this latent characteristic with noise by sampling $f$ at discrete time points according to the additive model $Y_i = f(t_i) + \varepsilon_i$ where $\varepsilon_i$ is a zero mean random variable independent of $f(t_i)$. Given observations of the form $(Y_i, t_i)_{i=1}^n$ we are interested in modeling the dynamical properties of $f$.
 
-The trend of $f$ is defined as its instantaneous slope given by the function $df(t) = \left(\frac{\mathrm{d}f(s)}{\mathrm{d}s}\right)(t)$, and $f$ is increasing and has a positive trend at $t$ if $df(t) > 0$, and $f$ is decreasing with a negative trend at $t$ if $df(t) < 0$. A change in trend is defined as a change in the sign of $df$, i.e., when $f$ goes from increasing to decreasing or vice versa. As $f$ is a random function there are no exact points in time where $df$ changes sign. There is instead a gradual and continuous change in the monotonicity of $f$, and an assessment of a change in trend is defined by the probability of the sign of $df$. This stands in contrast to traditional change-point models which assume that there are one or more exact time points where a sudden change in function or its parameterization occurs [@carlstein1994change].
+The trend of $f$ is defined as its instantaneous slope given by the function $df(t) = \left(\frac{\mathrm{d}f(s)}{\mathrm{d}s}\right)(t)$, and $f$ is increasing and has a positive trend at $t$ if $df(t) > 0$, and $f$ is decreasing with a negative trend at $t$ if $df(t) < 0$. A change in trend is defined as a change in the sign of $df$, i.e., when $f$ goes from increasing to decreasing or vice versa. 
+
+\revision{As $f$ is a random function there are no fixed underlying points-in-time where the process changes sign. There is instead a gradual and continuous change in the monotonicity of $f$, and an assessment of a change in trend is defined by the probability of the sign of $df$ based on the specific realisation.} This stands in contrast to traditional change-point models which assume that there are one or more exact time points where a sudden change in function or its parameterization occurs [@carlstein1994change].
 
 The probability \revision{of a positive trend for $f$} at time $t + \delta$ is quantified by the Trend Direction Index
 \begin{align}
@@ -94,7 +102,7 @@ In addition to the Trend Direction Index we define a global measure of trend ins
 \end{align}
 equal to the expected value of the size of the random set of zero-crossings by $df$ on $\mathcal{I}$ when conditioning on a suitable $\sigma$-algebra $\mathcal{F}$. A common case is when $\mathcal{F}$ is generated by all observed data on $\mathcal{T}$ and $\mathcal{I} \subseteq \mathcal{T}$. The lower $\text{ETI}(\mathcal{I})$ is, the more stable is the trend of $f$ on $\mathcal{I}$ and vice versa.
 
-It is worth noting that the The Expected Trend Instability represents an upper bound for the probability of observing at least one zero-crossing event, $df(\cdot) = 0$, over $\mathcal{I}$:
+\revision{It is worth noting that the The Expected Trend Instability represents an upper bound for the probability of observing at least one zero-crossing event, $df(\cdot) = 0$, over $\mathcal{I}$:}
 
 \begin{align*}
   \text{ETI}(\mathcal{I}) 
@@ -105,7 +113,7 @@ It is worth noting that the The Expected Trend Instability represents an upper b
   &= P(\# \{t \in \mathcal{I} : df(t) \geq 0\} \geq 1)
 \end{align*}
 
-Thus, the Expected Trend Instability over $\mathcal{I}$ The inequality becomes sharp if $\sum_{k\geq2} P(\# \{t \in \mathcal{I} : df(t) = 0\} = k)$ is small.
+\revision{Thus, the Expected Trend Instability over $\mathcal{I}$ The inequality becomes sharp if $\sum_{k\geq2} P(\# \{t \in \mathcal{I} : df(t) = 0\} = k)$ is small.}
 
 These two general definitions of trendiness will be evaluated in the light of a particular statistical model in the next sections leading to expressions of their estimates.
 
@@ -396,6 +404,8 @@ To understand the effect of $\nu$ on the smoothness of the fitted models we can 
 In this article, we have proposed two new measures - the Trend Direction Index and the Expected Trend Instability - in order to quantify the behavior of an underlying trend. Using a Gaussian process model for the latent structure we show how the TDI and the ETI can be estimated from data in both a maximum likelihood and a Bayesian framework and provide probabilistic statements about the monotonicity of the latent trend. 
 
 Both indices have an intuitive interpretation that directly refers to properties of the latent trend and the proposed approach exploits the underlying assumed continuity to circumvent discretization and allows us to compute a different (and more relevant) probability than what can be obtained from e.g., a $\chi^2$ test.
+
+\revision{XXX Comparison with trend filtering in here}
 
 It is worth noting that the indices are scale-free and thus they do not tell anything about the magnitude of a trend. Consequently, the two indices should therefore always be accompanied by plots of the posterior of $df$. If a prespecified size of a trend change, $u$, is desired then the threshold in the definition of the TDI is easily modified to accommodate this in the definition of the TDI:
 
