@@ -532,19 +532,18 @@ We fitted the Gaussian Process model using the maximum likelihood method and as 
 
 # Discussion {#sec:discussion}
 
-In this article, we have proposed two new measures - the Trend Direction Index and the Expected Trend Instability - in order to quantify the behavior of an underlying trend. Using a Gaussian process model for the latent structure we show how the TDI and the ETI can be estimated from data in both a maximum likelihood and a Bayesian framework and provide probabilistic statements about the monotonicity of the latent trend. 
+In this article, we have proposed two new measures - the Trend Direction Index and the Expected Trend Instability - in order to quantify the behavior of an underlying trend. Using a Gaussian process model for the latent structure we show how the TDI and the ETI can be estimated from data in both a maximum likelihood and a Bayesian framework and provide probabilistic statements about the monotonicity of the latent development of an observed outcome over time. 
 
-Both indices have an intuitive interpretation that directly refers to properties of the latent trend and the proposed approach exploits the underlying assumed continuity to circumvent discretization and allows us to compute a different (and more relevant) probability than what can be obtained from e.g., a $\chi^2$ test.
+Both indices have an intuitive interpretation that directly refers to properties of the latent trend and the proposed approach exploits the underlying assumed continuity to circumvent discretization and allows us to compute a different (and in many cases more relevant) probability than what can be obtained from e.g., pairwise comparisons in discrete time.
 
 \revision{XXX Comparison with trend filtering in here. Se hvad Andreas has skrevet i simulationsafsnittet.}
 
-It is worth noting that the indices are scale-free and thus they do not tell anything about the magnitude of a trend. Consequently, the two indices should therefore always be accompanied by plots of the posterior of $df$. If a prespecified size of a trend change, $u$, is desired then the threshold in the definition of the TDI is easily modified to accommodate this in the definition of the TDI:
-
+It is worth noting that the indices are scale-free and thus they do not tell anything about the magnitude of a trend. Consequently, the two indices should therefore always be accompanied by plots of the posterior of $df$. If a prespecified magnitude, $u$, of a trend is desired then the threshold in the definition of the TDI is easily modified to accommodate this as
 \begin{align*}
   \mathrm{TDI}_u(t, \delta) = P(df(t + \delta) > u \mid \mathcal{F}_t), \quad t \in \mathcal{T}.
 \end{align*}
 
-In conclusion, we have introduced a method for evaluation of trends that specifically address questions such as "Has the trend changed?". Our approach is based on two intuitive measures that are easily interpreted, provide well-defined measures of trend behavior and which can be applied to a large number of situations. The flexibility of the model is further improved by the minimum of assumptions necessary to provide about the underlying latent trend.
+In conclusion, we have introduced a method for evaluation of trends that specifically address questions such as "Has the trend changed?". Our approach is based on two intuitive measures that are easily interpreted, provide well-defined measures of trend behavior, and which can be applied to a large number of situations. The flexibility of the model is further improved by the minimum of assumptions necessary to provide about the underlying latent trend.
 
 ## Acknowledgements {-}
 
