@@ -19,6 +19,9 @@ header-includes:
   - \DeclareMathOperator*{\Erf}{Erf}
   - \DeclareMathOperator*{\Erfc}{Erfc}
   - \usepackage{multirow}
+  - \usepackage{float}
+  - \floatstyle{plaintop}
+  - \restylefloat{table}
   - \usepackage[amsthm,thmmarks]{ntheorem}
   - \newtheorem{definition}{Definition}
   - \newtheorem{assumption}{Assumption}
@@ -346,7 +349,7 @@ mat2 <- rbind(t(sapply(res25, function(q) getStats(q[,tab2I]))),
 colnames(mat2) <- c("$\\widehat{f^\\text{GP}}$", "$\\widehat{df^\\text{GP}}$", 
                     "$\\widehat{f^\\text{TF}}$", "$\\widehat{df^\\text{TF}}$", "TDI", "ETI")
 
-cap <- "\\label{tab:simulationSummary}Summary statistics from the simulation study. Each value is the average across 10,000 simulations except for ETI where the median is reported. Superscript GP denotes our proposed method and TF denotes Trend Filtering. Numbers have been rounded to 3 decimal places."
+cap <- "\\label{tab:simulationSummary}Summary statistics from the simulation study. Each value is the average across 10,000 simulations except for ETI where the median is reported. Superscript GP denotes our proposed method and TF denotes Trend Filtering. Numbers have been rounded to three decimal places."
 knitr::kable(cbind(mat1, mat2), format = "latex", escape=FALSE, digits=3, booktabs=TRUE, caption=cap, linesep="") %>% 
   kable_styling(font_size = 9) %>%
   row_spec(5, hline_after = TRUE) %>%
