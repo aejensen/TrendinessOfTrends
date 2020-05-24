@@ -525,7 +525,7 @@ We fitted the Gaussian Process model using the maximum likelihood method and as 
 
 \begin{figure}[htb]
 \center\includegraphics{../figures/covid19_gpFit.pdf}
-\caption{Results from the trend analysis of the Italian COVID-19 data. The left panel shows the number of new positives since February 24th along with the posterior mean of f and 95\% credible and posterior prediction intervals. The middle panel shows the posterior distribution of the trend (df), and the right panel shows the Trend Direction Index.}
+\caption{Results from the trend analysis of the Italian COVID-19 data. The left panel shows the number of new positives since February 24th along with the posterior mean of $f$ and 95\% credible and posterior prediction intervals. The middle panel shows the posterior distribution of the trend ($df$), and the right panel shows the Trend Direction Index.}
 \label{fig:covid19Fit}
 \end{figure}
 
