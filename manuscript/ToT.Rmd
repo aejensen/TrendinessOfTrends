@@ -46,7 +46,7 @@ A statement often seen in the news concerning some public health outcome is that
 
 We propose two measures for quantifying the trendiness of trends. Under the assumption that reality evolves in continuous time we define what constitutes a trend and a change in a trend, and we introduce a probabilistic Trend Direction Index. This index has the interpretation of the probability that a latent characteristic has changed monotonicity at any given time conditional on observed data. We also define a global index of Expected Trend Instability quantifying the expected number of times that a trend has changed on an interval.
 
-Using a latent Gaussian process model we show how the Trend Direction Index and the Expected Trend Instability can be estimated from data in a Bayesian framework and give an application to development of the proportion of smokers in Denmark during the last 20 years.
+Using a latent Gaussian process model we show how the Trend Direction Index and the Expected Trend Instability can be estimated from data in a Bayesian framework and \revision{use the proposed method for two applications: the development of the proportion of smokers in Denmark during the last 20 years and the development of new cases that tested positive for Covid-19 in Italy from February 24th and 90 days on.}
 \end{abstract}
 
 \begin{center}
@@ -57,11 +57,13 @@ Using a latent Gaussian process model we show how the Trend Direction Index and 
 
 Trend detection has received increased attention in many fields, and while many important applications have their roots in the fields of economics (stock development) and environmental change (global temperature), trend identification has important ramifications in industry (process monitoring), medicine (disease development) and public health (changes in society).
 
-This manuscript is concerned with the fundamental problem of estimating an underlying trend based on random variables observed repeatedly over time. In addition to this problem we also wish to assess points in time where it is possible that such a trend is changing. Our motivation is a recent example from the news in Denmark where it was stated that the trend in the proportion of smokers in Denmark has changed at the end of the year 2018 such that the proportion is now increasing whereas it had been decreasing for the previous 20 years. This statement was based on survey data collected yearly since 1998 and reported by the Danish Health Authority [@sst], and it is critical for the Danish Health Authorities to be able to evaluate and react if there is an actual change in trend (see Figure \ref{fig:rawDataPlot}). 
+This manuscript is concerned with the fundamental problem of estimating an underlying trend based on random variables observed repeatedly over time. In addition to this problem we also wish to assess points in time where it is possible that such a trend is changing. Our motivation 
+\revision{comes from two recent examples: in the first, the news media in Denmark stated that the trend in the proportion of smokers in Denmark has changed at the end of the year 2018 such that the proportion is now increasing whereas it had been decreasing for the previous 20 years. This statement was based on survey data collected yearly since 1998 and reported by the Danish Health Authority [@sst], and it is critical for the Danish Health Authorities to be able to evaluate and react if there is an actual change in trend. The second example relates to the recent outbreak of Covid-19 in Italy where it is of tremendeous importance to determine if the disease spread is increasing or slowing down by considering the trend in number of new cases
+} (see Figure \ref{fig:rawDataPlot}). 
 
 \begin{figure}[htb]
 \center\includegraphics{../figures/rawDataPlot}
-\caption{The proportion of daily or occasional smokers in Denmark during the last 20 years estimated from survey data and reported by the Danish Health Authority. The 2009 measurement is missing due to problems with representativeness.}
+\caption{Left panel: The proportion of daily or occasional smokers in Denmark during the last 20 years estimated from survey data and reported by the Danish Health Authority. The 2009 measurement is missing due to problems with representativeness. Right panel: The number of daily new cases tested positive for Covid-19 in Italy.}
 \label{fig:rawDataPlot}
 \end{figure}
 
@@ -76,14 +78,14 @@ Another common approach to analyse trends in time series is to apply a low-pass 
 @gottlieb2012stickiness define a stickiness coefficient for longitudinal data and use the stickiness coefficient to summarize the extent to which deviations from the mean trajectory tend to co-vary over time. While the stickiness coefficient determines changes from the expected trend it is a measure that is not easily interpreted.
 
 \revision{
-@kim2009trendfiltering proposed an $\ell_1$ trend filtering approach
+@kim2009trendfiltering proposed an $\ell_1$ Trend Filtering approach
 based on an idea by @hodrick1997trendfiltering
-that imposes sparsity on the 1st order differences of the conditional mean. This produces trend estimates that are piecewise linear with the inherent assumption that changes to the time series are abrupt. The trend filtering approach has been further extended to sparsity of $k$th order differences [@ramdas2016trendfiltering] and to a Bayesian framework, where the flexibility of the difference of the conditional mean is controlled through the prior distribitions [@kowal2019dynamicshrinkage]
+that imposes sparsity on the 1st order differences of the conditional mean. This produces trend estimates that are piecewise linear with the inherent assumption that changes to the time series are abrupt. The Trend Filtering approach has been further extended to sparsity of $k$th order differences [@ramdas2016trendfiltering] and to a Bayesian framework, where the flexibility of the difference of the conditional mean is controlled through the prior distribitions [@kowal2019dynamicshrinkage]
 } 
 
 We propose a new method for evaluating changes in the latent trend, $f$,  which starts by a clear specification of the problem and relevant measures of the trend: The Trend Direction Index gives a local probability of the monotonicity of $f$ and provides an answer to the research question "What is the probability that the latent trend is increasing?". \revision{The Expected Trend Instability index gives the expected number of changes in the monotonicity of $f$ over a time-interval. The Expected Trend Instability index provides information about the volatility of $f$ and can be used to evaluate research questions about the rate of change in direction of $f$. In particular it can be used to gauge how surprising such statements as ,,It is the first time in 20 years that f has stopped decreasing and started to increase'' is.} Besides providing exact answers to specific and relevant research questions, our proposed method estimates the actual probability that the trend is changing. 
 
-The manuscript is structured as follows: In Section \ref{sec:method} we present our statistical model based on a latent Gaussian process formulation giving rise to explicit expressions for the Trend Direction Index and the Expected Trend Instability index conditional on observed data. Section \ref{sec:estimation} is concerned with estimating the models parameters, and we give an extended application to the development of the proportion of smokers in Denmark during the last 20 years in Section \ref{sec:application}. We conclude with a discussion.
+The manuscript is structured as follows: In Section \ref{sec:method} we present our statistical model based on a latent Gaussian process formulation giving rise to explicit expressions for the Trend Direction Index and the Expected Trend Instability index conditional on observed data. Section \ref{sec:estimation} is concerned with estimating the models parameters. \revision{In Section \ref{sec:simulation} we undertake a simulation study to show the performance of the proposed method and to compare it with trend filtering, and in Section \ref{sec:application} we provide extended applications to our two cases: the development of the proportion of smokers in Denmark during the last 20 years and the development of new Covid-19 cases in Italy}. We conclude with a discussion.
 
 Proofs of propositions are given in the supplmentary material, and reproducible code and Stan implementations are available at the first author's GitHub repository [@gptrendStan].
 
@@ -115,19 +117,6 @@ equal to the expected value of the size of the random set of zero-crossings by $
 \end{align*}
 \revision{where the inequality becomes sharp if $\sum_{k\geq2} P(\# \{t \in \mathcal{I} : df(t) = 0\} = k)$ is small. The Expected Trend Instability can therefore be used over smaller intervals $\mathcal{I}$ to provide statements about the expecxted probability that a change in trend will happen.}
 
----
-#\revision{It is worth noting that the The Expected Trend Instability represents an upper bound for the probability of observing at least one zero-crossing event, $df(\cdot) = 0$, over $\mathcal{I}$:}
-#\begin{align*}
-#  \text{ETI}(\mathcal{I}) 
-#  &= P(\# \{t \in \mathcal{I} : df(t) = 0\} = 0) \times 0 \\
-#  &+ P(\# \{t \in \mathcal{I} : df(t) = 0\} = 1) \times 1 \\
-#  &+ P(\# \{t \in \mathcal{I} : df(t) = 0\} = 2) \times 2 + \cdots \\
-#  & \geq P(\# \{t \in \mathcal{I} : df(t) = 0\} = 1) + P(\# \{t \in \mathcal{I} : df(t) = 0\} = 2) + \cdots \\
-#  &= P(\# \{t \in \mathcal{I} : df(t) \geq 0\} \geq 1)
-#\end{align*}
-#
-#\revision{The inequality becomes sharp if $\sum_{k\geq2} P(\# \{t \in \mathcal{I} : df(t) = 0\} = k)$ is small. The Expected Trend Instability can therefore be used over smaller intervals $\mathcal{I}$ to provide statements about the expecxted probability that a change in trend will happen.}
----
 
 These two general definitions of trendiness will be evaluated in the light of a particular statistical model in the next sections leading to expressions of their estimates.
 
@@ -259,16 +248,15 @@ To illustrate the Expected Trend Instability, Figure \ref{fig:ETIexample} shows 
 \end{figure}
 
 ## The Gaussian assumptions and non-normal outcomes {#sec:gaussianassumptions}
-\revision{This is a new section}
+\revision{The closed-form expressions derived in the sections above depend on the assumptions of Gaussianity on the latent scale and for the conditional distribution of the observed data. For outcomes that are conditionally non-normal the posterior distributions are in general analytically intractable. In some cases one can see our assumptions as an approximation facilitated by the central limit theorem e.g., in the case where the outcome is a proportion and the number of experiments is large or if the outcome is count data and the rate is not too low. The conditional variance, $\sigma^2$ in Equation (\ref{eq:generatingProcess}), could therefore be changed to reflect the variance of this limiting distribution.}
 
-The closed-form expressions derived in the sections above depend on the assumptions of Gaussianity on the latent scale and for the conditional distribution of the observed data. For outcomes that are conditionally non-normal the posterior distributions are in general analytically intractable. In some cases one can see our assumptions as an approximation facilitated by the central limit theorem e.g., in the case where the outcome is a proportion and the number of experiments is large. The conditional variance, $\sigma^2$ in Equation (\ref{eq:generatingProcess}), could therefore be changed to reflect the variance of this limiting distribution.
-
-One possibility for altering the model is to retain the model structure but apply a transformation of the observed data. This amounts to altering the second part of Equation (\ref{eq:generatingProcess}) to
+\revision{One possibility for altering the model is to retain the model structure but apply a transformation of the observed data. This amounts to altering the second part of Equation (\ref{eq:generatingProcess}) to
 \begin{align*}
   g(Y_i) \mid t_i, f(t_i), \Theta &\overset{iid}{\sim} N(f(t_i), \sigma^2)
 \end{align*}
-where $g$ is a known, monotone function. Our model could directly be fitted to the transformed outcomes, but the posterior estimates will also be on the transformed scale and may therefore be difficult to interpret.
+where $g$ is a known, monotone function. Our model could directly be fitted to the transformed outcomes, but the posterior estimates will also be on the transformed scale and may therefore be difficult to interpret.}
 
+\revision{
 Another possibility is to consider both the outcome and the latent function on the same transformed scale. This alters Equation (\ref{eq:generatingProcess}) to
 \begin{align*}
 \begin{split}
@@ -276,9 +264,7 @@ Another possibility is to consider both the outcome and the latent function on t
   g(Y_i) \mid t_i, g(f(t_i)), \Theta &\overset{iid}{\sim} N(g(f(t_i)), \sigma^2)
 \end{split}
 \end{align*}
-Our model is again directly applicable under this alternative data generating model. It follows that the trend on this scale is $g(f(t))' = f'(t)g'(f(t))$. The Trend Direction Index will therefore be equal to $\mathrm{TDI}(t, \delta \mid \Theta) = P(f'(t + \delta)g'(f(t + \delta)) > 0 \mid g(\mathbf{Y}), \mathbf{t}, \Theta)$. This can, however, be transformed back to the original scale of $df$ by normalization since we can sample from the posterior distribution of $g(f(t))$ by the Gaussian assumptions on the transformed scale. Therefore we can also obtain samples from $g'(f(t))$ since $g^{-1}$ and $g'$ are known. The Trend Direction Index on the original scale can thus be obtained by a Monte Carlo approximation using these samples.
-
-\revision{Er dette tilstrækkeligt om den sag?}
+Our model is again directly applicable under this alternative data generating model. It follows that the trend on this scale is $g(f(t))' = f'(t)g'(f(t))$. The Trend Direction Index will therefore be equal to $\mathrm{TDI}(t, \delta \mid \Theta) = P(f'(t + \delta)g'(f(t + \delta)) > 0 \mid g(\mathbf{Y}), \mathbf{t}, \Theta)$. This can, however, be transformed back to the original scale of $df$ by normalization since we can sample from the posterior distribution of $g(f(t))$ by the Gaussian assumptions on the transformed scale. Therefore we can also obtain samples from $g'(f(t))$ since $g^{-1}$ and $g'$ are known. The Trend Direction Index on the original scale can thus be obtained by a Monte Carlo approximation using these samples.}
 
 # Estimation {#sec:estimation}
 The trendiness indices depend on the parameters $\Theta$ of the latent Gaussian process. These parameters must be estimated from the observed data, and we consider two different estimation procedures: maximum likelihood estimation and a fully Bayesian estimator.
@@ -313,16 +299,15 @@ We have implemented both the maximum likelihood and the Bayesian estimator in St
 
 ## Maximum likelihood vs. Bayesian estimation
 
-The maximum likelihood and Bayesian methods described above differ in the way they approach the hyper-parameters of the model denoted by $\Theta$ in Equation (\ref{eq:generatingProcess}). The maximum likelihood method considers $\Theta$ as fixed parameters in the frequentist sense, while the Bayesian method views these as random variables distributed according to specified priors. Conceptually this gives rise to two versions of the Trend Direction Index. In the frequentist world the index is a deterministic function. In the Bayesian model the index is a random function governed by the posterior distribution of $\Theta$. 
+\revision{
+The maximum likelihood and Bayesian methods described above differ in the way they approach the hyper-parameters of the model denoted by $\Theta$ in Equation (\ref{eq:generatingProcess}). The maximum likelihood method considers $\Theta$ as fixed parameters in the frequentist sense, while the Bayesian method views these as random variables distributed according to specified priors. Conceptually this gives rise to two versions of the Trend Direction Index. In the frequentist world the index is a deterministic function. In the Bayesian model the index is a random function governed by the posterior distribution of $\Theta$.}
 
-The maximum likelihood estimator is also called the empirical Bayes approach since the prior distributions are estimated from data using the marginal likelihood of the model. This can be seen as an approximation to the Bayesian approach where the hyper-parameters are fixed at their most likely values instead of being integrated out. The advantage of the maximum likelihood method is that it is computationally faster. The advantage of the Bayesian approach is that any uncertainty about the values of the hyper-parameters is directly propagated through the model and into the trend indices, and that the prior distributions can be founded on subject matter knowledge.
+\revision{The maximum likelihood estimator is also called the empirical Bayes approach since the prior distributions are estimated from data using the marginal likelihood of the model. This can be seen as an approximation to the Bayesian approach where the hyper-parameters are fixed at their most likely values instead of being integrated out. The advantage of the maximum likelihood method is that it is computationally faster. The advantage of the Bayesian approach is that any uncertainty about the values of the hyper-parameters is directly propagated through the model and into the trend indices, and that the prior distributions can be founded on subject matter knowledge.}
 
 
 ## Model selection {#sec:modelselection}
 
-\revision{This is a new section. Text has been moved from the smoking application to here and additional details regarding cross-validation have been added.}
-
-To complete the model specification in Equation (\ref{eq:generatingProcess}) we must decide on the functional forms of the mean and covariance functions of the latent Gaussian process. Squared Exponential (SE), the Rational Quadratic (RQ), the Matern 3/2 (M3/2), and the Matern 5/2 (M5/2) covariance functions [@rasmussen2003gaussian] These covariance functions are 
+\revision{To complete the model specification in Equation (\ref{eq:generatingProcess}) we must decide on the functional forms of the mean and covariance functions of the latent Gaussian process. Squared Exponential (SE), the Rational Quadratic (RQ), the Matern 3/2 (M3/2), and the Matern 5/2 (M5/2) are commonly used covariance functions for Gaussian processes [@rasmussen2003gaussian]. These covariance functions are 
 \begin{align}
 \begin{split}
   C_\theta^\text{SE}(s, t) &= \alpha^2\exp\left(-\frac{(s-t)^2}{2\rho^2}\right), \quad \theta = (\alpha, \rho) > 0\\ 
@@ -332,13 +317,13 @@ To complete the model specification in Equation (\ref{eq:generatingProcess}) we 
 \end{split}
 \label{eq:covariancefunctions}
 \end{align}
-We note that the Rational Quadratic covariance function converges on $\mathcal{T} \times \mathcal{T}$ to the Squared Exponential covariance function for $\nu \rightarrow \infty$. Note also that M3/2 is valid for TDI but not for ETI since M3/2 does not fulfill the requirement of mixed third-order partial derivatives of assumption A3. 
+We note that the Rational Quadratic covariance function converges on $\mathcal{T} \times \mathcal{T}$ to the Squared Exponential covariance function for $\nu \rightarrow \infty$. Note also that M3/2 is valid for TDI but not for ETI since M3/2 does not fulfill the requirement of mixed third-order partial derivatives of assumption A3.}
 
-\revision{Add something about non-stationary covariance functions and how to choose mu.}
+\revision{Add something about non-stationary covariance functions and how to choose mu. Den gamle snak om, hvor meget struktur man ønsker at putte ned over middelværdidelen?}
 
-For the maximum likelihood estimation method we propose a model selection procedure based on cross-validation. Different types of cross-validation can be performed depending on the purpose of the analysis. In some cases one stands at the end of the data collection and wants to look at what has happened. In this cases it would be natural to condition on all the observed data and perform a leave-one-out cross-validation. In other cases one is interested in forecasting the trend and the associated indices, and here it would be natural to take the direction of time in to account. This could be done by e.g., a one-step-ahead cross-validation procedure in which the observed data are compared to model forecasts one step ahead in time based on successive partitioning of the time series. For more information on such procedures see e.g., @bergmeir2012use.
+\revision{For the maximum likelihood estimation method we propose a model selection procedure based on cross-validation. Different types of cross-validation can be performed depending on the purpose of the analysis. In some cases one stands at the end of the data collection and wants to look at what has happened. In this cases it would be natural to condition on all the observed data and perform a leave-one-out cross-validation. In other cases one is interested in forecasting the trend and the associated indices, and here it would be natural to take the direction of time in to account. This could be done by e.g., a one-step-ahead cross-validation procedure in which the observed data are compared to model forecasts one step ahead in time based on successive partitioning of the time series. For more information on such procedures see e.g., @bergmeir2012use.}
 
-To perform the leave-one-out cross-validation we consider a set of candidate models indexed by $\mathcal{M}$. This set would typically include different parametrization of the mean and covariance function of the latent process. Turn by turn a single data pair $(Y_i, t_i)$ is excluded and we let the leave-one-out data be denoted $(\mathbf{Y}_{-i}, \mathbf{t}_{-i})$. Based on the leave-one-out data sets the hyper-parameters  $\Theta_{-i}^{\mathcal{M}} = (\beta, \theta, \sigma^2)$ can be estimated for each model by maximizing the marginal log-likelihood. These estimates are given by
+\revision{To perform the leave-one-out cross-validation we consider a set of candidate models indexed by $\mathcal{M}$. This set would typically include different parametrization of the mean and covariance function of the latent process. Turn by turn a single data pair $(Y_i, t_i)$ is excluded and we let the leave-one-out data be denoted $(\mathbf{Y}_{-i}, \mathbf{t}_{-i})$. Based on the leave-one-out data sets the hyper-parameters  $\Theta_{-i}^{\mathcal{M}} = (\beta, \theta, \sigma^2)$ can be estimated for each model by maximizing the marginal log-likelihood. These estimates are given by
 \begin{align*}
 \widehat{\Theta}_{-i}^\mathcal{M} = \argsup_{\Theta} \log L(\Theta \mid \mathbf{Y}_{-i}, \mathbf{t}_{-i}) 
 \end{align*}
@@ -346,22 +331,21 @@ where the log likelihood function is given in Equation (\ref{eq:margloglik}). Th
 \begin{align*}
   \text{MSPE}_{\text{LOO}}^\mathcal{M} = \frac{1}{n}\sum_{i=1}^{n} \left(Y_i - \E[f(t_i) \mid \mathbf{Y}_{-i}, \mathbf{t}_{-i}, \widehat{\Theta}_{-i}^\mathcal{M}]\right)^2
 \end{align*}
-The selected model among the candidate set is then $\mathcal{M}_{\text{opt}} = \argmin_\mathcal{M} \text{MSPE}_{\text{LOO}}^\mathcal{M}$. Different cross-validation schemes can be performed similarly by a modification of how the leave-one-out data is constructed.
+The selected model among the candidate set is then $\mathcal{M}_{\text{opt}} = \argmin_\mathcal{M} \text{MSPE}_{\text{LOO}}^\mathcal{M}$. Different cross-validation schemes can be performed similarly by a modification of how the leave-one-out data is constructed.}
 
-We note that with our model being implemented in Stan, efficient approximate leave-one-out cross-validation and model comparison using the LOOIC criterion can directly be performed by using the \texttt{loo} package [@loo].
+\revision{We note that with our model being implemented in Stan, efficient approximate leave-one-out cross-validation and model comparison using the LOOIC criterion can directly be performed by using the \texttt{loo} package [@loo].}
 
 
 
 # Simulation study {#sec:simulation}
-\revision{This is a new section}
 
-To assess the performance of our method we performed a simulation study. We generated $10,000$ random Gaussian processes on the unit interval with zero mean and the Squared Exponential covariance function with parameters $\alpha = 1$ and $\rho = \frac{\sqrt{3}}{{2\pi}}$ in 15 different scenarios in which we varied the number of observation points ($n = 25, 50, 100$) and the measurement noise ($\sigma = 0.025, 0.05, 0.1, 0.15, 0.2$). In the Supplementary Material we show 50 random sample paths for each scenario.
+\revision{To assess the performance of our method we performed a simulation study. We generated $10,000$ random Gaussian processes on the unit interval with zero mean and the Squared Exponential (SE) covariance function with parameters $\alpha = 1$ and $\rho = \frac{\sqrt{3}}{{2\pi}}$ in 15 different scenarios in which we varied the number of observation points ($n = 25, 50, 100$) and the measurement noise ($\sigma = 0.025, 0.05, 0.1, 0.15, 0.2$). The Supplementary Material shows 50 random sample paths for each scenario.}
 
-In each $r = 1,\ldots,10,000$ simulation we know the true latent functions $(f_r, df_r)$ and by fitting our model we obtain estimates $\widehat{f_r^\text{GP}} = \E[f_r \mid Y_r]$, $\widehat{df_r^\text{GP}} = \E[df_r \mid Y_r]$, $\mathrm{TDI}_r$ and $d\mathrm{ETI}_r$. We compare the estimates to the truths using two different measures: an integrated residual and the squared $L^2$ norm. The integrated residuals are defined as $\int_0^1 (f_r(t) - \widehat{f_r^\text{GP}}(t))\mathrm{d}t$ and similarly for $\widehat{df_r^\text{GP}}$. For TDI the cumulative residual is defined as $\int_0^1 (1(df_r(t) > 0) - \mathrm{TDI}_r(t))\mathrm{d}t$ where $1$ denotes the indicator function. For ETI the cumulative residual is defined as $\int_0^1(N_r(t) - d\mathrm{ETI}_r(t))\mathrm{d}t$ where $N_r(t)$ is the càdlàg counting process that jumps with 1 every time $df_r$ has a root on the interval. If our estimates are unbiased we expect these integrated residuals to have zero mean across the simulations. The squared $L^2$ norms are defined in a similar manner for all the quantities as e.g., $\int_0^1 (f_r(t) - \widehat{f_r^\text{GP}}(t))^2\mathrm{d}t$.
+\revision{In each $r = 1,\ldots,10,000$ simulation we know the true latent functions $(f_r, df_r)$ and by fitting our model we obtain estimates $\widehat{f_r^\text{GP}} = \E[f_r \mid Y_r]$, $\widehat{df_r^\text{GP}} = \E[df_r \mid Y_r]$, $\mathrm{TDI}_r$ and $d\mathrm{ETI}_r$. We compare the estimates to the truths using two different measures: an integrated residual and the squared $L^2$ norm. The integrated residuals are defined as $\int_0^1 (f_r(t) - \widehat{f_r^\text{GP}}(t))\mathrm{d}t$ and similarly for $\widehat{df_r^\text{GP}}$. For TDI the cumulative residual is defined as $\int_0^1 (1(df_r(t) > 0) - \mathrm{TDI}_r(t))\mathrm{d}t$ where $1$ denotes the indicator function. For ETI the cumulative residual is defined as $\int_0^1(N_r(t) - d\mathrm{ETI}_r(t))\mathrm{d}t$ where $N_r(t)$ is the càdlàg counting process that jumps with 1 every time $df_r$ has a root on the interval. If our estimates are unbiased we expect these integrated residuals to have zero mean across the simulations. The squared $L^2$ norms are defined in a similar manner for all the quantities as e.g., $\int_0^1 (f_r(t) - \widehat{f_r^\text{GP}}(t))^2\mathrm{d}t$.}
 
-For comparison we included the Trend Filtering method on the same simulated data and reported similar measures for its estimated mean, $\widehat{f^\text{TF}}$, and derivative, $\widehat{df^\text{TF}}$. We used linear Trend Filtering implemented in the R package \texttt{genlasso} [@genlasso] with a 10-fold cross-validation of the penalty parameter. Note that we only compare with the estimates of the latent mean and its derivative since Trend Filtering does not provide a probability distribution for the derivative which is required by the definition of TDI.
+\revision{For comparison we employed the Trend Filtering method as implemented in the R package \texttt{genlasso} [@genlasso] on the same simulated data and reported similar measures for its estimated mean, $\widehat{f^\text{TF}}$, and derivative, $\widehat{df^\text{TF}}$ using a 10-fold cross-validation of the penalty parameter. Note that we only compare with the estimates of the latent mean and its derivative since Trend Filtering does not provide a probability distribution for the derivative which is required by the definition of TDI.}
 
-Summary statistics from the simulations are shown in Table \ref{tab:simulationSummary}. It is seen that both the estimates from our model and the ones from Trend Filtering provide unbiased estimates in all scenarios. Looking at the squared $L^2$ norm our estimates of $f$ and $df$ show very small variability across scenarios, while the estimates from Trend Filtering showed an increase in variability for increasing measurement noise and a decrease for increasing number of observations. We note that this is expected as we simulate processes with continuous sample paths, and Trend Filtering estimates a piece-wise linear approximation. While this leads to unbiased results, as the table shows, the variability of these estimates will necessarily be larger, and this is more pronounced for smaller number of observations.
+\revision{Summary statistics from the simulations are shown in Table \ref{tab:simulationSummary}. It is seen that both our proposed model and the Trend Filtering model provide unbiased estimates in all scenarios. Looking at the squared $L^2$ norm our estimates of $f$ and $df$ show very small variability across scenarios, while the estimates from Trend Filtering showed an increase in variability for increasing measurement noise and a decrease for increasing number of observations. We note that this is expected as we simulate processes with continuous sample paths, and Trend Filtering estimates a piece-wise linear approximation. While this leads to unbiased results, as the table shows, the variability of these estimates will necessarily be larger, and this is more pronounced for smaller number of observations.}
 
 ```{r, echo=FALSE}
 library(knitr)
@@ -405,9 +389,7 @@ knitr::kable(cbind(mat1, mat2), format = "latex", escape=FALSE, digits=3, bookta
 ```
 
 
-The variability of TDI and ETI as measured by the squared L2 norm were low in all scenarios but increased with the amount of measurement noise as expected. In a few cases the estimated ETI was far away from its true value. This was especially pronounced in scenarios with a low number of observations and a high observation noise. This was caused by $\widehat{f^\text{GP}}$ degenerating to either a constant function or to a perfect interpolation of the observations. This reason for this behavior is that the hyper-parameters become weekly identified under such circumstances. These cases are still included in the reported summary statistics, and we show a couple of examples in the Supplementary Material \revision{gider vi det?}. In such cases, the fit can be regularized through the priors of the hyper-parameters, but this must be determined on a case by case basis.
-
-\revision{Is there more to say about this?}
+\revision{The variability of TDI and ETI as measured by the squared L2 norm were low in all scenarios but increased with the amount of measurement noise as expected. In a few cases the estimated ETI was far away from its true value. This was especially pronounced in scenarios with a low number of observations and a high observation noise. This was caused by $\widehat{f^\text{GP}}$ degenerating to either a constant function or to a perfect interpolation of the observations. This reason for this behavior is that the hyper-parameters become weekly identified under such circumstances. These cases are still included in the reported summary statistics in Table \ref{tab:simulationSummary}. In such cases, the fit can be regularized through the priors of the hyper-parameters, but this must be determined on a case by case basis.}
 
 # Applications {#sec:application}
 
@@ -425,9 +407,9 @@ A naive approach for trying to answer questions Q1 and Q2 is to apply sequential
 
 \begin{table}[htbp]
 \center
-\begin{tabular}{c|rrrrr}
-2018 & 2017 & 2016 & 2015 & 2014 & 2013\\ \hline
-p-value & 0.074 & \textbf{0.020} & 0.495 & \textbf{0.012} & 0.576
+\begin{tabular}{c|rrrrr} \hline
+2018 & 2017 & 2016 & 2015 & 2014 & 2013\\ 
+p-value & 0.074 & \textbf{0.020} & 0.495 & \textbf{0.012} & 0.576\\ \hline
 \end{tabular}
 \caption{p-values obtained from $\chi^2$-tests of independence between the proportion of smokers in 2018 and the five previous years. Numbers in bold are statistically significant differences at the $5\%$ level.}
 \label{tab:chisqtests}
@@ -513,15 +495,19 @@ To understand the effect of $\nu$ on the smoothness of the fitted models we can 
 
 \revision{As a final remark on this application we note that the observed data are proportions and therefore not normal distributed. Commonly used transformations for proportions towards normality are the isometric log ratio or the arcsine-square-root or logit functions. In accordance with the comments in Section \ref{sec:gaussianassumptions} we also performed the trend analysis on the logit transformed outcomes. These results are included in the Supplementary Material and did not give rise to different interpretations.}
 
-## Number of new COVID-19 positives in Italy {-}
+## Number of new Covid-19 positive cases in Italy {-}
 
-\revision{This is a new section.}
+\revision{As a second application we look at the development of the number of new COVID-19 positives in Italy since February 24th 2020. Data was updated each day and made available at the GitHub repository of the Italian Civil Protection Department [@italianCOVID19]. 90 days had passed when this analysis was performed.}
 
-As a second application we look at the development of the number of new COVID-19 positives in Italy since February 24th 2020. Data was updated each day and made available at the GitHub repository of the Italian Civil Protection Department [@italianCOVID19]. 90 days had passed when this analysis was performed.
+The dataset provides a direct way to assess the Covid-19 disease progression and to monitor the impact of political initiatives to reduce disease spread. In this application we wish to assess the statistical properties of the following questions:
+\begin{itemize}
+\item[Q1:]{Is the disease spread currently under control or does the number of new positive cases seems to be on the rise?}
+\item[Q2:]{How did the Italien government's decision to lockdown most of Italy on March 9th 2020 reflect in the spread of the virus?}
+\end{itemize}
 
-We fitted the Gaussian Process model using the maximum likelihood method and as hyper-parameters we used a constant mean function and the Rational Quadratic covariance function. Figure \ref{fig:covid19Fit} shows the result of the analysis. Between day five and six the Trend Direction Index crossed 95\% probability and continued to climb to 100\%. After 29 days the index proceeded to sharply decrease where it remained for some time. However, at day 88 the index had again increased and crossed 50\%, and at the time of this analysis the index was equal to 54\%. It is therefore currently unclear whether the number of new positives is increasing or decreasing but a slight probability favors the former. 
+\revision{For this application we fitted the Gaussian Process model using the maximum likelihood method and as hyper-parameters we used a constant mean function and the Rational Quadratic covariance function. }
 
-\revision{Is there more to say about this?}
+\revision{Figure \ref{fig:covid19Fit} shows the result of the analysis. Between day five and six the Trend Direction Index crossed 95\% probability and continued to climb to 100\%. After 29 days (March 24th, 2020) the index proceeded to sharply decrease where it remained for some time. The Italian government imposed quarantine on most of Italy from March 9th, and the sharp drop in coincides nicely with the (as of present) expected incubation period of 2--14 days which roughly reflects the incubation and testing period for the individuals who contracted the virus before the March 9th lockdown. After March 24th, the trend was clearly not positive for a long time.}
 
 \begin{figure}[htb]
 \center\includegraphics{../figures/covid19_gpFit.pdf}
@@ -529,6 +515,7 @@ We fitted the Gaussian Process model using the maximum likelihood method and as 
 \label{fig:covid19Fit}
 \end{figure}
 
+\revision{However, at day 88 (May 22nd, 2020) the Trend Direction Index had again increased and crossed 50\%, and at the time of this analysis the index was equal to 54\%. It is therefore currently unclear whether the number of new positives is increasing or decreasing but a slight probability favors the former. It should be stressed, that Trend Direction Index monitors the \emph{sign} and not the \emph{size} of the trend and this recent increase of TDI to 54% may reflect that number of new cases is merely starting to level off. The Trend Direction Index can be used as a monitoring tool to determine if the Italian authorities need to take extra actions.}
 
 # Discussion {#sec:discussion}
 
@@ -536,7 +523,7 @@ In this article, we have proposed two new measures - the Trend Direction Index a
 
 Both indices have an intuitive interpretation that directly refers to properties of the latent trend and the proposed approach exploits the underlying assumed continuity to circumvent discretization and allows us to compute a different (and in many cases more relevant) probability than what can be obtained from e.g., pairwise comparisons in discrete time.
 
-\revision{XXX Comparison with trend filtering in here. Se hvad Andreas has skrevet i simulationsafsnittet.}
+\revision{The comparison with Trend Filtering showed that our proposed method provides unbiased estimates of the underlying function $f$ and its derivative, $df$ but that we are able to relax the assumptions of piecewise linearity of the underlying process, while in addition providing a probability distribution for the derivative which is used directly in the Trend Direction Index and which directly provides the answers to the research questions often posed.}
 
 It is worth noting that the indices are scale-free and thus they do not tell anything about the magnitude of a trend. Consequently, the two indices should therefore always be accompanied by plots of the posterior of $df$. If a prespecified magnitude, $u$, of a trend is desired then the threshold in the definition of the TDI is easily modified to accommodate this as
 \begin{align*}
