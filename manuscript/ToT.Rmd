@@ -178,6 +178,12 @@ the individual components are given by
 \label{prop:GPposterior}
 \end{proposition}
 
+\revision{In addition to the closed-form expressions of the conditional distributions of the latent function and its derivatives given in Proposition \ref{prop:GPposterior} it can also be useful to consider the predictive distribution of the model. That is: the conditional distribution of a new observations given the observed data. This is given by
+\begin{align}
+Y^\ast(t^\ast) \mid t^\ast, \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\mu_{f}(t^\ast \mid \Theta), \Sigma_{f}(t^\ast, t^\ast \mid \Theta) + \sigma^2\right)\label{eq:PPD}
+\end{align}
+where $Y^\ast$ is a new random variable predicted at some arbitrary time point $t^\ast$.}
+
 Proposition \ref{prop:GPposterior} grants the foundation for the rest of the methodological development. In the following two subsections we show how the Trend Direction Index and the Expected Trend Instability can be expressed under the data generating model in Equation (\ref{eq:generatingProcess}) using the results of Proposition \ref{prop:GPposterior}.
 
 ## The Trend Direction Index
@@ -268,11 +274,14 @@ Our model is again directly applicable under this alternative data generating mo
 # Estimation {#sec:estimation}
 The trendiness indices depend on the parameters $\Theta$ of the latent Gaussian process. These parameters must be estimated from the observed data, and we consider two different estimation procedures: maximum likelihood estimation and a fully Bayesian estimator.
 
+\revision{\textbf{Remark:} The difference between the maximum likelihood and the Bayesian method is that they give rise to two different versions of the Trend Direction Index. In the former setting the index is a deterministic function, while in the latter it is a random function governed by the posterior distribution of $\Theta$. The maximum likelihood estimator is also called an empirical Bayes approach since the prior distributions are estimated from data using the marginal likelihood of the model. This can be seen as an approximation to the Bayesian model where the hyper-parameters are fixed at their most likely values instead of being integrated out.}
+
+
 The maximum likelihood estimator consists of finding the values of the parameters that maximize the marginal likelihood of the observed data and plugging these into the expressions of the posterior distributions and the trendiness indices. The marginal distribution of $\mathbf{Y}$ is found by integrating out the distribution of the latent Gaussian process in the conditional observation model $\mathbf{Y} \mid f(\mathbf{t}), \mathbf{t}, \Theta$ in Equation (\ref{eq:generatingProcess}). Since the observation model consists of normal distributed random variables conditional on the latent Gaussian process, the marginal distribution is multivariate normal with expectation $\mu_\beta(\mathbf{t})$ and $n \times n$ covariance matrix $C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I$. The marginal log likelihood function is therefore
 \begin{align}
 \log L(\Theta \mid \mathbf{Y}, \mathbf{t}) &\propto - \frac{1}{2}\log |C_{\theta}(\mathbf{t}, \mathbf{t}) + \sigma^2 I| - \frac{1}{2}(\mathbf{Y} - \mu_\beta(\mathbf{t}))^T\left[C_{\theta}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right]^{-1}(\mathbf{Y} - \mu_\beta(\mathbf{t}))\label{eq:margloglik}
 \end{align}
-and the maximum likelihood estimate $\widehat{\Theta^\text{ML}} = \argsup_{\Theta = (\beta, \theta, \sigma)} \log L(\Theta \mid \mathbf{Y}, \mathbf{t})$ can be obtained by numerical optimization or found as the roots to the score equations $\nabla_\theta \log L(\Theta \mid \mathbf{Y}, \mathbf{t}) = 0$. This estimate can then be plugged in to the expressions for the posterior distributions of $(f, df, d^2\!f)$ in Proposition \ref{prop:GPposterior} enabling simulation of the posterior distributions at any vector of time points. Point estimates of the Trend Direction Index and the Expected Trend Instability are then $\mathrm{TDI}(t, \delta \mid \widehat{\Theta^\text{ML}})$ and $\mathrm{ETI}(\mathcal{I} \mid \widehat{\Theta^\text{ML}})$ according to Propositions \ref{prop:TDIposterior} and \ref{prop:ETIposterior} respectively.
+and the maximum likelihood estimate $\widehat{\Theta^\text{ML}} = \argsup_{\Theta = (\beta, \theta, \sigma)} \log L(\Theta \mid \mathbf{Y}, \mathbf{t})$ can be obtained by numerical optimization or found as the roots to the score equations $\nabla_\theta \log L(\Theta \mid \mathbf{Y}, \mathbf{t}) = 0$. This estimate can then be plugged in to the expressions for the posterior distributions of $(f, df, d^2\!f)$ in Proposition \ref{prop:GPposterior} enabling simulation of the posterior distributions at any vector of time points. Point estimates of the Trend Direction Index and the Expected Trend Instability are then $\mathrm{TDI}(t, \delta \mid \widehat{\Theta^\text{ML}})$ and $\mathrm{ETI}(\mathcal{I} \mid \widehat{\Theta^\text{ML}})$ according to Propositions \ref{prop:TDIposterior} and \ref{prop:ETIposterior} respectively. \revision{Similarly, the predictive distribution of a new observation is equal to Equation (\ref{eq:PPD}) with the plug-in estimate $\Theta = \widehat{\Theta^\text{ML}}$.}
 
 The maximum likelihood estimator is easy to implement and fast to compute, but it is difficult to propagate the uncertainties of the parameter estimates through to the posterior distributions and the trendiness indices. This is disadvantageous since in order to conduct a qualified assessment of trendiness we are not only interested in point estimates but also the associated uncertainties. A Bayesian estimator, while slower to compute, facilitates a straightforward way to encompass all uncertainties in the final estimates. To specify a Bayesian estimator we must augment the data generating model in Equation (\ref{eq:generatingProcess}) with another hierarchical level specifying a prior distribution of the model parameters. We therefore add the following level
 \begin{align*}
@@ -292,11 +301,13 @@ Let $\widetilde{\Theta} \sim P(\Theta \mid \mathbf{Y}, \Psi, \mathbf{t})$. The p
 \begin{align*}
   P\left(\mathrm{TDI}\left(t, \delta \mid \widetilde{\Theta}\right) \leq \tau\right) = Q_\tau(t, \delta)
 \end{align*}
-with for example $\tau \in \left\{0.025, 0.5, 0.975\right\}$ to obtain 95% credible intervals. 
+with for example $\tau \in \left\{0.025, 0.5, 0.975\right\}$ to obtain 95% credible intervals. \revision{In the Baysian model the predictive distribution in Equation (\ref{eq:PPD}) should be averaged across the posterior distribution of the hyper-parameters. This leads to the posterior predictive distribution
+\begin{align*}
+Y^\ast(t^\ast) \mid t^\ast, \mathbf{Y}, \mathbf{t}, \Psi = \int_\Theta P(Y^\ast(t^\ast) \mid t^\ast, \mathbf{Y}, \mathbf{t}, \Theta, \Psi)dP(\Theta \mid \mathbf{Y}, \Psi, \mathbf{t})
+\end{align*}
+where the integral is in practice approximate through the MCMC samples.}
 
 We have implemented both the maximum likelihood and the Bayesian estimator in Stan [@carpenter2017stan] and R [@R-Core-Team:2018aa] in combination with the \texttt{rstan} package [@rstan]. Stan is a probabilistic programming language enabling full Bayesian inference using Markov chain Monte Carlo sampling. The Stan implementation of the maximum likelihood estimator requires the marginal maximum likelihood estimates of the parameters supplied as data, and from these it will simulate random functions from the posterior distribution of $(f, df, d^2\!f)$ on a user-supplied grid of time points as well as return point estimates of $\mathrm{TDI}$ and $d\mathrm{ETI}$. The latter can then be integrated numerically to obtain the Expected Trend Instability on an interval. The Bayesian estimator requires values of the hyper-parameters $\Psi$ supplied as data and from these it will generate random samples $(\widetilde{\Theta}_1, \ldots, \widetilde{\Theta}_K)$ from $P(\Theta \mid \mathbf{Y}, \Psi, \mathbf{t})$ by Markov chain Monte Carlo. These samples are then used to approximate the posterior distribution of the Trend Direction Index by $(\mathrm{TDI}(t, \delta \mid \widetilde{\Theta}_1), \ldots, \mathrm{TDI}(t, \delta \mid \widetilde{\Theta}_K))$ and similarly for $d\mathrm{ETI}$.
-
-\revision{\textbf{Remark:} The difference between the maximum likelihood and the Bayesian method is that they give rise to two different versions of the Trend Direction Index. In the former setting the index is a deterministic function, while in the latter it is a random function governed by the posterior distribution of $\Theta$. The maximum likelihood estimator is also called an empirical Bayes approach since the prior distributions are estimated from data using the marginal likelihood of the model. This can be seen as an approximation to the Bayesian model where the hyper-parameters are fixed at their most likely values instead of being integrated out.}
 
 ---
 ## Maximum likelihood vs. Bayesian estimation
@@ -516,7 +527,7 @@ The dataset provides a direct way to assess the COVID-19 disease progression and
 \label{fig:covid19Fit}
 \end{figure}
 
-\revision{However, at day 88 (May 22nd, 2020) the Trend Direction Index had again increased and crossed 50\%, and at the time of this analysis the index was equal to 54\%. It is therefore currently unclear whether the number of new positives is increasing or decreasing but a slight probability favors the former. It should be stressed, that Trend Direction Index monitors the \emph{sign} and not the \emph{size} of the trend and this recent increase of TDI to 54\% may reflect that number of new cases is merely starting to level off. The Trend Direction Index can be used as a monitoring tool to determine if the Italian authorities need to take extra actions.}
+\revision{However, at day 88 (May 22nd, 2020) the Trend Direction Index had again increased and crossed 50\%, and at the time of this analysis the index was equal to 54\%. It is therefore currently unclear whether the number of new positives is increasing or decreasing but a slight probability favors the former. It should be stressed, that Trend Direction Index monitors the \emph{sign} and not the \emph{size} of the trend and this recent increase of TDI to 54\% may reflect that number of new cases is merely starting to level off ($df(t) \approx 0$). The Trend Direction Index can be used as a monitoring tool to determine if the Italian authorities need to take extra actions.}
 
 # Discussion {#sec:discussion}
 
