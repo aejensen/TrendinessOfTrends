@@ -58,7 +58,7 @@ Using a latent Gaussian process model we show how the Trend Direction Index and 
 Trend detection has received increased attention in many fields, and while many important applications have their roots in the fields of economics (stock development) and environmental change (global temperature), trend identification has important ramifications in industry (process monitoring), medicine (disease development) and public health (changes in society).
 
 This manuscript is concerned with the fundamental problem of estimating an underlying trend based on random variables observed repeatedly over time. In addition to this problem we also wish to assess points in time where it is possible that such a trend is changing. Our motivation 
-\revision{comes from two recent examples: in the first, the news media in Denmark stated that the trend in the proportion of smokers in Denmark has changed at the end of the year 2018 such that the proportion is now increasing whereas it had been decreasing for the previous 20 years. This statement was based on survey data collected yearly since 1998 and reported by the Danish Health Authority [@sst], and it is critical for the Danish Health Authorities to be able to evaluate and react if there is an actual change in trend. The second example relates to the recent outbreak of Covid-19 in Italy where it is of tremendeous importance to determine if the disease spread is increasing or slowing down by considering the trend in number of new cases
+\revision{comes from two recent examples: in the first, the news media in Denmark stated that the trend in the proportion of smokers in Denmark has changed at the end of the year 2018 such that the proportion is now increasing whereas it had been decreasing for the previous 20 years. This statement was based on survey data collected yearly since 1998 and reported by the Danish Health Authority [@sst], and it is critical for the Danish Health Authorities to be able to evaluate and react if there is an actual change in trend. The second example relates to the recent outbreak of Covid-19 in Italy where it is of tremendous importance to determine if the disease spread is increasing or slowing down by considering the trend in number of new cases
 } (see Figure \ref{fig:rawDataPlot}). 
 
 \begin{figure}[htb]
@@ -80,14 +80,14 @@ Another common approach to analyse trends in time series is to apply a low-pass 
 \revision{
 @kim2009trendfiltering proposed an $\ell_1$ Trend Filtering approach
 based on an idea by @hodrick1997trendfiltering
-that imposes sparsity on the 1st order differences of the conditional mean. This produces trend estimates that are piecewise linear with the inherent assumption that changes to the time series are abrupt. The Trend Filtering approach has been further extended to sparsity of $k$th order differences [@ramdas2016trendfiltering] and to a Bayesian framework, where the flexibility of the difference of the conditional mean is controlled through the prior distribitions [@kowal2019dynamicshrinkage]
+that imposes sparsity on the 1st order differences of the conditional mean. This produces trend estimates that are piecewise linear with the inherent assumption that changes to the time series are abrupt. The Trend Filtering approach has been further extended to sparsity of $k$th order differences [@ramdas2016trendfiltering] and to a Bayesian framework, where the flexibility of the difference of the conditional mean is controlled through the prior distributions [@kowal2019dynamicshrinkage]
 } 
 
 We propose a new method for evaluating changes in the latent trend, $f$,  which starts by a clear specification of the problem and relevant measures of the trend: The Trend Direction Index gives a local probability of the monotonicity of $f$ and provides an answer to the research question "What is the probability that the latent trend is increasing?". \revision{The Expected Trend Instability index gives the expected number of changes in the monotonicity of $f$ over a time-interval. The Expected Trend Instability index provides information about the volatility of $f$ and can be used to evaluate research questions about the rate of change in direction of $f$. In particular it can be used to gauge how surprising such statements as ,,It is the first time in 20 years that f has stopped decreasing and started to increase'' is.} Besides providing exact answers to specific and relevant research questions, our proposed method estimates the actual probability that the trend is changing. 
 
 The manuscript is structured as follows: In Section \ref{sec:method} we present our statistical model based on a latent Gaussian process formulation giving rise to explicit expressions for the Trend Direction Index and the Expected Trend Instability index conditional on observed data. Section \ref{sec:estimation} is concerned with estimating the models parameters. \revision{In Section \ref{sec:simulation} we undertake a simulation study to show the performance of the proposed method and to compare it with trend filtering, and in Section \ref{sec:application} we provide extended applications to our two cases: the development of the proportion of smokers in Denmark during the last 20 years and the development of new Covid-19 cases in Italy}. We conclude with a discussion.
 
-Proofs of propositions are given in the supplmentary material, and reproducible code and Stan implementations are available at the first author's GitHub repository [@gptrendStan].
+Proofs of propositions are given in the supplementary material, and reproducible code and Stan implementations are available at the first author's GitHub repository [@gptrendStan].
 
 
 # Methods {#sec:method}
@@ -115,7 +115,7 @@ equal to the expected value of the size of the random set of zero-crossings by $
   &\geq \sum_{k=1}^\infty P(\# \{t \in \mathcal{I} : df(t) = 0\} = k)\\
   &= P(\# \{t \in \mathcal{I} : df(t) \geq 0\} \geq 1)
 \end{align*}
-\revision{where the inequality becomes sharp if $\sum_{k\geq2} P(\# \{t \in \mathcal{I} : df(t) = 0\} = k)$ is small. The Expected Trend Instability can therefore be used over smaller intervals $\mathcal{I}$ to provide statements about the expecxted probability that a change in trend will happen.}
+\revision{where the inequality becomes sharp if $\sum_{k\geq2} P(\# \{t \in \mathcal{I} : df(t) = 0\} = k)$ is small. The Expected Trend Instability can therefore be used over smaller intervals $\mathcal{I}$ to provide statements about the expected probability that a change in trend will happen.}
 
 
 These two general definitions of trendiness will be evaluated in the light of a particular statistical model in the next sections leading to expressions of their estimates.
@@ -502,7 +502,7 @@ To understand the effect of $\nu$ on the smoothness of the fitted models we can 
 The dataset provides a direct way to assess the Covid-19 disease progression and to monitor the impact of political initiatives to reduce disease spread. In this application we wish to assess the statistical properties of the following questions:
 \begin{itemize}
 \item[Q1:]{Is the disease spread currently under control or does the number of new positive cases seems to be on the rise?}
-\item[Q2:]{How did the Italien government's decision to lockdown most of Italy on March 9th 2020 reflect in the spread of the virus?}
+\item[Q2:]{How did the Italian government's decision to lockdown most of Italy on March 9th 2020 reflect in the spread of the virus?}
 \end{itemize}
 
 \revision{For this application we fitted the Gaussian Process model using the maximum likelihood method and as hyper-parameters we used a constant mean function and the Rational Quadratic covariance function. }
