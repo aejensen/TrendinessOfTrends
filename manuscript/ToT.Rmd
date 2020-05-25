@@ -519,7 +519,7 @@ The dataset provides a direct way to assess the COVID-19 disease progression and
 
 \revision{For this application we fitted the Gaussian Process model using the maximum likelihood method and as hyper-parameters we used a constant mean function and the Rational Quadratic covariance function.}
 
-\revision{Figure \ref{fig:covid19Fit} shows the result of the analysis. Between day five and six the Trend Direction Index crossed 95\% probability and continued to climb to 100\%. After 29 days (March 24th, 2020) the index proceeded to sharply decrease where it remained for some time. The Italian government imposed quarantine on most of Italy from March 9th, and the sharp drop in coincides nicely with the (as of present) expected incubation period of 2--14 days which roughly reflects the incubation and testing period for the individuals who contracted the virus before the March 9th lockdown. After March 24th, the trend was clearly not positive for a long time.}
+\revision{Figure \ref{fig:covid19Fit} shows the result of the analysis. Between day five and six the Trend Direction Index crossed 95\% probability and continued to climb to 100\%. After 29 days (March 24th, 2020) the index proceeded to sharply decrease where it remained for some time. The Italian government imposed quarantine on most of Italy from March 9th, and the sharp drop coincides nicely with the (as of present) expected incubation period of 2--14 days which roughly reflects the incubation and testing period for the individuals who contracted the virus before the March 9th lockdown. After March 24th, the trend was clearly not positive for a long time.}
 
 \begin{figure}[htb]
 \center\includegraphics{../figures/covid19_gpFit.pdf}
@@ -527,7 +527,7 @@ The dataset provides a direct way to assess the COVID-19 disease progression and
 \label{fig:covid19Fit}
 \end{figure}
 
-\revision{However, at day 88 (May 22nd, 2020) the Trend Direction Index had again increased and crossed 50\%, and at the time of this analysis the index was equal to 54\%. It is therefore currently unclear whether the number of new positives is increasing or decreasing but a slight probability favors the former. It should be stressed, that Trend Direction Index monitors the \emph{sign} and not the \emph{size} of the trend and this recent increase of TDI to 54\% may reflect that number of new cases is merely starting to level off ($df(t) \approx 0$). The Trend Direction Index can be used as a monitoring tool to determine if the Italian authorities need to take extra actions.}
+\revision{However, at day 88 (May 22nd, 2020) the Trend Direction Index had again increased and crossed 50\%, and at the time of this analysis the index was equal to 54\%. It is therefore currently unclear whether the number of new positives is increasing or decreasing but a slight probability favors the former. It should be stressed, that the Trend Direction Index monitors the \emph{sign} and not the \emph{size} of the trend and this recent increase of TDI to 54\% may reflect that the number of new cases is merely starting to level off ($df(t) \approx 0$). The Trend Direction Index can be used as a monitoring tool to determine if the Italian authorities need to take extra actions.}
 
 # Discussion {#sec:discussion}
 
