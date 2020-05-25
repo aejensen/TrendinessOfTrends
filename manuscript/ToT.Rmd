@@ -58,11 +58,10 @@ Using a latent Gaussian process model we show how the Trend Direction Index and 
 Trend detection has received increased attention in many fields, and while many important applications have their roots in the fields of economics (stock development) and environmental change (global temperature), trend identification has important ramifications in industry (process monitoring), medicine (disease development) and public health (changes in society).
 
 This manuscript is concerned with the fundamental problem of estimating an underlying trend based on random variables observed repeatedly over time. In addition to this problem we also wish to assess points in time where it is possible that such a trend is changing. Our motivation 
-\revision{comes from two recent examples: in the first, the news media in Denmark stated that the trend in the proportion of smokers in Denmark has changed at the end of the year 2018 such that the proportion is now increasing whereas it had been decreasing for the previous 20 years. This statement was based on survey data collected yearly since 1998 and reported by the Danish Health Authority [@sst], and it is critical for the Danish Health Authorities to be able to evaluate and react if there is an actual change in trend. The second example relates to the recent outbreak of Covid-19 in Italy where it is of tremendous importance to determine if the disease spread is increasing or slowing down by considering the trend in number of new cases
-} (see Figure \ref{fig:rawDataPlot}). 
+\revision{comes from two recent examples: in the first, the news media in Denmark stated that the trend in the proportion of smokers in Denmark has changed at the end of the year 2018 such that the proportion is now increasing whereas it had been decreasing for the previous 20 years. This statement was based on survey data collected yearly since 1998 and reported by the Danish Health Authority [@sst], and it is critical for the Danish Health Authorities to be able to evaluate and react if there is an actual change in trend. The second example relates to the recent outbreak of Covid-19 in Italy where it is of tremendous importance to determine if the disease spread is increasing or slowing down by considering the trend in number of new cases} (see Figure \ref{fig:rawDataPlot}). 
 
 \begin{figure}[htb]
-\center\includegraphics{../figures/rawDataPlot}
+\center\includegraphics{../figures/rawDataPlotDouble}
 \caption{Left panel: The proportion of daily or occasional smokers in Denmark during the last 20 years estimated from survey data and reported by the Danish Health Authority. The 2009 measurement is missing due to problems with representativeness. Right panel: The number of daily new cases tested positive for Covid-19 in Italy.}
 \label{fig:rawDataPlot}
 \end{figure}
@@ -297,13 +296,15 @@ with for example $\tau \in \left\{0.025, 0.5, 0.975\right\}$ to obtain 95% credi
 
 We have implemented both the maximum likelihood and the Bayesian estimator in Stan [@carpenter2017stan] and R [@R-Core-Team:2018aa] in combination with the \texttt{rstan} package [@rstan]. Stan is a probabilistic programming language enabling full Bayesian inference using Markov chain Monte Carlo sampling. The Stan implementation of the maximum likelihood estimator requires the marginal maximum likelihood estimates of the parameters supplied as data, and from these it will simulate random functions from the posterior distribution of $(f, df, d^2\!f)$ on a user-supplied grid of time points as well as return point estimates of $\mathrm{TDI}$ and $d\mathrm{ETI}$. The latter can then be integrated numerically to obtain the Expected Trend Instability on an interval. The Bayesian estimator requires values of the hyper-parameters $\Psi$ supplied as data and from these it will generate random samples $(\widetilde{\Theta}_1, \ldots, \widetilde{\Theta}_K)$ from $P(\Theta \mid \mathbf{Y}, \Psi, \mathbf{t})$ by Markov chain Monte Carlo. These samples are then used to approximate the posterior distribution of the Trend Direction Index by $(\mathrm{TDI}(t, \delta \mid \widetilde{\Theta}_1), \ldots, \mathrm{TDI}(t, \delta \mid \widetilde{\Theta}_K))$ and similarly for $d\mathrm{ETI}$.
 
+\textbf{Remark:} The difference between the maximum likelihood and the Bayesian method is that they give rise to two different versions of the Trend Direction Index. In the former setting the index is a deterministic function, while in the latter it is a random function governed by the posterior distribution of $\Theta$. The maximum likelihood estimator is also called an empirical Bayes approach since the prior distributions are estimated from data using the marginal likelihood of the model. This can be seen as an approximation to the Bayesian model where the hyper-parameters are fixed at their most likely values instead of being integrated out.
+
+---
 ## Maximum likelihood vs. Bayesian estimation
+#\revision{
+#The maximum likelihood and Bayesian methods described above differ in the way they approach the hyper-parameters of the model denoted by $\Theta$ in Equation (\ref{eq:generatingProcess}). The maximum likelihood method considers $\Theta$ as fixed parameters in the frequentist sense, while the Bayesian method views these as random variables distributed according to specified priors. Conceptually this gives rise to two versions of the Trend Direction Index. In the frequentist world the index is a deterministic function. In the Bayesian model the index is a random function governed by the posterior distribution of $\Theta$.}
 
-\revision{
-The maximum likelihood and Bayesian methods described above differ in the way they approach the hyper-parameters of the model denoted by $\Theta$ in Equation (\ref{eq:generatingProcess}). The maximum likelihood method considers $\Theta$ as fixed parameters in the frequentist sense, while the Bayesian method views these as random variables distributed according to specified priors. Conceptually this gives rise to two versions of the Trend Direction Index. In the frequentist world the index is a deterministic function. In the Bayesian model the index is a random function governed by the posterior distribution of $\Theta$.}
-
-\revision{The maximum likelihood estimator is also called the empirical Bayes approach since the prior distributions are estimated from data using the marginal likelihood of the model. This can be seen as an approximation to the Bayesian approach where the hyper-parameters are fixed at their most likely values instead of being integrated out. The advantage of the maximum likelihood method is that it is computationally faster. The advantage of the Bayesian approach is that any uncertainty about the values of the hyper-parameters is directly propagated through the model and into the trend indices, and that the prior distributions can be founded on subject matter knowledge.}
-
+#\revision{The maximum likelihood estimator is also called the empirical Bayes approach since the prior distributions are estimated from data using the marginal likelihood of the model. This can be seen as an approximation to the Bayesian approach where the hyper-parameters are fixed at their most likely values instead of being integrated out. The advantage of the maximum likelihood method is that it is computationally faster. The advantage of the Bayesian approach is that any uncertainty about the values of the hyper-parameters is directly propagated through the model and into the trend indices, and that the prior distributions can be founded on subject matter knowledge.}
+---
 
 ## Model selection {#sec:modelselection}
 
@@ -499,13 +500,13 @@ To understand the effect of $\nu$ on the smoothness of the fitted models we can 
 
 \revision{As a second application we look at the development of the number of new COVID-19 positives in Italy since February 24th 2020. Data was updated each day and made available at the GitHub repository of the Italian Civil Protection Department [@italianCOVID19]. 90 days had passed when this analysis was performed.}
 
-The dataset provides a direct way to assess the Covid-19 disease progression and to monitor the impact of political initiatives to reduce disease spread. In this application we wish to assess the statistical properties of the following questions:
+The dataset provides a direct way to assess the COVID-19 disease progression and to monitor the impact of political initiatives to reduce disease spread. In this application we wish to assess the statistical properties of the following questions:
 \begin{itemize}
 \item[Q1:]{Is the disease spread currently under control or does the number of new positive cases seems to be on the rise?}
 \item[Q2:]{How did the Italian government's decision to lockdown most of Italy on March 9th 2020 reflect in the spread of the virus?}
 \end{itemize}
 
-\revision{For this application we fitted the Gaussian Process model using the maximum likelihood method and as hyper-parameters we used a constant mean function and the Rational Quadratic covariance function. }
+\revision{For this application we fitted the Gaussian Process model using the maximum likelihood method and as hyper-parameters we used a constant mean function and the Rational Quadratic covariance function.}
 
 \revision{Figure \ref{fig:covid19Fit} shows the result of the analysis. Between day five and six the Trend Direction Index crossed 95\% probability and continued to climb to 100\%. After 29 days (March 24th, 2020) the index proceeded to sharply decrease where it remained for some time. The Italian government imposed quarantine on most of Italy from March 9th, and the sharp drop in coincides nicely with the (as of present) expected incubation period of 2--14 days which roughly reflects the incubation and testing period for the individuals who contracted the virus before the March 9th lockdown. After March 24th, the trend was clearly not positive for a long time.}
 
@@ -515,7 +516,7 @@ The dataset provides a direct way to assess the Covid-19 disease progression and
 \label{fig:covid19Fit}
 \end{figure}
 
-\revision{However, at day 88 (May 22nd, 2020) the Trend Direction Index had again increased and crossed 50\%, and at the time of this analysis the index was equal to 54\%. It is therefore currently unclear whether the number of new positives is increasing or decreasing but a slight probability favors the former. It should be stressed, that Trend Direction Index monitors the \emph{sign} and not the \emph{size} of the trend and this recent increase of TDI to 54% may reflect that number of new cases is merely starting to level off. The Trend Direction Index can be used as a monitoring tool to determine if the Italian authorities need to take extra actions.}
+\revision{However, at day 88 (May 22nd, 2020) the Trend Direction Index had again increased and crossed 50\%, and at the time of this analysis the index was equal to 54\%. It is therefore currently unclear whether the number of new positives is increasing or decreasing but a slight probability favors the former. It should be stressed, that Trend Direction Index monitors the \emph{sign} and not the \emph{size} of the trend and this recent increase of TDI to 54\% may reflect that number of new cases is merely starting to level off. The Trend Direction Index can be used as a monitoring tool to determine if the Italian authorities need to take extra actions.}
 
 # Discussion {#sec:discussion}
 
