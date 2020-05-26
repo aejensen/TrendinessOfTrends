@@ -537,10 +537,7 @@ Both indices have an intuitive interpretation that directly refers to properties
 
 \revision{The comparison with Trend Filtering showed that our proposed method provides unbiased estimates of the underlying function $f$ and its derivative, $df$ but that we are able to relax the assumptions of piecewise linearity of the underlying process, while in addition providing a probability distribution for the derivative which is used directly in the Trend Direction Index and which directly provides the answers to the research questions often posed.}
 
-It is worth noting that the indices are scale-free and thus they do not tell anything about the magnitude of a trend. Consequently, the two indices should therefore always be accompanied by plots of the posterior of $df$. If a prespecified magnitude, $u$, of a trend is desired then the threshold in the definition of the TDI is easily modified to accommodate this as
-\begin{align*}
-  \mathrm{TDI}_u(t, \delta) = P(df(t + \delta) > u \mid \mathcal{F}_t), \quad t \in \mathcal{T}.
-\end{align*}
+It is worth noting that the indices are scale-free and thus they do not tell anything about the magnitude of a trend. Consequently, the two indices should therefore always be accompanied by plots of the posterior of $df$. If a prespecified magnitude, $u$, of a trend is desired then the threshold in the definition of the TDI is easily modified to accommodate this as $\mathrm{TDI}_u(t, \delta) = P(df(t + \delta) > u \mid \mathcal{F}_t)$.
 
 In conclusion, we have introduced a method for evaluation of trends that specifically address questions such as "Has the trend changed?". Our approach is based on two intuitive measures that are easily interpreted, provide well-defined measures of trend behavior, and which can be applied to a large number of situations. The flexibility of the model is further improved by the minimum of assumptions necessary to provide about the underlying latent trend.
 
