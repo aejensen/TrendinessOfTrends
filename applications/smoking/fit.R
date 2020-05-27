@@ -41,14 +41,13 @@ sDat$rho_mu <- par.rq[3]
 sDat$nu_mu <- par.rq[4]
 sDat$sigma_mu <- par.rq[5]
 
-iter <- 10000 #25000 used for manuscript
+iter <- 25000
 seed <- 12345
 
 m <- stan_model("../../Stan/gptrend.stan")
 fit <- sampling(m, data = sDat, iter = iter, seed = seed)
 summary(fit, c("mu", "alpha", "rho", "nu", "sigma"))$summary
 pred <- extract(fit, "pred")$pred
-save(tPred, dat, pred, file="pred.RData")
 
 ########################################################
 # Trace plots
@@ -57,14 +56,9 @@ pdf("../../figures/smoking_traceplot.pdf", width = 8, height = 6)
 traceplot(fit, pars=c("mu", "alpha", "rho", "nu", "sigma")) + theme(legend.position = "top")
 dev.off()
 
-#color_scheme_set("viridis")
-#mcmc_trace(posterior, pars = "mu")
-
 ########################################################
 # Get some summary statistics
 ########################################################
-load("pred.RData")
-
 #TDI summary
 round(cbind(2018-(0:5), 
             approxfun(tPred, apply(pred[,,5]*100, 2, median))(2018-(0:5)),
