@@ -89,7 +89,7 @@ Proofs of propositions are given in the Supplementary Material, and reproducible
 
 
 # Methods {#sec:method}
-In the following we assume that reality evolves in continuous time $t \in \mathcal{T} \subset \mathbb{R}$ and that there exists a random, latent function $f = \left\{f(t) : t \in \mathcal{T}\right\}$ sufficiently smooth on a compact subset of the real line, $\mathcal{T}$, that governs the underlying evolution of some observable characteristic in a population. We can observe this latent characteristic with noise by sampling $f$ at discrete time points according to the additive model $Y_i = f(t_i) + \varepsilon_i$ where $\varepsilon_i$ is a zero mean random variable independent of $f(t_i)$. Given observations of the form $(Y_i, t_i)_{i=1}^n$ we are interested in modeling the dynamical properties of $f$.
+In the following we assume that reality evolves in continuous time $t \in \mathcal{T} \subset \mathbb{R}$ and that there exists a random, latent function $f = \left\{f(t) : t \in \mathcal{T}\right\}$ sufficiently smooth on a compact subset of the real line, $\mathcal{T}$, that governs the underlying evolution of some observable characteristic in a population. We can observe this latent characteristic with noise by sampling $f$ at discrete time points according to the additive model $Y_i = f(t_i) + \varepsilon_i$ where $\varepsilon_i$ is a zero mean random variable independent of $f(t_i)$ \revision{with hyper-parameters $\Theta$}. Given observations of the form $(Y_i, t_i)_{i=1}^n$ we are interested in modeling the dynamical properties of $f$.
 
 The trend of $f$ is defined as its instantaneous slope given by the function $df(t) = \left(\frac{\mathrm{d}f(s)}{\mathrm{d}s}\right)(t)$, and $f$ is increasing and has a positive trend at $t$ if $df(t) > 0$, and $f$ is decreasing with a negative trend at $t$ if $df(t) < 0$. A change in trend is defined as a change in the sign of $df$, i.e., when $f$ goes from increasing to decreasing or vice versa. 
 
@@ -307,7 +307,7 @@ The maximum likelihood estimator is easy to implement and fast to compute, but i
 \begin{align*}
   (\beta, \theta, \sigma) \sim G(\Theta \mid \Psi, \mathbf{t})
 \end{align*}
-to the specification where $G$ is some family of distribution functions indexed by a vector of hyper-parameters $\Psi$.  The joint distribution of the model can be factorized as
+to the specification where $G$ is some family of distribution functions indexed by a vector of hyper-parameters $\Psi$ \revision{that are prior parameters for the parameters $\Theta$, that govern the mean and covariance of $f$}.  The joint distribution of the model can be factorized as
 \begin{align*}
   P(\mathbf{Y}, f(\mathbf{t}), \Theta \mid \Psi, \mathbf{t}) = P(\mathbf{Y} \mid f(\mathbf{t}), \Theta, \Psi, \mathbf{t})P(f(\mathbf{t}) \mid \Theta, \Psi, \mathbf{t})G(\Theta \mid \Psi, \mathbf{t})
 \end{align*}
@@ -459,7 +459,7 @@ Figure \ref{fig:likFitPlot} shows the fit of the model by the maximum likelihood
 \text{Crosspoint} = \argmin_{t \in [-10; 0]} \left\{2018 + t : \text{TDI}(2018, 2018 - t) \geq 50\%\right\}
 \end{align*}
 
-Based on the results from the maximum likelihood analysis we may answer the questions by stating that the proportion of smokers in Denmark is currently increasing with a probability of $95.24\%$. This is, however, not a recent development as the probability of an increasing proportion has been greater than $50\%$ since the middle of 2015. This can be compared to the sequential $\chi^2$-tests in Table \ref{tab:chisqtests}, which gave a cruder and less consistent result. The estimated values of $\mathrm{ETI}$ in Table \ref{tab:summaries} show that there has been an average of $3.68$ changes in the monotonicity of the proportion during the last 20 years. This value does support the statement by the news outlets that it is the first time in 20 years that the trend has changed. The value, however, reduces to 1.39 when only looking 10 years back, which is slightly less than half the ETI for the longer period.
+Based on the results from the maximum likelihood analysis we may answer the questions by stating that the \revision{expected} proportion of smokers in Denmark is currently increasing with a probability of $95.24\%$. This is, however, not a recent development as the probability of an increasing proportion has been greater than $50\%$ since the middle of 2015. This can be compared to the sequential $\chi^2$-tests in Table \ref{tab:chisqtests}, which gave a cruder and less consistent result. The estimated values of $\mathrm{ETI}$ in Table \ref{tab:summaries} show that there has been an average of $3.68$ changes in the monotonicity of the proportion during the last 20 years. This value does support the statement by the news outlets that it is the first time in 20 years that the trend has changed. The value, however, reduces to 1.39 when only looking 10 years back, which is slightly less than half the ETI for the longer period.
 
 \begin{figure}[htb]
 \center\includegraphics{../figures/likFitPlot}
