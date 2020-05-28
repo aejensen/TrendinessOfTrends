@@ -1,0 +1,42 @@
+
+```{r, echo=FALSE, eval=FALSE, message=FALSE, fig.width=8, fig.height=6}
+library(vioplot)
+s <- c(0, 4, 8, 12, 16)
+
+plot(0, 0, type="n", xlim=c(0, 18), ylim=c(-0.2, 0.2), xaxt="n",
+     xlab="", ylab="", main="Integrated residual of E[f | Y]")
+abline(h = 0, lty=2)
+for(k in 1:5) {
+  vioplot(res25[[k]][,"resid_f"], at = s[k], add=TRUE, col="gray")
+  vioplot(res50[[k]][,"resid_f"], at = s[k]+1, add=TRUE, col="gray")
+  vioplot(res100[[k]][,"resid_f"], at = s[k]+2, add=TRUE, col="gray")
+}
+
+plot(0, 0, type="n", xlim=c(0, 18), ylim=c(-1, 1), xaxt="n",
+     xlab="", ylab="", main="Integrated residual of E[f | Y]")
+abline(h = 0, lty=2)
+for(k in 1:5) {
+  vioplot(res25[[k]][,"resid_df"], at = s[k], add=TRUE, col="gray")
+  vioplot(res50[[k]][,"resid_df"], at = s[k]+1, add=TRUE, col="gray")
+  vioplot(res100[[k]][,"resid_df"], at = s[k]+2, add=TRUE, col="gray")
+}
+
+plot(0, 0, type="n", xlim=c(0, 18), ylim=c(-0.5, 0.5), xaxt="n",
+     xlab="", ylab="", main="Integrated residual of E[f | Y]")
+abline(h = 0, lty=2)
+for(k in 1:5) {
+  vioplot(res25[[k]][,"resid_TDI"], at = s[k], add=TRUE, col="gray")
+  vioplot(res50[[k]][,"resid_TDI"], at = s[k]+1, add=TRUE, col="gray")
+  vioplot(res100[[k]][,"resid_TDI"], at = s[k]+2, add=TRUE, col="gray")
+}
+
+plot(0, 0, type="n", xlim=c(0, 18), ylim=c(-10, 10), xaxt="n",
+     xlab="", ylab="", main="Integrated residual of E[f | Y]")
+abline(h = 0, lty=2)
+for(k in 1:5) {
+  vioplot(res25[[k]][,"resid_ETI"], at = s[k], add=TRUE, col="gray")
+  vioplot(res50[[k]][,"resid_ETI"], at = s[k]+1, add=TRUE, col="gray")
+  vioplot(res100[[k]][,"resid_ETI"], at = s[k]+2, add=TRUE, col="gray")
+}
+```
+
