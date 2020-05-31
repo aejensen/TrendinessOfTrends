@@ -185,7 +185,9 @@ Y^\ast(t^\ast) \mid t^\ast, \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\mu_{f}(t
 \end{align}
 where $Y^\ast$ is a new random variable predicted at some arbitrary time point $t^\ast$.}
 
-Proposition \ref{prop:GPposterior} grants the foundation for the rest of the methodological development. In the following two subsections we show how the Trend Direction Index and the Expected Trend Instability can be expressed under the data generating model in Equation (\ref{eq:generatingProcess}) using the results of Proposition \ref{prop:GPposterior}.
+Proposition \ref{prop:GPposterior} grants the foundation for the rest of the methodological development. \revision{While the Gaussian process priors might seem restrictive it has the computational advantage that the posterior of $(f, df, d^2\!f)$ is characterized by the finite dimensional joint distributions which in turn are given by the mean and covariance functions. Further, for fixed $\Theta$ there exists one-step update formulas for the posteriors that can be useful and efficient for real-time or online applications. A theoretical result motivating the applicability is that the model possesses the universal approximation property, meaning that it can approximate any continuous function uniformly on a closed interval of the real line to any desired tolerance given enough data} [@micchelli2006universal]. 
+
+In the following two subsections we show how the Trend Direction Index and the Expected Trend Instability can be expressed under the data generating model in Equation (\ref{eq:generatingProcess}) using the results of Proposition \ref{prop:GPposterior}.
 
 ## The Trend Direction Index
 The Trend Direction Index was defined generally in Equation (\ref{eq:TCIdef}). Conditioning on the $\sigma$-algebra of all observed data we may express the Trend Direction Index under the model in Equation (\ref{eq:generatingProcess}) through the posterior distribution of $df$. The following proposition states this result.
