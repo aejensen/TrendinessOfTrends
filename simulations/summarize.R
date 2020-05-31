@@ -1,27 +1,118 @@
 rm(list=ls())
+
+library(genlasso)
+library(parallel)
 library(pracma)
 library(rootSolve)
 
-getStats <- function(sim) {
-  cat("Calculating for f\n")
-  f <- sapply(1:length(sim), function(r) {
-    pracma::trapz(sim[[r]]$tPred, sim[[r]]$f - sim[[r]]$fMu)  
-  })
-  
-  cat("Calculating for df\n")
-  df <- sapply(1:length(sim), function(r) {
-    pracma::trapz(sim[[r]]$tPred, sim[[r]]$df - sim[[r]]$dfMu)  
-  })
-  
-  cat("Calculating for TDI\n")
-  TDI <- sapply(1:length(sim), function(r) {
-    pracma::trapz(sim[[r]]$tPred, as.numeric(sim[[r]]$df > 0) - sim[[r]]$TDI)
-  })
-  
-  cat("Calculating for ETI\n")
-  ETI <- sapply(1:length(sim), function(r) {
-    #Roots of true df
-    roots <- rootSolve::uniroot.all(approxfun(sim[[r]]$tPred, sim[[r]]$df), c(0,1))
+Seq <- function (a, b, ...) {
+  if (a <= b) 
+    return(seq(a, b, ...))
+  else return(numeric(0))
+}
+
+doCV <- function (object, k = 5, mode = c("lambda", "df"), approx = FALSE, 
+          rtol = 1e-07, btol = 1e-07, verbose = FALSE) {
+  cl = match.call()
+  if (all(class(object) != "trendfilter")) {
+    stop("Cross-validation can only be performed for trend filtering.")
+  }
+  if (!is.null(object$X)) {
+    stop("Cross-validation for trend filtering can only be performed when X=I, the identity matrix.")
+  }
+  mode = mode[[1]]
+  if (!(mode %in% c("lambda", "df"))) {
+    stop("Invalid mode, must be \"lambda\" or \"df\".")
+  }
+  y = object$y
+  n = length(y)
+  if (k < 2 || round(k) != k || k > n - 2) {
+    stop("The number of folds must an integer between 2 and n-2.")
+  }
+  ord = object$ord
+  pos = object$pos
+  if (is.null(pos)) 
+    pos = 1:n
+  foldid = c(0, rep(Seq(1, k), n - 2)[Seq(1, n - 2)], 0)
+  if (mode == "lambda") {
+    lambda = object$lambda
+    cvall = matrix(0, k, length(lambda))
+    for (i in Seq(1, k)) {
+      #cat(sprintf("Fold %i ... ", i))
+      otr = which(foldid != i)
+      ntr = length(otr)
+      ytr = y[otr]
+      ptr = pos[otr]
+      Dtr = genlasso:::getDtfPosSparse(ntr, ord, ptr)
+      out = genlasso:::dualpathWideSparse(ytr, Dtr, NULL, approx, 
+                               Inf, min(lambda), rtol, btol, verbose)
+      out$beta = as.matrix(ytr - t(Dtr) %*% out$u)
+      out$fit = out$beta
+      out$y = ytr
+      out$bls = ytr
+      b = coef.genlasso(out, lambda = lambda)$beta
+      ote = which(foldid == i)
+      yte = matrix(y[ote], length(ote), length(lambda))
+      pte = pos[ote]
+      ilo = which((Seq(1, n) %in% (ote - 1))[otr])
+      ihi = which((Seq(1, n) %in% (ote + 1))[otr])
+      a = (pte - ptr[ilo])/(ptr[ihi] - ptr[ilo])
+      pred = b[ilo, ] * (1 - a) + b[ihi, ] * a
+      cvall[i, ] = colMeans((yte - pred)^2)
+    }
+    cverr = colMeans(cvall)
+    cvse = apply(cvall, 2, sd)/sqrt(k)
+    names(cverr) = names(cvse) = round(lambda, 3)
+    i0 = which.min(cverr)
+    lam.min = lambda[i0]
+    lam.1se = max(lambda[cverr <= cverr[i0] + cvse[i0]])
+    i.min = which(lambda == lam.min)
+    i.1se = which(lambda == lam.1se)
+    out = list(err = cverr, se = cvse, mode = "lambda", lambda = lambda, 
+               lambda.min = lam.min, lambda.1se = lam.1se, i.min = i.min, 
+               i.1se = i.1se, call = cl)
+  } else {
+    stop("error")
+  }
+  class(out) = c("cv.trendfilter", "list")
+  return(out)
+}
+
+getResults <- function(obj) {
+  out <- do.call("rbind", mclapply(1:length(obj), function(i) {
+    if(i %% 100 == 0) cat(i, "\n")
+    q <- obj[[i]]
+    
+    #Do trend filtering
+    m <- genlasso::trendfilter(q$y, ord=1) #linear trend filtering => derivtive is p.w. constant
+    cv <- doCV(m, k = 10)
+    tf <- approxfun(q$t, coef.genlasso(m, lambda=cv$lambda.min)$beta, rule = 2)
+    d_tf <- function(x) pracma::fderiv(tf, x)
+    
+    #Calculate norms for f
+    #GP model
+    d_f <- pracma::trapz(q$tPred, q$f - q$fMu)
+    d2_f <- pracma::trapz(q$tPred, (q$f - q$fMu)^2)
+    
+    #Trend filtering
+    d_f_tf <- pracma::trapz(q$tPred, q$f - tf(q$tPred))
+    d2_f_tf <- pracma::trapz(q$tPred, (q$f - tf(q$tPred))^2)
+    
+    #Calculate norms for df
+    #GP model
+    d_df <- pracma::trapz(q$tPred, q$df - q$dfMu)
+    d2_df <- pracma::trapz(q$tPred, (q$df - q$dfMu)^2)
+    
+    #Trend filtering
+    d_df_tf <- pracma::trapz(q$tPred, q$df - d_tf(q$tPred))
+    d2_df_tf <- pracma::trapz(q$tPred, (q$df - d_tf(q$tPred))^2)
+    
+    #Calculate norms for TDI
+    d_TDI <- pracma::trapz(q$tPred, as.numeric(q$df > 0) - q$TDI)
+    d2_TDI <- pracma::trapz(q$tPred, (as.numeric(q$df > 0) - q$TDI)^2)
+    
+    #Calculate norms for ETI
+    roots <- rootSolve::uniroot.all(approxfun(q$tPred, q$df), c(0,1))
     if(length(roots) == 0) { #special case with no crossings
       ETI_true <- function(t) 0*t 
     } else {
@@ -30,82 +121,70 @@ getStats <- function(sim) {
                             yleft = 0, yright = length(roots), method="constant")
     }
     #Difference between true counting process and cumulative estimated dETI
-    dif <- ETI_true(sim[[r]]$tPred) - pracma::cumtrapz(sim[[r]]$tPred, sim[[r]]$ETI)[,1]
-    #Integrate the difference on [0;1]
-    pracma::trapz(sim[[r]]$tPred, dif)
-  })
+    dif <- ETI_true(q$tPred) - pracma::cumtrapz(q$tPred, q$ETI)[,1]
+    d_ETI <- pracma::trapz(q$tPred, dif)
+    d2_ETI <- pracma::trapz(q$tPred, dif^2)
+    
+    ETI <- pracma::trapz(q$tPred, q$ETI)
+    
+    c(d_f, d_f_tf, d_df, d_df_tf,
+      d2_f, d2_f_tf, d2_df, d2_df_tf,
+      d_TDI, d2_TDI,
+      d_ETI, d2_ETI, ETI)
+  }, mc.cores=64))
   
-  list(f = f, df = df, TDI = TDI, ETI = ETI)
+  colnames(out) <- c("resid_f", "resid_f_tf", "resid_df", "resid_df_tf",
+                     "L2_f", "L2_f_tf", "L2_df", "L2_df_tf",
+                     "resid_TDI", "L2_TDI",
+                     "resid_ETI", "L2_ETI", "ETI")
+  out
 }
 
-getSamples <- function(sim, r = 100) {
-  list(t = sim[[1]]$t, tPred = sim[[1]]$tPred,
-       f = sapply(sim[1:r], function(q) q$f),
-       df = sapply(sim[1:r], function(q) q$df),
-       y = sapply(sim[1:r], function(q) q$y))
-}
-
-##########
-# n = 25
-##########
 load("sim25_res.RData")
 sim25_1 <- sim25_1[!sapply(sim25_1, function(q) is.null(q$fMu))]
 sim25_2 <- sim25_2[!sapply(sim25_2, function(q) is.null(q$fMu))]
 sim25_3 <- sim25_3[!sapply(sim25_3, function(q) is.null(q$fMu))]
 sim25_4 <- sim25_4[!sapply(sim25_4, function(q) is.null(q$fMu))]
+sim25_5 <- sim25_5[!sapply(sim25_5, function(q) is.null(q$fMu))]
 
-stat_25_1 <- getStats(sim25_1)
-stat_25_2 <- getStats(sim25_2)
-stat_25_3 <- getStats(sim25_3)
-stat_25_4 <- getStats(sim25_4)
+res25_1 <- getResults(sim25_1)
+res25_2 <- getResults(sim25_2)
+res25_3 <- getResults(sim25_3)
+res25_4 <- getResults(sim25_4)
+res25_5 <- getResults(sim25_5)
 
-samps_25_1 <- getSamples(sim25_1)
-samps_25_2 <- getSamples(sim25_2)
-samps_25_3 <- getSamples(sim25_3)
-samps_25_4 <- getSamples(sim25_4)
+res25 <- list(res25_1, res25_2, res25_3, res25_4, res25_5)
+save(res25, file="summary25.RData")
 
-##########
-# n = 50
-##########
 load("sim50_res.RData")
 sim50_1 <- sim50_1[!sapply(sim50_1, function(q) is.null(q$fMu))]
 sim50_2 <- sim50_2[!sapply(sim50_2, function(q) is.null(q$fMu))]
 sim50_3 <- sim50_3[!sapply(sim50_3, function(q) is.null(q$fMu))]
 sim50_4 <- sim50_4[!sapply(sim50_4, function(q) is.null(q$fMu))]
+sim50_5 <- sim50_5[!sapply(sim50_5, function(q) is.null(q$fMu))]
 
-stat_50_1 <- getStats(sim50_1)
-stat_50_2 <- getStats(sim50_2)
-stat_50_3 <- getStats(sim50_3)
-stat_50_4 <- getStats(sim50_4)
+res50_1 <- getResults(sim50_1)
+res50_2 <- getResults(sim50_2)
+res50_3 <- getResults(sim50_3)
+res50_4 <- getResults(sim50_4)
+res50_5 <- getResults(sim50_5)
 
-samps_50_1 <- getSamples(sim50_1)
-samps_50_2 <- getSamples(sim50_2)
-samps_50_3 <- getSamples(sim50_3)
-samps_50_4 <- getSamples(sim50_4)
+res50 <- list(res50_1, res50_2, res50_3, res50_4, res50_5)
+save(res50, file="summary50.RData")
 
-##########
-# n = 100
-##########
+
 load("sim100_res.RData")
 sim100_1 <- sim100_1[!sapply(sim100_1, function(q) is.null(q$fMu))]
 sim100_2 <- sim100_2[!sapply(sim100_2, function(q) is.null(q$fMu))]
 sim100_3 <- sim100_3[!sapply(sim100_3, function(q) is.null(q$fMu))]
 sim100_4 <- sim100_4[!sapply(sim100_4, function(q) is.null(q$fMu))]
+sim100_5 <- sim100_5[!sapply(sim100_5, function(q) is.null(q$fMu))]
 
-stat_100_1 <- getStats(sim100_1)
-stat_100_2 <- getStats(sim100_2)
-stat_100_3 <- getStats(sim100_3)
-stat_100_4 <- getStats(sim100_4)
+res100_1 <- getResults(sim100_1)
+res100_2 <- getResults(sim100_2)
+res100_3 <- getResults(sim100_3)
+res100_4 <- getResults(sim100_4)
+res100_5 <- getResults(sim100_5)
 
-samps_100_1 <- getSamples(sim100_1)
-samps_100_2 <- getSamples(sim100_2)
-samps_100_3 <- getSamples(sim100_3)
-samps_100_4 <- getSamples(sim100_4)
-
-save(stat_25_1, stat_25_2, stat_25_3, stat_25_4,
-     samps_25_1, samps_25_2, samps_25_3, samps_25_4,
-     stat_50_1, stat_50_2, stat_50_3, stat_50_4,
-     samps_50_1, samps_50_2, samps_50_3, samps_50_4,
-     stat_100_1, stat_100_2, stat_100_3, stat_100_4,
-     samps_100_1, samps_100_2, samps_100_3, samps_100_4,
-     file = "simulationSummaries.RData")
+res100 <- list(res100_1, res100_2, res100_3, res100_4, res100_5)
+save(res100, file="summary100.RData")

@@ -53,7 +53,7 @@ pred <- extract(fit, "pred")$pred
 # Trace plots
 ########################################################
 pdf("../../figures/smoking_traceplot.pdf", width = 8, height = 6)
-traceplot(fit, pars=c("mu", "alpha", "rho", "nu", "sigma")) + theme(legend.position = "top")
+traceplot(fit, pars=c("mu", "alpha", "rho", "nu", "sigma"), window = c(20000, 25000)) + theme(legend.position = "top")
 dev.off()
 
 ########################################################

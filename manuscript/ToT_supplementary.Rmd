@@ -9,6 +9,7 @@ author: |
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 fontsize: 11pt  
 header-includes:
+  - \usepackage{float}
   - \usepackage{bm}
   - \usepackage{amssymb}
   - \usepackage[labelfont=bf]{caption}
@@ -28,10 +29,8 @@ header-includes:
   - \newtheorem{proposition}{Proposition}
   - \theoremstyle{nonumberplain}
   - \newtheorem{Proof}{Proof}
-  - \usepackage[section]{placeins}
 output:
   pdf_document: 
-    keep_tex: yes
     number_sections: yes
 bibliography: bibliography.bib
 editor_options: 
@@ -155,10 +154,12 @@ and the local expected number of zero-crossings of $f$ and $df$ for either the S
  \frac{\partial_1 \partial_2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi C_\theta^\text{RQ}(t,t)^{1/2}} &= \frac{1}{\pi\rho}, & \frac{\partial_1^2 \partial_2^2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi \partial_1 \partial_2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}} &= \frac{3^{1/2}}{\pi\rho}\left(1 + v^{-1}\right)^{1/2}
 \end{alignat*}
 
-#Simulation study
+\newpage
+
+
 ```{r, echo = FALSE, fig.width = 8, fig.height=5, fig.cap="50 random observations from each simulation scenario."} 
 load("../simulations/samplePaths.RData")
-```{r, echo = FALSE, fig.width = 8, fig.height=5, fig.cap="50 random observations from each simulation scenario."} 
+```{r, echo = FALSE, fig.width = 8, fig.height=5, fig.cap="50 random sample paths from each simulation scenario."} 
 cols <- fields::tim.colors(7)
 
 par(mfrow=c(3, 5), mgp=c(2,0.5,0), mar=c(1.5,1.5,2,0.5), bty="n", cex.axis=0.8)
@@ -173,11 +174,15 @@ for(i in 1:5) {
 }
 ```
 
-# Trace plot for hyper-parameters for smoking application
-\includegraphics{../figures/smoking_traceplot.pdf}
+\begin{figure}[H]
+\center\includegraphics{../figures/smoking_traceplot.pdf}
+\caption{Trace plots of the last 5,000 MCMC iterations for the hyper-parameters in the smoking application.}
+\end{figure}
 
-# Trend analysis of smoking data with logit transformed outcome
-\includegraphics{../figures/smoking_gpFixed_logit.pdf}
+\begin{figure}[H]
+\center\includegraphics{../figures/smoking_gpFixed_logit.pdf}
+\caption{Trend analysis of smoking data with logit transformed outcome.}
+\end{figure}
 
 
 # Bibliography
