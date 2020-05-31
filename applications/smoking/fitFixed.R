@@ -42,19 +42,16 @@ sDat$rho <- par.rq[3]
 sDat$nu <- par.rq[4]
 sDat$sigma <- par.rq[5]
 
-iter <- 10000 #25000 used for manuscript
+iter <- 25000
 seed <- 12345
 
 m <- stan_model("../../Stan/gptrendFixed.stan")
 fit <- sampling(m, data = sDat, iter = iter, seed = seed, algorithm = "Fixed_param")
 pred <- extract(fit, "pred")$pred
-save(tPred, dat, pred, file="predFixed.RData")
 
 ########################################################
 # Get some summary statistics
 ########################################################
-load("predFixed.RData")
-
 #TDI summary at selected years
 round(approxfun(tPred, pred[1,,5]*100)(2013:2018), 2)
 

@@ -53,13 +53,9 @@ m <- stan_model("../../Stan/gptrendFixed.stan")
 fit <- sampling(m, data = sDat, iter = iter, seed = seed, algorithm = "Fixed_param")
 pred <- extract(fit, "pred")$pred
 
-save.image("~/Desktop/covid19Trendiness.RData")
-
 ########################################################
 # Plot fit
 ########################################################
-load("~/Desktop/covid19Trendiness.RData")
-
 band <- function(t, l, u, col) {
   polygon(c(t, rev(t)), c(l, rev(u)), col=col, border = NA)
 }
