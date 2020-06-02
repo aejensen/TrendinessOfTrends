@@ -55,7 +55,7 @@ Using a latent Gaussian process model we show how the Trend Direction Index and 
 
 Trend detection has received increased attention in many fields, and while many important applications have their roots in the fields of economics (stock development) and environmental change (global temperature), trend identification has important ramifications in industry (process monitoring), medicine (disease development) and public health (changes in society).
 
-This manuscript is concerned with the fundamental problem of estimating an underlying trend based on random variables observed repeatedly over time. In addition to this problem we also wish to assess points in time where it is possible that such a trend is changing. Our motivation 
+This manuscript is concerned with the fundamental problem of estimating an underlying trend based on random variables observed repeatedly over time. In addition to this problem, we also wish to assess the probabilities that such a trend is changing as a function of time. Our motivation 
 \revision{comes from two recent examples: in the first, the news media in Denmark stated that the trend in the proportion of smokers in Denmark had changed at the end of the year 2018 such that the proportion was now increasing whereas it had been decreasing for the previous 20 years. This statement was based on survey data collected yearly since 1998 and reported by the Danish Health Authority} [@sst], \revision{and it is critical for the Danish Health Authorities to be able to evaluate and react if an actual change in trend has occurred. The second example relates to the recent outbreak of COVID-19 in Italy where it is of tremendous importance to determine if the disease spread is increasing or slowing down by considering the trend in number of new cases} (see Figure \ref{fig:rawDataPlot}). 
 
 \begin{figure}[htb]
@@ -91,7 +91,8 @@ In the following we assume that reality evolves in continuous time $t \in \mathc
 
 The trend of $f$ is defined as its instantaneous slope given by the function $df(t) = \left(\frac{\mathrm{d}f(s)}{\mathrm{d}s}\right)(t)$, and $f$ is increasing and has a positive trend at $t$ if $df(t) > 0$, and $f$ is decreasing with a negative trend at $t$ if $df(t) < 0$. A change in trend is defined as a change in the sign of $df$, i.e., when $f$ goes from increasing to decreasing or vice versa. 
 
-\revision{As $f$ is a smooth random function there are no points-in-time where the underlying process abruptly changes sign. There is instead a gradual and continuous change in the monotonicity of $f$, and an assessment of a change in trend is defined by the probability of the sign of $df$.} This stands in contrast to traditional change-point models which assume that there are one or more exact time points where a sudden change in function or its parameterization occurs [@carlstein1994change].
+\revision{
+As $f$ is a random function inferred by discrete observations there are no points-in-time where a sign change can be asserted almost surely from the probability distribution of the estimated process. There is instead a gradual and continuous change in the monotonicity of $f$, and an assessment of a change in trend is defined by the probability of the sign of $df$.} This stands in contrast to traditional change-point models which assume that there are one or more exact time points where a sudden change in function or its parameterization occurs [@carlstein1994change].
 
 The probability \revision{of a positive trend for $f$} at time $t + \delta$ is quantified by the Trend Direction Index
 \begin{align}
