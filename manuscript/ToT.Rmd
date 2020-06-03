@@ -399,7 +399,7 @@ knitr::kable(cbind(mat1, mat2), format = "latex", escape=FALSE, digits=3, bookta
 ```
 
 
-\revision{The variability of the Trend Direction Index and the Expected Trend Instaibility as measured by the squared $L^2$ norm were low in all scenarios but increased with the magnitude of the measurement noise as expected. In a few cases the estimated Expected Trend Instability was far away from its true value. This was especially pronounced in scenarios with a small number of observations and a high measurement noise. The reason was that $\widehat{f^\text{GP}}$ degenerated to either a constant function or to a perfect interpolation of the observed data. This is a consequence of the hyper-parameters being weakly identified under such circumstances. These cases are still included in the reported summary statistics in Table \ref{tab:simulationSummary}. For such cases, the model fit can be regularized through the priors of the hyper-parameters, but this must be determined on a case by case basis.}
+\revision{The variability of the Trend Direction Index and the Expected Trend Instability as measured by the squared $L^2$ norm were low in all scenarios but increased with the magnitude of the measurement noise as expected. In a few cases the estimated Expected Trend Instability was far away from its true value. This was especially pronounced in scenarios with a small number of observations and a high measurement noise. The reason was that $\widehat{f^\text{GP}}$ degenerated to either a constant function or to a perfect interpolation of the observed data. This is a consequence of the hyper-parameters being weakly identified under such circumstances. These cases are still included in the reported summary statistics in Table \ref{tab:simulationSummary}. For such cases, the model fit can be regularized through the priors of the hyper-parameters, but this must be determined on a case by case basis.}
 
 # Applications {#sec:application}
 
@@ -529,7 +529,7 @@ To understand the effect of $\nu$ on the smoothness of the fitted models we can 
 
 # Discussion {#sec:discussion}
 
-In this article we have proposed two new measures - the Trend Direction Index and the Expected Trend Instability - in order to quantify the trendiness of an underlying continous time process observed in discrete time. Using a Gaussian process model for the latent structure we showed how these indices can be estimated from data in both a maximum likelihood and a Bayesian framework and provide probabilistic statements about the monotonicity of the latent development of an observed outcome over time. 
+In this article we have proposed two new measures - the Trend Direction Index and the Expected Trend Instability - in order to quantify the trendiness of an underlying continuous time process observed in discrete time. Using a Gaussian process model for the latent structure we showed how these indices can be estimated from data in both a maximum likelihood and a Bayesian framework and provide probabilistic statements about the monotonicity of the latent development of an observed outcome over time. 
 
 Both indices have an intuitive interpretation that directly refers to properties of the latent trend and the proposed approach exploits the underlying assumed continuity to circumvent discretization allowing us to compute a different (and in many cases more relevant) probability than what can be obtained from e.g., pairwise comparisons in discrete time.
 
