@@ -529,9 +529,9 @@ To understand the effect of $\nu$ on the smoothness of the fitted models we can 
 
 # Discussion {#sec:discussion}
 
-In this article we have proposed two new measures - the Trend Direction Index and the Expected Trend Instability - in order to quantify the trendiness of an underlying continuous time process observed in discrete time. Using a Gaussian process model for the latent structure we showed how these indices can be estimated from data in both a maximum likelihood and a Bayesian framework and provide probabilistic statements about the monotonicity of the latent development of an observed outcome over time. 
+In this article we have proposed two new measures, the Trend Direction Index and the Expected Trend Instability, in order to quantify the trendiness of a latent, random function observed in discrete time. Using a Gaussian process model for the latent structure we showed how these indices can be estimated from data in both a maximum likelihood and a Bayesian framework and provide probabilistic statements about the monotonicity of the latent development of an observed outcome over time. 
 
-Both indices have an intuitive interpretation that directly refers to properties of the latent trend and the proposed approach exploits the underlying assumed continuity to circumvent discretization allowing us to compute a different (and in many cases more relevant) probability than what can be obtained from e.g., pairwise comparisons in discrete time.
+Both indices have intuitive interpretations that directly refer to properties of the latent trend, and our proposed methodology exploits the assumption of continuity allowing us to calculate a different (and in many cases more relevant) probability than what can be obtained from e.g., multiple pairwise comparisons in discrete time.
 
 \revision{The comparison with Trend Filtering showed that our proposed method provides unbiased estimates of the underlying function $f$ and its derivative, $df$ but that we are able to relax the assumptions of piece-wise linearity of the underlying process, while in addition providing a probability distribution for the derivative which is used directly in the Trend Direction Index and which directly provides the answers to the research questions often posed.}
 
