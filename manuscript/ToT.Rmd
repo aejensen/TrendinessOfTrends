@@ -40,9 +40,9 @@ editor_options:
 ---
 
 \begin{abstract}
-\revision{News media often report that the trend of some public health outcome has changed. These statements are frequently based on longitudinal data, and the change in trend is typically found to have occurred at the most recent data collection timepoint - if no change had occurred the story is less likely to be reported. Such claims may potentially influence public health decisions on a national level.}
+\revision{News media often report that the trend of some public health outcome has changed. These statements are frequently based on longitudinal data, and the change in trend is typically found to have occurred at the most recent data collection time point - if no change had occurred the story is less likely to be reported. Such claims may potentially influence public health decisions on a national level.}
 
-\revision{We propose two measures for quantifying the trendiness of trends. Assuming that reality evolves in continuous time we define what constitutes a trend and a change in trend, and introduce a probabilistic Trend Direction Index. This index has the interpretation of the probability that a latent characteristic has changed monotonicity at any given time conditional on observed data. We also define a index of Expected Trend Instability quantifying the expected number of changes in trend over an interval.}
+\revision{We propose two measures for quantifying the trendiness of trends. Assuming that reality evolves in continuous time we define what constitutes a trend and a change in trend, and introduce a probabilistic Trend Direction Index. This index has the interpretation of the probability that a latent characteristic has changed monotonicity at any given time conditional on observed data. We also define an index of Expected Trend Instability quantifying the expected number of changes in trend on an interval.}
 
 \revision{Using a latent Gaussian process model we show how the Trend Direction Index and the Expected Trend Instability can be estimated in a Bayesian framework and use the proposed method to analyze the proportion of smokers in Denmark during the last 20 years, and the development of new COVID-19 cases in Italy from February 24th onwards.}
 \end{abstract}
