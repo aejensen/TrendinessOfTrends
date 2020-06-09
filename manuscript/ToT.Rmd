@@ -44,7 +44,7 @@ editor_options:
 
 \revision{We propose two measures for quantifying the trendiness of trends. Assuming that reality evolves in continuous time we define what constitutes a trend and a change in trend, and introduce a probabilistic Trend Direction Index. This index has the interpretation of the probability that a latent characteristic has changed monotonicity at any given time conditional on observed data. We also define an index of Expected Trend Instability quantifying the expected number of changes in trend on an interval.}
 
-\revision{Using a latent Gaussian process model we show how the Trend Direction Index and the Expected Trend Instability can be estimated in a Bayesian framework and use the proposed method to analyze the proportion of smokers in Denmark during the last 20 years, and the development of new COVID-19 cases in Italy from February 24th onwards.}
+\revision{Using a latent Gaussian process model we show how the Trend Direction Index and the Expected Trend Instability can be estimated in a Bayesian framework and use the methods to analyze the proportion of smokers in Denmark during the last 20 years, and the development of new COVID-19 cases in Italy from February 24th onwards.}
 \end{abstract}
 
 \begin{center}
