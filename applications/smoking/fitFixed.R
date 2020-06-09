@@ -1,11 +1,11 @@
-rm(list=ls())
+# rm(list=ls())
 
-library(DEoptim)
-library(mvtnorm)
-library(rstan)
+library("DEoptim")
+library("mvtnorm")
+library("rstan")
 
 rstan_options(auto_write = TRUE)
-options(mc.cores = parallel::detectCores())
+options(mc.cores = parallel::detectCores() - 1)
 
 ########################################################
 # Load data
