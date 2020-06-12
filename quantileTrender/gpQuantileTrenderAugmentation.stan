@@ -3,6 +3,16 @@ functions {
     //Squared Exponential (SE) covariance function
     return square(alpha) * exp(-square(s - t) / (2 * square(rho)));
   }
+  
+  real cov_se_D2(real s, real t, real alpha, real rho) {
+    //d_2 C(s,t)
+    return cov_se(s, t, alpha, rho) * (s - t) / square(rho);
+  }
+  
+  real cov_se_D1_D2(real s, real t, real alpha, real rho) {
+    //d_1 d_2 C(s,t)
+    return cov_se(s, t, alpha, rho) * (square(rho) - square(s - t)) / pow(rho, 4);
+  }
 }
 
 data {
@@ -18,7 +28,7 @@ parameters {
   real m;
   real<lower = 0> alpha;
   real<lower = 0> rho;
-  vector[n] eta;
+  vector[2*n] eta;
   
   real<lower = 0> sigma;
   vector<lower = 0>[n] w; //data augmentation
@@ -29,23 +39,35 @@ transformed parameters {
   vector[n] me;
   vector[n] pe;
   vector[n] pe2;
-  vector[n] f;
+  
+  vector[2*n] f;
   vector[n] mu;
+  vector[n] dmu;
   
   {
-    matrix[n, n] K;
+    matrix[2*n, 2*n] K;
+    matrix[n, n] K11;
+    matrix[n, n] K12;
+    matrix[n, n] K22;
+    
     for(i in 1:n) {
       for(j in 1:n) {
-        K[i, j] = cov_se(t[i], t[j], alpha, rho);
+        K11[i, j] = cov_se(t[i], t[j], alpha, rho);
+        K12[i, j] = cov_se_D2(t[i], t[j], alpha, rho);
+        K22[i, j] = cov_se_D1_D2(t[i], t[j], alpha, rho);
       }
     }
-    for (i in 1:n) {
-      K[i, i] = K[i, i] + 1e-9;
+    K = append_row(append_col(K11,  K12),
+                   append_col(K12', K22));
+    for (i in 1:(2*n)) {
+      K[i, i] = K[i, i] + 1e-9; //numerical stability
     }
     f = cholesky_decompose(K) * eta;
   }  
   
-  mu = m + f;
+  mu = m + f[1:n];
+  dmu = f[(n+1):(2*n)];
+  
   tau = pow(sigma, -2);
   me  = (1 - 2 * quantile) / (quantile * (1 - quantile)) * w + mu;
   pe  = (quantile * (1 - quantile) * tau) ./ (2 * w);
@@ -53,6 +75,7 @@ transformed parameters {
   for(i in 1:n) {
     pe2[i] = inv_sqrt(pe[i]);
   }
+  //pe2 = inv_sqrt(pe);
 }
 
 model {
