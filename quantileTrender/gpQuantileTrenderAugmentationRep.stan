@@ -17,8 +17,9 @@ functions {
 
 data {
   int<lower = 0> n;
+  int<lower = 0> n_rep;
   real t[n];
-  vector[n] y;
+  matrix[n, n_rep] y;
   
   real<lower = 0, upper = 1> quantile;
 }
@@ -85,5 +86,9 @@ model {
   
   w ~ exponential(tau);
   
-  y ~ normal(me, pe2);
+  for(i in 1:n) {
+    for(j in 1:n_rep) {
+      y[i,j] ~ normal(me[i], pe2[i]);
+    }
+  }
 }
