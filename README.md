@@ -8,4 +8,4 @@ Meet the family:
 * Eddy (ETI): Expected Trend Instability
 * Cutie (Q-TDI): Quantile Trend Direction Index
 * Caddy (Q-ADI): Quantile Accelleration Direction Index
-* Steady (S-TDI): Spatial Trend Direction Index
+* Steady (S-TDI): Spatial Trend Direction Index (coming soon to a theater near you)
