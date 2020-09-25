@@ -40,29 +40,29 @@ editor_options:
 \appendix
 
 \section{Proof of Proposition 1}\label{sec:appendix1}
-Let $\mathbf{Y} = (Y_1, \ldots, Y_n)$ and $\mathbf{t} = (t_1, \ldots, t_n)$ be the vectors of observed outcomes and associated sampling times. From the data generating model we observe that the marginal distribution of the vector of observed outcomes $\mathbf{Y} \mid \mathbf{t}, \Theta$ is
+Let $\mathbf{Y} = (Y_1, \ldots, Y_n)$ and $\mathbf{t} = (t_1, \ldots, t_n)$ be the vectors of observed outcomes and associated sampling times. From the data generating model we observe that the marginal distribution of the vector of observed outcomes $\mathbf{Y} \mid \mathbf{t}, \bm{\Theta}$ is
 \begin{align*}
-P(\mathbf{Y} \mid \mathbf{t}, \Theta) &= \int P(\mathbf{Y} \mid f(\mathbf{t}), \mathbf{t}, \Theta)dP(f(\mathbf{t}) \mid \mathbf{t}, \Theta)\\
-  &= N(\mu_\beta(\mathbf{t}), C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I)
+P(\mathbf{Y} \mid \mathbf{t}, \bm{\Theta}) &= \int P(\mathbf{Y} \mid f(\mathbf{t}), \mathbf{t}, \bm{\Theta})dP(f(\mathbf{t}) \mid \mathbf{t}, \bm{\Theta})\\
+  &= N(\mu_{\bm{\beta}}(\mathbf{t}), C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I)
 \end{align*}
-where $\mu_\beta(\mathbf{t}) = (\mu_\beta(t_1), \ldots \mu_\beta(t_n))$, $C_\theta(\mathbf{t}, \mathbf{t})$ is the $n \times n$ covariance matrix obtained by evaluating $C_\theta(s,t)$ at $\{(s,t) \in \mathbf{t} \times \mathbf{t}\}$ and $I$ is an $n \times n$ identity matrix. This implies that the joint distribution of $\mathbf{Y}$ and the latent functions $(f, df, d^2\!f)$ evaluated at an arbitrary vector of time points $\mathbf{t}^\ast$ is
+where $\mu_{\bm{\beta}}(\mathbf{t}) = (\mu_{\bm{\beta}}(t_1), \ldots \mu_{\bm{\beta}}(t_n))$, $C_{\bm{\theta}}(\mathbf{t}, \mathbf{t})$ is the $n \times n$ covariance matrix obtained by evaluating $C_{\bm{\theta}}(s,t)$ at $\{(s,t) \in \mathbf{t} \times \mathbf{t}\}$ and $I$ is an $n \times n$ identity matrix. This implies that the joint distribution of $\mathbf{Y}$ and the latent functions $(f, df, d^2\!f)$ evaluated at an arbitrary vector of time points $\mathbf{t}^\ast$ is
 \begin{align*}
-  \begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\\ \mathbf{Y}\end{bmatrix} \mid \mathbf{t}, \Theta \sim N\left(\begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\\ \mu_\beta(\mathbf{t})\end{bmatrix}, \begin{bmatrix}C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) &  \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2\partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2\partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ C_\theta(\mathbf{t}, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)  & C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I\end{bmatrix}\right)
+  \begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\\ \mathbf{Y}\end{bmatrix} \mid \mathbf{t}, \bm{\Theta} \sim N\left(\begin{bmatrix}\mu_{\bm{\beta}}(\mathbf{t}^\ast)\\ d\mu_{\bm{\beta}}(\mathbf{t}^\ast)\\ d^2\mu_{\bm{\beta}}(\mathbf{t}^\ast)\\ \mu_{\bm{\beta}}(\mathbf{t})\end{bmatrix}, \begin{bmatrix}C_{\bm{\theta}}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) & C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) &  \partial_1 \partial_2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2\partial_2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2\partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\\ C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast) & \partial_2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast) & \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)  & C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\end{bmatrix}\right)
 \end{align*}
 where $\partial_j^k$ denotes the $k$'th order partial derivative with respect to the $j$'th variable.
 
 By the standard formula for deriving conditional distributions in a multivariate normal model, the posterior distribution of $(f, df, d^2\!f)$ evaluated at the $p$ time points in $\mathbf{t}^\ast$ is
 \begin{align*}
-\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \Theta \sim N\left(\bm{\mu}, \bm{\Sigma}\right)
+\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \bm{\Theta} \sim N\left(\bm{\mu}, \bm{\Sigma}\right)
 \end{align*}
 where $\bm{\mu} \in \mathbb{R}^{3p}$ is the column vector of posterior expectations and $\bm{\Sigma} \in \mathbb{R}^{3p \times 3p}$ is the joint posterior covariance matrix, and these are given by
 \begin{align*}
-  \bm{\mu} &= \begin{bmatrix}\mu_\beta(\mathbf{t}^\ast)\\ d\mu_\beta(\mathbf{t}^\ast)\\ d^2\mu_\beta(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K_{\theta,\sigma}(\mathbf{t}, \mathbf{t})^{-1} (\mathbf{Y} - \mu_\beta(\mathbf{t}))\\
-  \bm{\Sigma} &= \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_1 \partial_2^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2 C_\theta(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2^2 C_\theta(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix} - \begin{bmatrix}C_\theta(\mathbf{t}^\ast, \mathbf{t})\\\partial_1 C_\theta(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_\theta(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K_{\theta,\sigma}(\mathbf{t}, \mathbf{t})^{-1}\begin{bmatrix}C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\\partial_2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2^2 C_\theta(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}^T
+  \bm{\mu} &= \begin{bmatrix}\mu_{\bm{\beta}}(\mathbf{t}^\ast)\\ d\mu_{\bm{\beta}}(\mathbf{t}^\ast)\\ d^2\mu_{\bm{\beta}}(\mathbf{t}^\ast)\end{bmatrix} + \begin{bmatrix}C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K_{\bm{\theta},\sigma}(\mathbf{t}, \mathbf{t})^{-1} (\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t}))\\
+  \bm{\Sigma} &= \begin{bmatrix}C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1 \partial_2 C_{\bm{\theta}}(\mathbf{t}^\ast,\mathbf{t}^\ast) & \partial_1 \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast)\\ \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) & \partial_1^2 \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast,\mathbf{t}^\ast)\end{bmatrix} - \begin{bmatrix}C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\\\partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\\ \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\end{bmatrix}K_{\bm{\theta},\sigma}(\mathbf{t}, \mathbf{t})^{-1}\begin{bmatrix}C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\\partial_2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\ \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\end{bmatrix}^T
 \end{align*}
-where $K_{\theta,\sigma}(\mathbf{t}, \mathbf{t}) = C_\theta(\mathbf{t}, \mathbf{t}) + \sigma^2 I$. Partitioning $\bm{\mu}$ and $\bm{\Sigma}$ as 
+where $K_{\bm{\theta},\sigma}(\mathbf{t}, \mathbf{t}) = C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I$. Partitioning $\bm{\mu}$ and $\bm{\Sigma}$ as 
 \begin{align*}
-  \bm{\mu} = \begin{bmatrix}\mu_f(\mathbf{t}^\ast \mid \Theta)\\ \mu_{df}(\mathbf{t}^\ast \mid \Theta)\\ \mu_{d^2\!f}(\mathbf{t}^\ast \mid \Theta)\end{bmatrix}, \quad \bm{\Sigma} = \begin{bmatrix}\Sigma_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{f,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta)\\ \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{df,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta)\\ \Sigma_{d^2\!f,f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{d^2\!f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta) & \Sigma_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \Theta)\end{bmatrix}
+  \bm{\mu} = \begin{bmatrix}\mu_f(\mathbf{t}^\ast \mid \bm{\Theta})\\ \mu_{df}(\mathbf{t}^\ast \mid \bm{\Theta})\\ \mu_{d^2\!f}(\mathbf{t}^\ast \mid \bm{\Theta})\end{bmatrix}, \quad \bm{\Sigma} = \begin{bmatrix}\Sigma_{f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \bm{\Theta}) & \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \bm{\Theta}) & \Sigma_{f,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \bm{\Theta})\\ \Sigma_{f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \bm{\Theta}) & \Sigma_{df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \bm{\Theta}) & \Sigma_{df,d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \bm{\Theta})\\ \Sigma_{d^2\!f,f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \bm{\Theta}) & \Sigma_{d^2\!f,df}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \bm{\Theta}) & \Sigma_{d^2\!f}(\mathbf{t}^\ast,\mathbf{t}^\ast \mid \bm{\Theta})\end{bmatrix}
 \end{align*}
 and completing the matrix algebra, we obtain the expressions of the individual components given in the Proposition.
 
@@ -72,11 +72,11 @@ Rice showed in section 3.3. of @rice1945mathematical that the expected number of
 \begin{align}
 \int_{\mathcal{I}} \int_{-\infty}^\infty |v|f_{X(t), dX(t)}(0, v)\mathrm{d}v\mathrm{d}t\label{eq:rice}
 \end{align}
-where $f_{X(t), dX(t)}$ is the joint density function of $X$ and its derivative $dX$ at time $t$. To derive the expression for the Expected Trend Instability  we must apply the Rice formula to the joint posterior distribution of $(df, d^2\!f)$. From Proposition 1 the distribution of $(df, d^2\!f) \mid \mathbf{Y}, \mathbf{t}, \Theta$ is bivariate normal for each $t$. 
+where $f_{X(t), dX(t)}$ is the joint density function of $X$ and its derivative $dX$ at time $t$. To derive the expression for the Expected Trend Instability  we must apply the Rice formula to the joint posterior distribution of $(df, d^2\!f)$. From Proposition 1 the distribution of $(df, d^2\!f) \mid \mathbf{Y}, \mathbf{t}, \bm{\Theta}$ is bivariate normal for each $t$. 
 
 Let $\mu_{df}$, $\mu_{d^2\!f}$, $\Sigma_{df}$ and $\Sigma_{d^2\!f}$ be defined as in Proposition 1 and define further
 \begin{align*}
-  \omega(t \mid \Theta) = \frac{\Sigma_{df, d^2\!f}(t,t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}}
+  \omega(t \mid \bm{\Theta}) = \frac{\Sigma_{df, d^2\!f}(t,t \mid \bm{\Theta})}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{1/2}}
 \end{align*}
 as the posterior point-wise cross-correlation function between $df$ and $d^2\!f$. The joint posterior density function of $(df, d^2\!f)$ at any time $t$ evaluated at $(0, v)$ can be factorized as
 \begin{align*}
@@ -84,74 +84,74 @@ f_{df(t), d^2\!f(t)}(0, v) = c_1(t) e^{c_2(t)} e^{-c_3(t) v^2 - 2c_4(t) v}
 \end{align*}
 where $c_1, \ldots, c_4$ are functions of time given by
 \begin{align*}
- c_1(t) &= (2\pi)^{-1} \Sigma_{df}(t,t \mid \Theta)^{-1/2}\Sigma_{d^2\!f}(t,t \mid \Theta)^{-1/2} (1-\omega(t \mid \Theta)^2)^{-1/2}\\
- c_2(t) &= \frac{\mu_{df}(t \mid \Theta)^2}{2\Sigma_{df}(t,t \mid \Theta)(\omega(t \mid \Theta)^2 - 1)} + \frac{\mu_{d^2\!f}(t \mid \Theta)^2}{2\Sigma_{d^2\!f}(t,t \mid \Theta)(\omega(t \mid \Theta)^2 - 1)}\\
-        &- \frac{\mu_{df}(t \mid \Theta)\mu_{d^2\!f}(t \mid \Theta)\omega(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}(\omega(t \mid \Theta)^2 - 1)}\\
- c_3(t) &= -\frac{1}{2}\Sigma_{d^2\!f}(t,t \mid \Theta)^{-1}(\omega(t \mid \Theta)^2-1)^{-1}\\
- c_4(t) &= -\frac{\mu_{df}(t \mid \Theta) \Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2} \omega(t \mid \Theta) - \mu_{d^2\!f}(t \mid \Theta) \Sigma_{df}(t,t \mid \Theta)^{1/2}}{2\Sigma_{d^2\!f}(t,t \mid \Theta)(\omega(t \mid \Theta)^2-1)\Sigma_{df}(t,t \mid \Theta)^{1/2}}
+ c_1(t) &= (2\pi)^{-1} \Sigma_{df}(t,t \mid \bm{\Theta})^{-1/2}\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{-1/2} (1-\omega(t \mid \bm{\Theta})^2)^{-1/2}\\
+ c_2(t) &= \frac{\mu_{df}(t \mid \bm{\Theta})^2}{2\Sigma_{df}(t,t \mid \bm{\Theta})(\omega(t \mid \Theta)^2 - 1)} + \frac{\mu_{d^2\!f}(t \mid \bm{\Theta})^2}{2\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})(\omega(t \mid \bm{\Theta})^2 - 1)}\\
+        &- \frac{\mu_{df}(t \mid \bm{\Theta})\mu_{d^2\!f}(t \mid \bm{\Theta})\omega(t \mid \bm{\Theta})}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{1/2}(\omega(t \mid \bm{\Theta})^2 - 1)}\\
+ c_3(t) &= -\frac{1}{2}\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{-1}(\omega(t \mid \bm{\Theta})^2-1)^{-1}\\
+ c_4(t) &= -\frac{\mu_{df}(t \mid \bm{\Theta}) \Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{1/2} \omega(t \mid \bm{\Theta}) - \mu_{d^2\!f}(t \mid \bm{\Theta}) \Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}}{2\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})(\omega(t \mid \bm{\Theta})^2-1)\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}}
 \end{align*}
-Let $d\mathrm{ETI}(t \mid \Theta)$ denote the inner integral in Equation (\ref{eq:rice}). Using the factorization of the joint posterior density we may write it was
+Let $d\mathrm{ETI}(t \mid \bm{\Theta})$ denote the inner integral in Equation (\ref{eq:rice}). Using the factorization of the joint posterior density we may write it was
 \begin{align}
 \begin{split}
-d\mathrm{ETI}(t \mid \Theta) &= \int_{-\infty}^\infty |v| f_{df(t), d^2\!f(t)}(0, v)\mathrm{d}v\\
+d\mathrm{ETI}(t \mid \bm{\Theta}) &= \int_{-\infty}^\infty |v| f_{df(t), d^2\!f(t)}(0, v)\mathrm{d}v\\
  &= c_1(t) e^{c_2(t)}\int_{-\infty}^\infty |v| e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\\
  &= c_1(t) e^{c_2(t)}\left(\int_0^\infty v e^{-c_3(t) v^2 + 2c_4(t) v}\mathrm{d}v + \int_0^\infty v e^{-c_3(t) v^2 - 2c_4(t) v}\mathrm{d}v\right)
 \end{split}
 \label{dETIintegral1}
 \end{align}
-Because $c_3(t) > 0$ for all t since $\Sigma_{d^2\!f}(t,t \mid \Theta) > 0$ and $|\omega(t \mid \Theta)| < 1$ by Assumption A4 we obtain the following solution for the type of integral in the previous display by using formula 5 in section 3.462 on page 365 of @gradshteyn2014table 
+Because $c_3(t) > 0$ for all t since $\Sigma_{d^2\!f}(t,t \mid \bm{\Theta}) > 0$ and $|\omega(t \mid \bm{\Theta})| < 1$ by Assumption A4 we obtain the following solution for the type of integral in the previous display by using formula 5 in section 3.462 on page 365 of @gradshteyn2014table 
 \begin{align}
 \int_{0}^\infty v e^{-c_3(t) v^2 \pm 2c_4(t) v}\mathrm{d}v = \frac{1}{2c_3(t)} \pm \frac{c_4(t)}{2c_3(t)}\frac{\pi^{1/2}}{c_3(t)^{1/2}}e^{\frac{c_4(t)^2}{c_3(t)}}\left(1 \pm \Erf\left(\frac{c_4(t)}{\sqrt{c_3(t)}}\right)\right)\label{dETIintegral2}
 \end{align}
 where $\Erf\colon\, x \mapsto 2\pi^{-1}\int_0^x e^{-u^2}\mathrm{d}u$ is the error function. Combining Equations (\ref{dETIintegral1}) and (\ref{dETIintegral2}) we may express $d\mathrm{ETI}$ as
 \begin{align*}
-d\mathrm{ETI}(t \mid \Theta) &= c_1(t) e^{c_2(t)}\left(\frac{1}{c_3(t)} + \frac{c_4(t)}{c_3(t)}\frac{\pi^{1/2}}{c_3(t)^{1/2}}e^{\frac{c_4(t)^2}{c_3(t)}}\Erf\left(\frac{c_4(t)}{\sqrt{c_3(t)}}\right)\right)
+d\mathrm{ETI}(t \mid \bm{\Theta}) &= c_1(t) e^{c_2(t)}\left(\frac{1}{c_3(t)} + \frac{c_4(t)}{c_3(t)}\frac{\pi^{1/2}}{c_3(t)^{1/2}}e^{\frac{c_4(t)^2}{c_3(t)}}\Erf\left(\frac{c_4(t)}{\sqrt{c_3(t)}}\right)\right)
 \end{align*}
-Defining $\zeta(t \mid \Theta) = \sqrt{2}c_4(t)c_3(t)^{-1/2}$ and collecting some terms, the index can be rewritten as
+Defining $\zeta(t \mid \bm{\Theta}) = \sqrt{2}c_4(t)c_3(t)^{-1/2}$ and collecting some terms, the index can be rewritten as
 \begin{align*}
-d\mathrm{ETI}(t \mid \Theta) &= \frac{c_1(t)}{c_3(t)}\left(e^{c_2(t)} + \frac{\pi^{1/2}}{2^{1/2}} e^{\frac{c_4(t)^2}{c_3(t)} + c_2(t)} \zeta(t) \Erf\left(\frac{\zeta(t \mid \Theta)}{2^{1/2}}\right)\right)
+d\mathrm{ETI}(t \mid \bm{\Theta}) &= \frac{c_1(t)}{c_3(t)}\left(e^{c_2(t)} + \frac{\pi^{1/2}}{2^{1/2}} e^{\frac{c_4(t)^2}{c_3(t)} + c_2(t)} \zeta(t) \Erf\left(\frac{\zeta(t \mid \bm{\Theta})}{2^{1/2}}\right)\right)
 \end{align*}
 Straightforward arithmetic calculations show that
 \begin{align*}
-  \frac{c_4(t)^2}{c_3(t)} + c_2(t) = -\frac{\mu_{df}(t \mid \Theta)^2}{2\Sigma_{df}(t,t \mid \Theta)}, \quad c_2(t) = - \frac{1}{2}\left(\zeta(t \mid \Theta)^2 + \frac{\mu_{df}(t \mid \Theta)^2}{\Sigma_{df}(t,t \mid \Theta)}\right)
+  \frac{c_4(t)^2}{c_3(t)} + c_2(t) = -\frac{\mu_{df}(t \mid \bm{\Theta})^2}{2\Sigma_{df}(t,t \mid \bm{\Theta})}, \quad c_2(t) = - \frac{1}{2}\left(\zeta(t \mid \bm{\Theta})^2 + \frac{\mu_{df}(t \mid \bm{\Theta})^2}{\Sigma_{df}(t,t \mid \bm{\Theta})}\right)
 \end{align*}
-and by defining $\phi\colon\, x \mapsto (2\pi)^{-1/2}e^{-x^2}$ as the density function of the standard normal distribution we may write $e^{\frac{c_4(t)^2}{c_3(t)} + c_2(t)} = (2\pi)^{1/2}\phi\left(\frac{\mu_{df}(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\right)$ and $e^{c_2(t)} = 2\pi\phi(\zeta(t))\phi\left(\frac{\mu_{df}(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\right)$ which leads to
+and by defining $\phi\colon\, x \mapsto (2\pi)^{-1/2}e^{-x^2}$ as the density function of the standard normal distribution we may write $e^{\frac{c_4(t)^2}{c_3(t)} + c_2(t)} = (2\pi)^{1/2}\phi\left(\frac{\mu_{df}(t \mid \bm{\Theta})}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}}\right)$ and $e^{c_2(t)} = 2\pi\phi(\zeta(t))\phi\left(\frac{\mu_{df}(t \mid \bm{\Theta})}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}}\right)$ which leads to
 \begin{align*}
-d\mathrm{ETI}(t \mid \Theta) = \frac{c_1(t)}{c_3(t)}\pi\phi\left(\frac{\mu_{df}(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\right)\left(2\phi(\zeta(t \mid \Theta)) + \zeta(t \mid \Theta)\Erf\left(\frac{\zeta(t\mid \Theta)}{2^{1/2}}\right)\right)
+d\mathrm{ETI}(t \mid \bm{\Theta}) = \frac{c_1(t)}{c_3(t)}\pi\phi\left(\frac{\mu_{df}(t \mid \bm{\Theta})}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}}\right)\left(2\phi(\zeta(t \mid \bm{\Theta})) + \zeta(t \mid \bm{\Theta})\Erf\left(\frac{\zeta(t\mid \bm{\Theta})}{2^{1/2}}\right)\right)
 \end{align*}
 Standard arithmetics show that
 \begin{align*}
-\frac{c_1(t)}{c_3(t)} =  \frac{1}{\pi}\frac{\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\left(1-\omega(t \mid \Theta)^2\right)^{1/2}
+\frac{c_1(t)}{c_3(t)} =  \frac{1}{\pi}\frac{\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{1/2}}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}}\left(1-\omega(t \mid \bm{\Theta})^2\right)^{1/2}
 \end{align*}
 and we finally obtain the expression
 \begin{align*}
-d\mathrm{ETI}(t \mid \Theta) = \lambda(t \mid \Theta)\phi\left(\frac{\mu_{df}(t \mid \Theta)}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\right)\left(2\phi(\zeta(t \mid \Theta)) + \zeta(t \mid \Theta)\Erf\left(\frac{\zeta(t \mid \Theta)}{2^{1/2}}\right)\right)
+d\mathrm{ETI}(t \mid \bm{\Theta}) = \lambda(t \mid \bm{\Theta})\phi\left(\frac{\mu_{df}(t \mid \bm{\Theta})}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}}\right)\left(2\phi(\zeta(t \mid \bm{\Theta})) + \zeta(t \mid \bm{\Theta})\Erf\left(\frac{\zeta(t \mid \bm{\Theta})}{2^{1/2}}\right)\right)
 \end{align*}
 where $\lambda$ and $\zeta$ are given by
 \begin{align*}
-\lambda(t \mid \Theta) &= \frac{\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}}{\Sigma_{df}(t,t \mid \Theta)^{1/2}}\left(1-\omega(t \mid \Theta)^2\right)^{1/2}\\
-  \zeta(t \mid \Theta) &= \frac{\mu_{df}(t \mid \Theta)\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}\omega(t)\Sigma_{df}(t,t \mid \Theta)^{-1/2} - \mu_{d^2\!f}(t \mid \Theta)}{\Sigma_{d^2\!f}(t,t \mid \Theta)^{1/2}\left(1 - \omega(t \mid \Theta)^2\right)^{1/2}}
+\lambda(t \mid \bm{\Theta}) &= \frac{\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{1/2}}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}}\left(1-\omega(t \mid \bm{\Theta})^2\right)^{1/2}\\
+  \zeta(t \mid \bm{\Theta}) &= \frac{\mu_{df}(t \mid \bm{\Theta})\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{1/2}\omega(t)\Sigma_{df}(t,t \mid \bm{\Theta})^{-1/2} - \mu_{d^2\!f}(t \mid \bm{\Theta})}{\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{1/2}\left(1 - \omega(t \mid \bm{\Theta})^2\right)^{1/2}}
 \end{align*}
 By definition
 \begin{align*}
-  \mathrm{ETI}(\mathcal{I} \mid \Theta) = \int_{\mathcal{I}} d\mathrm{ETI}(t \mid \Theta)\mathrm{d}t
+  \mathrm{ETI}(\mathcal{I} \mid \bm{\Theta}) = \int_{\mathcal{I}} d\mathrm{ETI}(t \mid \bm{\Theta})\mathrm{d}t
 \end{align*}
 which completes the proof.
 
 \section{Zero-crossings of $f$ and $df$ in the zero-mean stationary case}\label{sec:appendix3}
-Let $f \sim \mathcal{GP}\left(0, C_\theta(\cdot, \cdot)\right)$ where the $C_\theta$ is either the Squared Exponential or Rational Quadratic covariance function. We look at the expected number of zero-crossings on an interval by either $f$ and $df$ as given by the Rice formula in Equation (\ref{eq:rice}) with either $X(t) = f(t)$ or $X(t) = df(t)$. In this case the expressions simplifies immensely due to the zero means of both $f$, $df$, and $d^2\!f$ and because $\Cov[f(t), df(t)] = 0$ and $\Cov[df(t), d^2\!f(t)] = 0$. The latter is a result of using a stationary covariance function for the prior distribution of $f$ [@cramer1967stationary]. In this stationary case local expected number of zero-crossing of $f$ and $df$ are given by
+Let $f \sim \mathcal{GP}\left(0, C_{\bm{\theta}}(\cdot, \cdot)\right)$ where the $C_{\bm{\theta}}$ is either the Squared Exponential or Rational Quadratic covariance function. We look at the expected number of zero-crossings on an interval by either $f$ and $df$ as given by the Rice formula in Equation (\ref{eq:rice}) with either $X(t) = f(t)$ or $X(t) = df(t)$. In this case the expressions simplifies immensely due to the zero means of both $f$, $df$, and $d^2\!f$ and because $\Cov[f(t), df(t)] = 0$ and $\Cov[df(t), d^2\!f(t)] = 0$. The latter is a result of using a stationary covariance function for the prior distribution of $f$ [@cramer1967stationary]. In this stationary case local expected number of zero-crossing of $f$ and $df$ are given by
 \begin{align*}
-  \frac{\partial_1 \partial_2 C_\theta(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi C_\theta(t,t)^{1/2}} \quad \text{and} \quad   \frac{\partial_1^2 \partial_2^2 C_\theta(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi \partial_1 \partial_2 C_\theta(s,t)\Bigr|_{\substack{s=t}}^{1/2}}
+  \frac{\partial_1 \partial_2 C_{\bm{\theta}}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi C_{\bm{\theta}}(t,t)^{1/2}} \quad \text{and} \quad   \frac{\partial_1^2 \partial_2^2 C_{\bm{\theta}}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi \partial_1 \partial_2 C_{\bm{\theta}}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}
 \end{align*}
 respectively. It then follows that
 \begin{alignat*}{3}
- C_\theta^\text{SE}(t,t) &= \sigma^2, &\quad \partial_1\partial_2 C_\theta^\text{SE}(s,t)\Bigr|_{\substack{s=t}} &= \frac{\sigma^2}{\rho^2}, &\quad \partial_1^2\partial_2^2 C_\theta^\text{SE}(s,t)\Bigr|_{\substack{s=t}} &= \frac{3\sigma^2}{\rho^4}\\	
- C_\theta^\text{RQ}(t,t) &= \sigma^2, & \partial_1\partial_2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}} &= \frac{\sigma^2}{\rho^2}, & \partial_1^2\partial_2^2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}} &= \frac{2\sigma^2 (1+\nu)}{\nu \rho^4}
+ C_{\bm{\theta}}^\text{SE}(t,t) &= \sigma^2, &\quad \partial_1\partial_2 C_{\bm{\theta}}^\text{SE}(s,t)\Bigr|_{\substack{s=t}} &= \frac{\sigma^2}{\rho^2}, &\quad \partial_1^2\partial_2^2 C_{\bm{\theta}}^\text{SE}(s,t)\Bigr|_{\substack{s=t}} &= \frac{3\sigma^2}{\rho^4}\\	
+ C_\theta^\text{RQ}(t,t) &= \sigma^2, & \partial_1\partial_2 C_{\bm{\theta}}^\text{RQ}(s,t)\Bigr|_{\substack{s=t}} &= \frac{\sigma^2}{\rho^2}, & \partial_1^2\partial_2^2 C_{\bm{\theta}}^\text{RQ}(s,t)\Bigr|_{\substack{s=t}} &= \frac{2\sigma^2 (1+\nu)}{\nu \rho^4}
 \end{alignat*}
 and the local expected number of zero-crossings of $f$ and $df$ for either the Squared Exponential and the Rational Quadratic covariance functions are
 \begin{alignat*}{2}
- \frac{\partial_1 \partial_2 C_\theta^\text{SE}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi C_\theta^\text{SE}(t,t)^{1/2}} &= \frac{1}{\pi\rho}, &\qquad \frac{\partial_1^2 \partial_2^2 C_\theta^\text{SE}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi \partial_1 \partial_2 C_\theta^\text{SE}(s,t)\Bigr|_{\substack{s=t}}^{1/2}} &= \frac{3^{1/2}}{\pi\rho}\\	
- \frac{\partial_1 \partial_2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi C_\theta^\text{RQ}(t,t)^{1/2}} &= \frac{1}{\pi\rho}, & \frac{\partial_1^2 \partial_2^2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi \partial_1 \partial_2 C_\theta^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}} &= \frac{3^{1/2}}{\pi\rho}\left(1 + v^{-1}\right)^{1/2}
+ \frac{\partial_1 \partial_2 C_{\bm{\theta}}^\text{SE}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi C_{\bm{\theta}}^\text{SE}(t,t)^{1/2}} &= \frac{1}{\pi\rho}, &\qquad \frac{\partial_1^2 \partial_2^2 C_{\bm{\theta}}^\text{SE}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi \partial_1 \partial_2 C_{\bm{\theta}}^\text{SE}(s,t)\Bigr|_{\substack{s=t}}^{1/2}} &= \frac{3^{1/2}}{\pi\rho}\\	
+ \frac{\partial_1 \partial_2 C_{\bm{\theta}}^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi C_{\bm{\theta}}^\text{RQ}(t,t)^{1/2}} &= \frac{1}{\pi\rho}, & \frac{\partial_1^2 \partial_2^2 C_{\bm{\theta}}^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}}{\pi \partial_1 \partial_2 C_{\bm{\theta}}^\text{RQ}(s,t)\Bigr|_{\substack{s=t}}^{1/2}} &= \frac{3^{1/2}}{\pi\rho}\left(1 + v^{-1}\right)^{1/2}
 \end{alignat*}
 
 \newpage
