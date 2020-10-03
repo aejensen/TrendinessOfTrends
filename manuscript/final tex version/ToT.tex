@@ -441,7 +441,7 @@ Y^\ast(t^\ast) \mid t^\ast, \mathbf{Y}, \mathbf{t}, \bm{\Theta} \sim N\left(\mu_
 arbitrary time point \(t^\ast\).
 
 Proposition \ref{prop:GPposterior} grants the foundation for the rest of
-the methodological development. While the Gaussian Process priors might
+the methodological development. While the Gaussian Process prior might
 seem restrictive it has the computational advantage that the posterior
 of \((f, df, d^2\!f)\) is characterized by the finite dimensional joint
 distributions which in turn are given by the mean and covariance
@@ -907,7 +907,7 @@ scenarios in which we varied the number of observation points
 (\(\sigma = 0.025, 0.05, 0.1, 0.15, 0.2\)). The Supplementary Material
 shows 50 random sample paths for each scenario.
 
-In each \(r\) simulation we know the true latent functions
+In each of the \(r\) simulations we know the true latent functions
 \((f_r, df_r)\), and by fitting our model we obtain estimates
 \(\widehat{f_r^\text{GP}}\) and \(\widehat{df_r^\text{GP}}\)
 corresponding to the posterior expectations in Proposition
@@ -1043,7 +1043,7 @@ perceptive to catch the underlying continuous development.
 \begin{table}[htbp]
 \center
 \begin{tabular}{c|rrrrr} \hline
-2018 & 2017 & 2016 & 2015 & 2014 & 2013\\ 
+ & 2017 & 2016 & 2015 & 2014 & 2013\\ 
 p-value & 0.074 & \textbf{0.020} & 0.495 & \textbf{0.012} & 0.576\\ \hline
 \end{tabular}
 \caption{p-values obtained from $\chi^2$-tests of independence between the proportion of smokers in 2018 and the five previous years. Numbers in bold are statistically significant differences at the $5\%$ level.}
